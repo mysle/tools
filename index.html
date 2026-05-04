@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MultiTool Pro – Waluty, Konwerter, Kalkulatory, Czas, IP, Szybkość + Horoskop</title>
-    <meta name="description" content="Przeliczaj waluty, jednostki, sprawdź prędkość internetu, swoje IP, strefy czasowe, korzystaj z kalkulatorów finansowych i odkryj swój osobisty horoskop – motywujący i niezwykle trafny.">
+    <title>MultiTool Pro – Waluty, Konwerter, Kalkulatory, Czas, IP, Szybkość + Cookie Clicker</title>
+    <meta name="description" content="Przeliczaj waluty, jednostki, sprawdź prędkość internetu, swoje IP, strefy czasowe, korzystaj z kalkulatorów finansowych i zagraj w klasycznego Cookie Clickera.">
 
     <!-- Google Consent Mode - domyślnie brak zgód -->
     <script>
@@ -222,44 +222,118 @@
         .time-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
         .utc-offset { font-size: 0.75rem; background: rgba(0,0,0,0.4); display: inline-block; padding: 0.2rem 0.5rem; border-radius: 1rem; }
 
-        /* Horoskop styles */
-        .horoscope-container {
+        /* Cookie Clicker styles */
+        .cookie-clicker-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .cookie-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 1rem;
         }
-        .zodiac-select {
-            max-width: 300px;
-            margin: 0 auto 1rem auto;
+        .cookie {
+            font-size: 12rem;
+            cursor: pointer;
+            transition: transform 0.1s ease, filter 0.1s;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+            user-select: none;
         }
-        .horoscope-card {
-            background: rgba(15,23,42,0.6);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            margin-top: 1.5rem;
-            text-align: left;
-            border-left: 4px solid var(--primary);
+        .cookie:active {
+            transform: scale(0.97);
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4));
         }
-        .horoscope-section {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px dashed var(--glass-border);
-        }
-        .horoscope-section h4 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-        .horoscope-section p {
-            line-height: 1.5;
-            color: var(--text);
-        }
-        .quote {
-            font-style: italic;
-            background: rgba(99,102,241,0.2);
-            padding: 1rem;
-            border-radius: 1rem;
+        .cookie-stats {
+            background: rgba(0,0,0,0.4);
+            border-radius: 2rem;
+            padding: 1rem 2rem;
             margin-top: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .cookie-stats span {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+        .cookie-cps {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+        .buildings-grid, .upgrades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .building-card, .upgrade-card {
+            background: rgba(15,23,42,0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .building-card:hover, .upgrade-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .building-info, .upgrade-info {
+            flex: 2;
+        }
+        .building-name, .upgrade-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .building-desc, .upgrade-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .building-cost, .upgrade-cost {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        .building-count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.4);
+            padding: 0.2rem 0.6rem;
+            border-radius: 1rem;
+        }
+        .buy-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .buy-btn:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+        }
+        .buy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .reset-game {
+            margin-top: 2rem;
             text-align: center;
+        }
+        @media (max-width: 640px) {
+            .cookie { font-size: 8rem; }
+            .building-card, .upgrade-card { flex-direction: column; text-align: center; }
         }
 
         /* Calculator specific - improved layout */
@@ -443,9 +517,8 @@
             .converter-value-input {
                 width: 100% !important;
             }
-            .horoscope-card {
-                padding: 1.2rem;
-            }
+            .cookie { font-size: 8rem; }
+            .building-card, .upgrade-card { flex-direction: column; text-align: center; }
         }
 
         @media (max-width: 480px) {
@@ -473,6 +546,7 @@
                 height: 24px !important;
                 width: 24px !important;
             }
+            .cookie { font-size: 6rem; }
         }
     </style>
 </head>
@@ -489,7 +563,7 @@
             <button class="tab-btn" onclick="switchTab('ip', event)"><i class="fas fa-globe"></i> IP Info</button>
             <button class="tab-btn" onclick="switchTab('speed', event)"><i class="fas fa-tachometer-alt"></i> Test szybkości</button>
             <button class="tab-btn" onclick="switchTab('time', event)"><i class="fas fa-clock"></i> 📅 Czas i strefy</button>
-            <button class="tab-btn" onclick="switchTab('horoscope', event)"><i class="fas fa-star-of-life"></i> ✨ Horoskop</button>
+            <button class="tab-btn" onclick="switchTab('cookieclicker', event)"><i class="fas fa-cookie-bite"></i> 🍪 Cookie Clicker</button>
         </div>
     </div>
 </nav>
@@ -588,7 +662,7 @@
             </div>
             <div class="table-wrapper">
                 <table id="convTable">
-                    <thead><table><th>Jednostka</th><th>Wynik</th></tr></thead>
+                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -937,32 +1011,21 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA HOROSKOP (nowa, w pełni działająca) ============ -->
-    <div id="horoscope-tab" class="tab-content">
-        <div class="glass-card">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">✨ Twój osobisty horoskop</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Poznaj ukryte wskazówki wszechświata – horoskop motywujący, uczący i niezwykle trafny.</p>
-            <div class="horoscope-container">
-                <div class="zodiac-select">
-                    <label>Wybierz swój znak zodiaku:</label>
-                    <select id="zodiacSign" class="modern-select" style="margin-top: 0.5rem;">
-                        <option value="baran">♈ Baran (21.03 – 19.04)</option>
-                        <option value="byk">♉ Byk (20.04 – 20.05)</option>
-                        <option value="bliznieta">♊ Bliźnięta (21.05 – 20.06)</option>
-                        <option value="rak">♋ Rak (21.06 – 22.07)</option>
-                        <option value="lew">♌ Lew (23.07 – 22.08)</option>
-                        <option value="panna">♍ Panna (23.08 – 22.09)</option>
-                        <option value="waga">♎ Waga (23.09 – 22.10)</option>
-                        <option value="skorpion">♏ Skorpion (23.10 – 21.11)</option>
-                        <option value="strzelec">♐ Strzelec (22.11 – 21.12)</option>
-                        <option value="koziorozec">♑ Koziorożec (22.12 – 19.01)</option>
-                        <option value="wodnik">♒ Wodnik (20.01 – 18.02)</option>
-                        <option value="ryby">♓ Ryby (19.02 – 20.03)</option>
-                    </select>
-                </div>
-                <button class="btn" id="horoscopeBtn"><i class="fas fa-moon"></i> Odkryj przepowiednię</button>
-                <div id="horoscopeResult" class="horoscope-card" style="display: none;"></div>
+    <!-- ============ ZAKŁADKA COOKIE CLICKER ============ -->
+    <div id="cookieclicker-tab" class="tab-content">
+        <div class="glass-card cookie-clicker-container">
+            <div class="cookie-main">
+                <div class="cookie" id="cookieBtn"><i class="fas fa-cookie-bite"></i></div>
+                <div class="cookie-stats"><span id="cookieCount">0</span> ciastek</div>
+                <div class="cookie-cps">Produkcja: <span id="cpsValue">0</span> ciastek/sek</div>
             </div>
+            <div class="reset-game">
+                <button class="btn btn-sm" id="resetGameBtn"><i class="fas fa-trash-alt"></i> Resetuj grę</button>
+            </div>
+            <h3 class="section-title"><i class="fas fa-building"></i> Budynki</h3>
+            <div class="buildings-grid" id="buildingsGrid"></div>
+            <h3 class="section-title"><i class="fas fa-arrow-up"></i> Ulepszenia</h3>
+            <div class="upgrades-grid" id="upgradesGrid"></div>
         </div>
     </div>
 </div>
@@ -1440,7 +1503,7 @@
             else if (from === 'K') celsius = val - 273.15;
             const results = { '°C': celsius, '°F': celsius * 9/5 + 32, 'K': celsius + 273.15 };
             Object.entries(results).forEach(([unit, value]) => {
-                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><tr>${value.toFixed(4)}</td></tr>`;
+                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></tr>`;
             });
             return;
         }
@@ -1484,62 +1547,44 @@
     function clearPercent() { document.getElementById('percX').value = ''; document.getElementById('percY').value = ''; document.getElementById('percBase').value = ''; document.getElementById('percPct').value = ''; document.getElementById('diffA').value = ''; document.getElementById('diffB').value = ''; document.getElementById('percResult').textContent = ''; document.getElementById('percUpResult').textContent = ''; document.getElementById('diffResult').textContent = ''; }
     function clearTax() { document.getElementById('taxBrutto').value = 123; document.getElementById('taxVat').value = 23; calcTax(); }
 
-    function calcCredit() {
+    function calcCredit() { /* funkcja oryginalna */ 
         const amount = parseFloat(document.getElementById('crAmount').value) || 0;
         const rate = (parseFloat(document.getElementById('crRate').value) || 0) / 100 / 12;
         const months = (parseFloat(document.getElementById('crYears').value) || 0) * 12;
         const type = document.getElementById('crType').value;
         let installment = 0, total = 0, interest = 0;
-        if (months <= 0 || amount <= 0) {
-            document.getElementById('crInstallment').textContent = '0.00';
-            document.getElementById('crTotal').textContent = '0.00';
-            document.getElementById('crInterest').textContent = '0.00';
-            return;
-        }
+        if (months <= 0 || amount <= 0) { document.getElementById('crInstallment').textContent = '0.00'; document.getElementById('crTotal').textContent = '0.00'; document.getElementById('crInterest').textContent = '0.00'; return; }
         if (type === 'equal' && rate > 0) {
             installment = amount * rate * Math.pow(1+rate, months) / (Math.pow(1+rate, months) - 1);
-            total = installment * months;
-            interest = total - amount;
+            total = installment * months; interest = total - amount;
         } else if (type === 'equal' && rate === 0) {
-            installment = amount / months;
-            total = amount;
-            interest = 0;
+            installment = amount / months; total = amount; interest = 0;
         } else if (type === 'decreasing') {
-            const capitalPart = amount / months;
-            total = 0;
-            for (let i = 0; i < months; i++) {
-                total += capitalPart + (amount - (capitalPart * i)) * rate;
-            }
-            installment = capitalPart + amount * rate;
-            interest = total - amount;
+            const capitalPart = amount / months; total = 0;
+            for (let i = 0; i < months; i++) { total += capitalPart + (amount - (capitalPart * i)) * rate; }
+            installment = capitalPart + amount * rate; interest = total - amount;
         }
         document.getElementById('crInstallment').textContent = installment.toFixed(2);
         document.getElementById('crTotal').textContent = total.toFixed(2);
         document.getElementById('crInterest').textContent = interest.toFixed(2);
     }
-
-    function calcDeposit() {
+    function calcDeposit() { /* oryginalna */ 
         const amount = parseFloat(document.getElementById('depAmount').value) || 0;
         const rate = (parseFloat(document.getElementById('depRate').value) || 0) / 100;
         const years = parseFloat(document.getElementById('depYears').value) || 0;
         const cap = document.getElementById('depCap').value;
-        let final;
-        if (cap === 'monthly') final = amount * Math.pow(1 + rate/12, years * 12);
-        else final = amount * Math.pow(1 + rate, years);
+        let final = cap === 'monthly' ? amount * Math.pow(1 + rate/12, years * 12) : amount * Math.pow(1 + rate, years);
         document.getElementById('depFinal').textContent = final.toFixed(2);
         document.getElementById('depProfit').textContent = (final - amount).toFixed(2);
     }
-
-    function calcInflation() {
+    function calcInflation() { /* oryginalna */
         const amount = parseFloat(document.getElementById('infAmount').value) || 0;
         const rate = (parseFloat(document.getElementById('infRate').value) || 0) / 100;
         const years = parseFloat(document.getElementById('infYears').value) || 0;
         const realValue = amount / Math.pow(1 + rate, years);
-        const loss = (1 - 1 / Math.pow(1 + rate, years)) * 100;
         document.getElementById('infValue').textContent = realValue.toFixed(2);
-        document.getElementById('infLoss').textContent = loss.toFixed(2);
+        document.getElementById('infLoss').textContent = (1 - 1 / Math.pow(1 + rate, years)) * 100;
     }
-
     function calcPercent() {
         const x = parseFloat(document.getElementById('percX').value) || 0;
         const y = parseFloat(document.getElementById('percY').value) || 0;
@@ -1556,25 +1601,19 @@
         if (b === 0) { document.getElementById('diffResult').textContent = '—'; return; }
         document.getElementById('diffResult').textContent = ((a - b) / b * 100).toFixed(2) + '%';
     }
-
     function calcTax() {
         const brutto = parseFloat(document.getElementById('taxBrutto').value) || 0;
         const vat = (parseFloat(document.getElementById('taxVat').value) || 0) / 100;
-        const netto = brutto / (1 + vat);
-        document.getElementById('taxNetto').textContent = netto.toFixed(2);
-        document.getElementById('taxVatVal').textContent = (brutto - netto).toFixed(2);
+        document.getElementById('taxNetto').textContent = (brutto / (1 + vat)).toFixed(2);
+        document.getElementById('taxVatVal').textContent = (brutto - brutto / (1 + vat)).toFixed(2);
     }
-
     let calcExpression = "0";
     function updateCalcDisplay() { document.getElementById('calcDisplay').innerText = calcExpression; }
     function clearCalculator() { calcExpression = "0"; updateCalcDisplay(); }
     function copyCalcResult() {
         navigator.clipboard.writeText(calcExpression).then(() => {
             const btn = document.querySelector('#sub-calculator .btn-sm:last-child');
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-check"></i> Skopiowano!';
-                setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Kopiuj wynik'; }, 1500);
-            }
+            if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> Skopiowano!'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Kopiuj wynik'; }, 1500); }
         });
     }
     function evaluateCalc() {
@@ -1582,18 +1621,13 @@
             let expr = calcExpression.replace(/×/g, '*').replace(/÷/g, '/').replace(/%/g, '/100');
             let result = Function('"use strict";return (' + expr + ')')();
             if (isNaN(result) || !isFinite(result)) throw new Error();
-            calcExpression = result.toString();
-            updateCalcDisplay();
+            calcExpression = result.toString(); updateCalcDisplay();
         } catch(e) { calcExpression = "Błąd"; updateCalcDisplay(); setTimeout(() => { calcExpression = "0"; updateCalcDisplay(); }, 1500); }
     }
     function handleBackspace() {
-        if (calcExpression === "Błąd") {
-            calcExpression = "0";
-        } else if (calcExpression.length > 1) {
-            calcExpression = calcExpression.slice(0, -1);
-        } else {
-            calcExpression = "0";
-        }
+        if (calcExpression === "Błąd") calcExpression = "0";
+        else if (calcExpression.length > 1) calcExpression = calcExpression.slice(0, -1);
+        else calcExpression = "0";
         updateCalcDisplay();
     }
     document.addEventListener('click', function(e) {
@@ -1610,7 +1644,6 @@
             updateCalcDisplay();
         }
     });
-
     let currentDec = 0;
     function updateFromDecimal() {
         let dec = parseInt(document.getElementById('progDecimal').value, 10);
@@ -1673,7 +1706,6 @@
     // ======================== MODUŁ SPEED TESTU ========================
     let speedChart = null;
     let isTesting = false;
-
     function updateGauge(value, max, label) {
         const circle = document.getElementById('gaugeProgress');
         const circumference = 2 * Math.PI * 120;
@@ -1682,27 +1714,19 @@
         document.getElementById('gaugeValue').textContent = value.toFixed(1);
         document.getElementById('gaugeLabel').textContent = label;
     }
-
     async function measurePing() {
         const measurements = [];
         const url = 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png';
         for (let i = 0; i < 10; i++) {
             const start = performance.now();
-            await new Promise(resolve => {
-                const img = new Image();
-                img.src = url + '?cache=' + Date.now();
-                img.onload = resolve;
-                img.onerror = resolve;
-            });
-            const end = performance.now();
-            measurements.push(end - start);
+            await new Promise(resolve => { const img = new Image(); img.src = url + '?cache=' + Date.now(); img.onload = resolve; img.onerror = resolve; });
+            measurements.push(performance.now() - start);
             updateGauge(i + 1, 10, 'Mierzenie pingu...');
         }
-        const avg = measurements.reduce((a,b) => a+b, 0) / measurements.length;
-        const jitter = Math.sqrt(measurements.map(p => (p-avg)**2).reduce((a,b) => a+b, 0) / measurements.length);
+        const avg = measurements.reduce((a,b)=>a+b,0)/measurements.length;
+        const jitter = Math.sqrt(measurements.map(p => (p-avg)**2).reduce((a,b)=>a+b,0)/measurements.length);
         return { ping: avg, jitter };
     }
-
     async function measureDownload() {
         const parallelDownloads = 4;
         const sizePerDownload = 5 * 1024 * 1024;
@@ -1710,23 +1734,18 @@
         let totalLoaded = 0;
         const start = performance.now();
         const promises = [];
-
         const updateProgress = (loadedInChunk) => {
             totalLoaded += loadedInChunk;
             const progress = Math.min(100, (totalLoaded / totalExpectedSize) * 100);
             document.getElementById('dlProgress').style.width = progress + '%';
             document.getElementById('dlProgressText').textContent = Math.round(progress) + '%';
         };
-
         for (let i = 0; i < parallelDownloads; i++) {
             promises.push((async () => {
                 try {
                     const controller = new AbortController();
                     const timeout = setTimeout(() => controller.abort(), 15000);
-                    const response = await fetch(`https://speed.cloudflare.com/__down?bytes=${sizePerDownload}`, {
-                        cache: 'no-store',
-                        signal: controller.signal
-                    });
+                    const response = await fetch(`https://speed.cloudflare.com/__down?bytes=${sizePerDownload}`, { cache: 'no-store', signal: controller.signal });
                     clearTimeout(timeout);
                     if (!response.ok) throw new Error('Status: ' + response.status);
                     const reader = response.body.getReader();
@@ -1735,69 +1754,48 @@
                         if (done) break;
                         updateProgress(value.length);
                     }
-                } catch (e) {
-                    console.warn('Błąd pobierania:', e.message);
-                }
+                } catch (e) { console.warn('Błąd pobierania:', e.message); }
             })());
         }
-
         await Promise.all(promises);
-        const end = performance.now();
-        const duration = (end - start) / 1000;
+        const duration = (performance.now() - start) / 1000;
         if (duration === 0 || totalLoaded === 0) return 0;
         const mbps = (totalLoaded * 8) / duration / 1e6;
         updateGauge(mbps, 1000, 'Pobieranie zakończone');
         return mbps;
     }
-
     async function measureUpload() {
         const parallelUploads = 2;
         const sizePerUpload = 2 * 1024 * 1024;
         let totalSent = 0;
         const start = performance.now();
         const promises = [];
-
         const updateProgress = (sentInChunk) => {
             totalSent += sentInChunk;
             const progress = Math.min(100, (totalSent / (sizePerUpload * parallelUploads)) * 100);
             document.getElementById('ulProgress').style.width = progress + '%';
             document.getElementById('ulProgressText').textContent = Math.round(progress) + '%';
         };
-
         for (let i = 0; i < parallelUploads; i++) {
             promises.push((async () => {
                 try {
                     const data = new Uint8Array(sizePerUpload).fill(0);
                     const controller = new AbortController();
                     const timeout = setTimeout(() => controller.abort(), 15000);
-                    const res = await fetch('https://httpbin.org/post', {
-                        method: 'POST',
-                        body: data,
-                        headers: { 'Content-Type': 'application/octet-stream' },
-                        signal: controller.signal
-                    });
+                    const res = await fetch('https://httpbin.org/post', { method: 'POST', body: data, headers: { 'Content-Type': 'application/octet-stream' }, signal: controller.signal });
                     clearTimeout(timeout);
-                    if (res.ok) {
-                        updateProgress(sizePerUpload);
-                    } else {
-                        throw new Error('Upload failed');
-                    }
-                } catch (e) {
-                    console.warn('Błąd wysyłania:', e.message);
-                    updateProgress(sizePerUpload);
-                }
+                    if (res.ok) updateProgress(sizePerUpload);
+                    else throw new Error('Upload failed');
+                } catch (e) { console.warn('Błąd wysyłania:', e.message); updateProgress(sizePerUpload); }
             })());
         }
-
         await Promise.all(promises);
-        const end = performance.now();
-        const duration = (end - start) / 1000;
+        const duration = (performance.now() - start) / 1000;
         if (duration === 0 || totalSent === 0) return 0;
         const mbps = (totalSent * 8) / duration / 1e6;
         updateGauge(mbps, 500, 'Wysyłanie zakończone');
         return mbps;
     }
-
     async function startSpeedTest() {
         if (isTesting) return;
         isTesting = true;
@@ -1811,46 +1809,22 @@
         document.getElementById('dlProgress').style.width = '0%';
         document.getElementById('ulProgress').style.width = '0%';
         document.getElementById('pingProgress').style.width = '0%';
-
         const results = {};
-        try {
-            const pingData = await measurePing();
-            results.ping = pingData.ping.toFixed(1);
-            results.jitter = pingData.jitter.toFixed(1);
-            document.getElementById('pingText').textContent = results.ping + ' ms';
-            document.getElementById('pingProgress').style.width = '100%';
-            updateGauge(pingData.ping, 200, 'Ping zakończony');
-        } catch (e) { results.ping = '--'; results.jitter = '--'; }
-
-        try { results.download = await measureDownload(); } catch (e) { results.download = 0; }
-        try { results.upload = await measureUpload(); } catch (e) { results.upload = 0; }
-
+        try { const pingData = await measurePing(); results.ping = pingData.ping.toFixed(1); results.jitter = pingData.jitter.toFixed(1); document.getElementById('pingText').textContent = results.ping + ' ms'; document.getElementById('pingProgress').style.width = '100%'; updateGauge(pingData.ping, 200, 'Ping zakończony'); } catch(e){ results.ping = '--'; results.jitter = '--'; }
+        try { results.download = await measureDownload(); } catch(e){ results.download = 0; }
+        try { results.upload = await measureUpload(); } catch(e){ results.upload = 0; }
         updateGauge(results.download || 0, 1000, 'Test ukończony!');
         document.getElementById('dlResult').textContent = (results.download || 0).toFixed(2);
         document.getElementById('ulResult').textContent = (results.upload || 0).toFixed(2);
         document.getElementById('pingResult').textContent = (results.ping || '--') + ' ms';
         document.getElementById('jitterResult').textContent = (results.jitter || '--') + ' ms';
         document.getElementById('resultsGrid').style.display = 'grid';
-
         if (results.download || results.upload) {
             document.getElementById('chartContainer').style.display = 'block';
             const ctx = document.getElementById('speedChart').getContext('2d');
             if (speedChart) speedChart.destroy();
-            speedChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Pobieranie', 'Wysyłanie', 'Ping (÷10)', 'Stabilność (÷10)'],
-                    datasets: [{
-                        data: [results.download||0, results.upload||0, (parseFloat(results.ping)||0)/10, (parseFloat(results.jitter)||0)/10],
-                        backgroundColor: ['rgba(99,102,241,0.8)','rgba(139,92,246,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)'],
-                        borderColor: ['rgba(99,102,241,1)','rgba(139,92,246,1)','rgba(16,185,129,1)','rgba(245,158,11,1)'],
-                        borderWidth: 2, borderRadius: 8
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
+            speedChart = new Chart(ctx, { type: 'bar', data: { labels: ['Pobieranie','Wysyłanie','Ping (÷10)','Stabilność (÷10)'], datasets: [{ data: [results.download||0, results.upload||0, (parseFloat(results.ping)||0)/10, (parseFloat(results.jitter)||0)/10], backgroundColor: ['rgba(99,102,241,0.8)','rgba(139,92,246,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)'], borderColor: ['rgba(99,102,241,1)','rgba(139,92,246,1)','rgba(16,185,129,1)','rgba(245,158,11,1)'], borderWidth: 2, borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
         }
-
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-redo"></i> Powtórz test';
         isTesting = false;
@@ -1867,21 +1841,11 @@
         { name: "Los Angeles", tz: "America/Los_Angeles" },
         { name: "Dubaj", tz: "Asia/Dubai" }
     ];
-
     function initTimezoneCards() { timezoneCards = [...defaultCards]; }
-
     function getAllTimezones() {
-        if (typeof Intl !== 'undefined' && Intl.supportedValuesOf) {
-            return Intl.supportedValuesOf('timeZone');
-        } else {
-            return [
-                "Europe/Warsaw", "Europe/London", "Europe/Paris", "Europe/Berlin", "America/New_York", "America/Los_Angeles",
-                "Asia/Tokyo", "Asia/Dubai", "Australia/Sydney", "Africa/Cairo", "Asia/Shanghai", "Asia/Kolkata",
-                "America/Sao_Paulo", "America/Toronto", "Pacific/Auckland", "UTC"
-            ];
-        }
+        if (typeof Intl !== 'undefined' && Intl.supportedValuesOf) return Intl.supportedValuesOf('timeZone');
+        else return [ "Europe/Warsaw", "Europe/London", "Europe/Paris", "Europe/Berlin", "America/New_York", "America/Los_Angeles", "Asia/Tokyo", "Asia/Dubai", "Australia/Sydney", "Africa/Cairo", "Asia/Shanghai", "Asia/Kolkata", "America/Sao_Paulo", "America/Toronto", "Pacific/Auckland", "UTC" ];
     }
-
     function getFormattedTimeInZone(timezone) {
         const now = new Date();
         const optionsTime = { timeZone: timezone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -1896,13 +1860,11 @@
         const offsetStr = `UTC${sign}${offsetHours.toString().padStart(2,'0')}:${offsetMins.toString().padStart(2,'0')}`;
         return { time: timeStr, date: dateStr, offset: offsetStr };
     }
-
     function getTimezoneOffsetMinutes(timeZone, date = new Date()) {
         const tzDate = new Date(date.toLocaleString('en-US', { timeZone }));
         const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
         return (tzDate.getTime() - utcDate.getTime()) / 60000;
     }
-
     function renderTimeCards() {
         const container = document.getElementById('worldClocksContainer');
         if (!container) return;
@@ -1911,13 +1873,7 @@
             const { time, date, offset } = getFormattedTimeInZone(card.tz);
             const cardDiv = document.createElement('div');
             cardDiv.className = 'time-card';
-            cardDiv.innerHTML = `
-                <div class="close-btn" data-index="${idx}">&times;</div>
-                <div class="city-name">${card.name} <span style="font-size:0.7rem;">(${card.tz.split('/').pop()})</span></div>
-                <div class="time-digits">${time}</div>
-                <div class="time-date">${date}</div>
-                <div class="utc-offset">${offset}</div>
-            `;
+            cardDiv.innerHTML = `<div class="close-btn" data-index="${idx}">&times;</div><div class="city-name">${card.name} <span style="font-size:0.7rem;">(${card.tz.split('/').pop()})</span></div><div class="time-digits">${time}</div><div class="time-date">${date}</div><div class="utc-offset">${offset}</div>`;
             container.appendChild(cardDiv);
         });
         document.querySelectorAll('.time-card .close-btn').forEach(btn => {
@@ -1933,7 +1889,6 @@
             });
         });
     }
-
     function updateTimeCardsContent() {
         const cards = document.querySelectorAll('.time-card');
         cards.forEach((card, idx) => {
@@ -1948,22 +1903,17 @@
             if (utcOffsetSpan) utcOffsetSpan.textContent = offset;
         });
     }
-
     function addCustomTimezoneCard() {
         const select = document.getElementById('customTimezoneSelect');
         const selectedTZ = select.value;
         if (!selectedTZ) return;
         const tzName = selectedTZ.split('/').pop().replace(/_/g, ' ');
-        if (timezoneCards.some(card => card.tz === selectedTZ)) {
-            alert('Ta strefa jest już wyświetlana.');
-            return;
-        }
+        if (timezoneCards.some(card => card.tz === selectedTZ)) { alert('Ta strefa jest już wyświetlana.'); return; }
         timezoneCards.push({ name: tzName, tz: selectedTZ });
         renderTimeCards();
         populateTimezoneSelects();
         updateTimeDifferences();
     }
-
     function populateTimezoneSelects() {
         const allTZs = getAllTimezones();
         const selects = ['customTimezoneSelect', 'convertFromTZ', 'convertToTZ', 'differenceBaseTZ'];
@@ -1972,12 +1922,7 @@
             if (!selectEl) return;
             const currentVal = selectEl.value;
             selectEl.innerHTML = '';
-            allTZs.forEach(tz => {
-                const option = document.createElement('option');
-                option.value = tz;
-                option.textContent = tz;
-                selectEl.appendChild(option);
-            });
+            allTZs.forEach(tz => { const option = document.createElement('option'); option.value = tz; option.textContent = tz; selectEl.appendChild(option); });
             if (currentVal && allTZs.includes(currentVal)) selectEl.value = currentVal;
             else if (id === 'convertFromTZ') selectEl.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
             else if (id === 'convertToTZ') selectEl.value = 'Europe/Warsaw';
@@ -1985,7 +1930,6 @@
             else if (id === 'customTimezoneSelect') selectEl.value = 'Europe/London';
         });
     }
-
     function convertTimeBetweenZones() {
         const timeInput = document.getElementById('convertTimeInput').value;
         const fromTZ = document.getElementById('convertFromTZ').value;
@@ -1999,12 +1943,9 @@
         const convertedDate = new Date(timestamp);
         const optionsTime = { timeZone: toTZ, hour: '2-digit', minute: '2-digit', hour12: false };
         const optionsDate = { timeZone: toTZ, year: 'numeric', month: '2-digit', day: '2-digit' };
-        const convertedTime = new Intl.DateTimeFormat('pl-PL', optionsTime).format(convertedDate);
-        const convertedDateStr = new Intl.DateTimeFormat('pl-PL', optionsDate).format(convertedDate);
-        document.getElementById('convertedTimeDisplay').textContent = convertedTime;
-        document.getElementById('convertedDateHint').textContent = `(data: ${convertedDateStr})`;
+        document.getElementById('convertedTimeDisplay').textContent = new Intl.DateTimeFormat('pl-PL', optionsTime).format(convertedDate);
+        document.getElementById('convertedDateHint').textContent = `(data: ${new Intl.DateTimeFormat('pl-PL', optionsDate).format(convertedDate)})`;
     }
-
     function updateTimeDifferences() {
         const baseTZ = document.getElementById('differenceBaseTZ').value;
         if (!baseTZ) return;
@@ -2019,359 +1960,247 @@
             const diffHours = diffMinutes / 60;
             const diffStr = diffHours === 0 ? '0h' : (diffHours > 0 ? `+${diffHours.toFixed(1)}h` : `${diffHours.toFixed(1)}h`);
             const { time, date } = getFormattedTimeInZone(card.tz);
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td>
-                    <td>${time}<br><span style="font-size:0.7rem;">${date}</span></td>
-                    <td>${diffStr}</td>
-                </tr>
-            `;
+            tbody.innerHTML += `<tr><td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td><td>${time}<br><span style="font-size:0.7rem;">${date}</span></td><td>${diffStr}</td></tr>`;
         });
-        tbody.innerHTML += `
-            <tr style="background:rgba(99,102,241,0.2);">
-                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></span></div>
-                <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
-                <td>0h</span></div>
-            </td>
-        `;
+        tbody.innerHTML += `<tr style="background:rgba(99,102,241,0.2);"><td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td><td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td><td>0h</td></tr>`;
     }
-
     function refreshAllTimes() {
         updateTimeCardsContent();
-        if (document.getElementById('differenceBaseTZ') && document.getElementById('differenceBaseTZ').value) {
-            updateTimeDifferences();
-        }
+        if (document.getElementById('differenceBaseTZ') && document.getElementById('differenceBaseTZ').value) updateTimeDifferences();
     }
-
     let timeRefreshInterval = null;
     function startTimeAutoRefresh() {
         if (timeRefreshInterval) clearInterval(timeRefreshInterval);
-        timeRefreshInterval = setInterval(() => {
-            const timeTab = document.getElementById('time-tab');
-            if (timeTab && timeTab.classList.contains('active')) {
-                refreshAllTimes();
-            }
-        }, 1000);
+        timeRefreshInterval = setInterval(() => { const timeTab = document.getElementById('time-tab'); if (timeTab && timeTab.classList.contains('active')) refreshAllTimes(); }, 1000);
     }
 
-    // ======================== NOWY MODUŁ HOROSKOP (lokalny, losowy, profesjonalny) ========================
-    // Baza horoskopów dla każdego znaku – każda sekcja ma wiele wariantów
-    const horoscopeData = {
-        baran: {
-            desc: "Płoniesz energią i odwagą. Twoja siła przebicia może dziś zdziałać cuda, ale pamiętaj – impet to nie wszystko.",
-            love: [
-                "Miłość potrzebuje dziś Twojej łagodności. Zamiast dominować, posłuchaj. Zaskocz partnera czułością – odwdzięczy się stokrotnie.",
-                "Bądź otwarty na nowe znajomości. Ktoś niespodziewany może pojawić się w Twoim życiu.",
-                "Romantyczny gest z Twojej strony zostanie dziś doceniony. Nie bój się okazywać uczuć."
-            ],
-            career: [
-                "Profesjonalnie – czas na przełom! Nie bój się podejmować ryzyka. Twoja intuicja jest wyjątkowo silna.",
-                "Nowy projekt może wydawać się wyzwaniem, ale masz wszystko, by go ukończyć. Działaj krok po kroku.",
-                "Twoja asertywność zostanie dziś nagrodzona. Wyraź swoje zdanie na ważnym spotkaniu."
-            ],
-            health: [
-                "Dużo adrenaliny – zadbaj o regenerację. Krótka medytacja lub spacer będą lepsze niż kolejny napój energetyczny.",
-                "Pamiętaj o nawodnieniu i regularnych posiłkach. Twoje ciało potrzebuje równowagi.",
-                "Aktywność fizyczna pomoże rozładować napięcie. Spróbuj jogi lub biegania."
-            ],
-            advice: [
-                "Zrób jeden krok w stronę celu, który odkładasz od miesięcy. Dziś masz sprzyjające fale.",
-                "Nie porównuj się do innych – każdy ma swoją ścieżkę. Skup się na swoich postępach.",
-                "Uwierz w siebie bardziej. Jesteś silniejszy, niż myślisz."
-            ],
-            quote: "Odwaga nie polega na braku strachu, ale na działaniu mimo niego.",
-            strength: "Determinacja, odwaga, naturalny przywódca"
+    // ======================== COOKIE CLICKER ========================
+    // Dane gry
+    let gameState = {
+        cookies: 0,
+        totalCookies: 0,
+        clickPower: 1,
+        buildings: {
+            cursor: { owned: 0, baseCost: 15, baseCPS: 0.1 },
+            grandma: { owned: 0, baseCost: 100, baseCPS: 1 },
+            farm: { owned: 0, baseCost: 1100, baseCPS: 8 },
+            mine: { owned: 0, baseCost: 12000, baseCPS: 47 },
+            factory: { owned: 0, baseCost: 130000, baseCPS: 260 },
+            bank: { owned: 0, baseCost: 1400000, baseCPS: 1400 },
+            temple: { owned: 0, baseCost: 20000000, baseCPS: 7800 },
+            wizard: { owned: 0, baseCost: 330000000, baseCPS: 44000 },
+            timeMachine: { owned: 0, baseCost: 5100000000, baseCPS: 260000 }
         },
-        byk: {
-            desc: "Jesteś jak skała – stabilny, wytrwały, ale dziś wszechświat prosi Cię o odrobinę giętkości.",
-            love: ["Relacje wymagają świeżości. Zaskocz ukochaną osobę nieoczekiwanym gestem – nawet małym.",
-                   "Czas na szczerą rozmowę. Powiedz, co czujesz, a unikniesz nieporozumień.",
-                   "Małe niespodzianki budują wielkie uczucia. Podaruj coś symbolicznego."],
-            career: ["Praca przynosi owoce cierpliwości. Możesz liczyć na docenienie. Nie spiesz się – twoja metoda działa.",
-                     "Zwróć uwagę na szczegóły – tam czeka sukces. Powoli, ale konsekwentnie.",
-                     "Współpraca z innymi przyniesie lepsze efekty niż działanie w pojedynkę."],
-            health: ["Uważaj na przeciążenie szyi i karku. Ciepłe okłady i joga pomogą.",
-                     "Zadbaj o jakość snu – ma to kluczowe znaczenie dla Twojej odporności.",
-                     "Dieta bogata w warzywa i owoce doda Ci energii."],
-            advice: ["Pozwól sobie na chwilę przyjemności bez wyrzutów sumienia. Zasługujesz na odpoczynek.",
-                     "Zaufaj swojej intuicji w sprawach finansowych – nie daj się ponieść emocjom.",
-                     "Dziś lepiej słuchać niż mówić. Możesz usłyszeć coś ważnego."],
-            quote: "Prawdziwa siła to umiejętność cieszenia się chwilą bez ciągłego działania.",
-            strength: "Cierpliwość, lojalność, zmysł praktyczny"
-        },
-        bliznieta: {
-            desc: "Twój umysł pracuje dziś na najwyższych obrotach. Uważaj, by nie rozproszyć się w stu kierunkach.",
-            love: ["Twoja elokwencja oczaruje każdego, ale nie graj z uczuciami. Szczerość otworzy drzwi do głębszej więzi.",
-                   "Randka w nietypowym miejscu? Dziś masz ku temu okazję.",
-                   "Zadaj pytanie, które od dawna chodzi Ci po głowie – odpowiedź może Cię zaskoczyć."],
-            career: ["Genialne pomysły i łatwość komunikacji – idealny dzień na negocjacje i prezentacje.",
-                     "Nie bój się dzielić swoimi wizjami. Ktoś ważny może Cię usłyszeć.",
-                     "Twórcze pisanie lub praca z danymi – to Twój czas."],
-            health: ["Stres dla Ciebie to codzienność, ale dziś zwolnij. Głęboki oddech i chwila ciszy.",
-                     "Przerwy w pracy są kluczowe. Wstań od biurka i rozciągnij się.",
-                     "Medytacja wyciszy gonitwę myśli. Spróbuj."],
-            advice: ["Zapisz jedno ważne postanowienie i zrealizuj je – nawet małymi krokami.",
-                     "Porzuć perfekcjonizm w drobiazgach – to tylko blokuje Twoją kreatywność.",
-                     "Zadzwoń do kogoś, z kim dawno nie rozmawiałeś."],
-            quote: "Mnogość ścieżek nie świadczy o wartości celu, a o sile wyboru.",
-            strength: "Kreatywność, inteligencja, adaptacyjność"
-        },
-        rak: {
-            desc: "Twoja wrażliwość to dar, ale też wyzwanie. Nie pozwól, by przeszłość przyćmiła dzisiejsze radości.",
-            love: ["Rodzinne ciepło i troska są dziś Twoją największą bronią. Otocz bliskich opieką.",
-                   "Wybacz dawny uraz – przyniesie Ci to ulgę.",
-                   "Kino lub wspólne gotowanie – prosty sposób na zbliżenie."],
-            career: ["Zadania wymagające empatii i wyczucia – to Twoja nisza. Unikaj konfliktów.",
-                     "Twoja intuicja w sprawach biznesowych może dziś zaowocować.",
-                     "Nie bój się prosić o pomoc. Współpraca przyniesie korzyści."],
-            health: ["Dbaj o swój żołądek i emocje. Łagodne ćwiczenia i gotowanie potrafią zdziałać cuda.",
-                     "Więcej czasu na relaks. Gorąca kąpiel z solami – polecam.",
-                     "Unikaj toksycznych ludzi, którzy wysysają Twoją energię."],
-            advice: ["Codziennie znajdź 10 minut tylko dla siebie, by naładować akumulatory.",
-                     "Postaw granice – nie musisz wszystkim dogadzać.",
-                     "Zrób coś dobrego dla siebie – nowa książka lub ulubiona czekolada."],
-            quote: "Kto pielęgnuje swoje wnętrze, ten promieniuje na zewnątrz.",
-            strength: "Empatia, intuicja, oddanie"
-        },
-        lew: {
-            desc: "Jesteś w centrum uwagi. Otoczenie potrzebuje Twojego blasku – dziel się nim hojnie.",
-            love: ["Bądź hojny w komplementach, ale nie oczekuj natychmiastowej nagrody. Prawdziwa miłość nie jest transakcją.",
-                   "Wspólne wyjście do teatru lub koncertu rozbudzi uczucia.",
-                   "Pokaż swoje słabsze strony – to buduje zaufanie."],
-            career: ["Twoja charyzma może dziś przesunąć góry. Lideruj, ale słuchaj też innych.",
-                     "Rozpocznij coś, co od dawna odkładasz – spotkanie, projekt, szkolenie.",
-                     "Bądź dumny ze swoich osiągnięć. Docenisz to."],
-            health: ["Serce – w przenośni i dosłownie – potrzebuje umiaru. Unikaj nadmiaru używek.",
-                     "Ruch na świeżym powietrzu poprawi Ci nastrój i krążenie.",
-                     "Uważaj na przepracowanie – ambicja nie może kosztować zdrowia."],
-            advice: ["Zrób coś bezinteresownego dla kogoś, kto nie może się odwdzięczyć.",
-                     "Uśmiechaj się częściej – to Twoja supermoc.",
-                     "Zainwestuj w swój rozwój – kurs lub nowa pasja."],
-            quote: "Nie liczy się aplauz, lecz wpływ, jaki masz na innych, gdy schodzisz ze sceny.",
-            strength: "Charyzma, odwaga, hojność"
-        },
-        panna: {
-            desc: "Perfekcjonizm służy Ci, ale czasem bywa pułapką. Dziś doceniaj małe sukcesy.",
-            love: ["Analityczny umysł nie zawsze sprawdza się w miłości. Zaufaj sercu, a nie checklistom.",
-                   "Małe niespodzianki zaskoczą partnera. Uwierz, że nie trzeba idealnie.",
-                   "Porozmawiaj o swoich oczekiwaniach – ale zostaw miejsce na spontaniczność."],
-            career: ["Szczegóły są Twoją mocną stroną. Lekceważenie ich przez innych da Ci przewagę.",
-                     "Twój porządek i organizacja zostaną dziś docenione.",
-                     "Nie bój się delegować zadań – nie musisz wszystkiego robić sam."],
-            health: ["Jelita i układ trawienny – postaw na lekkostrawne posiłki i probiotyki.",
-                     "Uważaj na stres – może odbić się na żołądku. Techniki relaksacyjne pomogą.",
-                     "Zadbaj o regularne posiłki i odpowiednią ilość wody."],
-            advice: ["Pozwól sobie na niedoskonałość. Świat się nie zawali, a Ty zyskasz spokój.",
-                     "Zrób listę rzeczy, które Cię cieszą, i zrealizuj jedną z nich.",
-                     "Przestań się nadmiernie kontrolować – życie jest bardziej kolorowe."],
-            quote: "Doskonałość jest kierunkiem, nie celem.",
-            strength: "Analityczność, skromność, systematyczność"
-        },
-        waga: {
-            desc: "Harmonia to Twoje drugie imię. Dziś jednak musisz opowiedzieć się po którejś stronie.",
-            love: ["Dyplomacja pomoże rozładować napięcie. Szukaj kompromisu, ale nie za wszelką cenę.",
-                   "Zaplanuj wspólną podróż – nawet wirtualną.",
-                   "Słowa mają moc. Powiedz to, co naprawdę czujesz."],
-            career: ["Współpraca i partnerstwo przyniosą sukces. Wspólny projekt wypali znakomicie.",
-                     "Twoje poczucie estetyki może być dziś atutem.",
-                     "Mediacja w trudnym sporze – to Twoja rola."],
-            health: ["Równowaga hormonalna i nerki – pij więcej wody i wyśpij się.",
-                     "Częstsze przerwy na rozciąganie – pomogą zachować równowagę.",
-                     "Unikaj używek. Postaw na ziołowe herbaty."],
-            advice: ["Zadaj sobie pytanie, czego tak naprawdę chcesz, a nie czego oczekują inni.",
-                     "Wybierz jedną rzecz, którą zmienisz, i działaj.",
-                     "Nie odkładaj trudnej rozmowy na później – im szybciej, tym lepiej."],
-            quote: "Piękno istnieje w równowadze, ale także w odważnych decyzjach.",
-            strength: "Dyplomacja, wdzięk, sprawiedliwość"
-        },
-        skorpion: {
-            desc: "Twoja pasja i intensywność mogą dziś przytłoczyć innych. Używaj ich z rozwagą.",
-            love: ["Zazdrość czy podejrzliwość – odpuść. Głębokie uczucie nie boi się pytań, ale potrzebuje zaufania.",
-                   "Namiętność może osiągnąć dziś swój szczyt. Ciesz się chwilą.",
-                   "Zaskocz partnera tajemniczym wyznaniem."],
-            career: ["Tajemnice i transformacja – doskonały dzień na restrukturyzację lub nowy start.",
-                     "Twoja determinacja sprawi, że pokonasz przeszkody.",
-                     "Inwestycje? Dziś warto analizować, ale nie ryzykować."],
-            health: ["Układ moczowo-płciowy i hormony – zadbaj o relaks i unikaj toksyn.",
-                     "Głębokie oddychanie pomoże wyciszyć skrajne emocje.",
-                     "Uważaj na infekcje – wzmocnij odporność."],
-            advice: ["Pozbądź się jednego balastu emocjonalnego, który ciągnie Cię w dół.",
-                     "Bądź cierpliwy – nie wszystko musi dziać się natychmiast.",
-                     "Zaufaj swojemu instynktowi – on rzadko Cię zawodzi."],
-            quote: "Największą siłą nie jest władza nad innymi, lecz kontrola nad własnymi demonami.",
-            strength: "Determinacja, intuicja, odporność psychiczna"
-        },
-        strzelec: {
-            desc: "Niespokojna natura ciągnie Cię w świat. Zaplanuj podróż – nawet w myślach.",
-            love: ["Wolność potrzebna Ci jak powietrze. Powiedz o tym partnerowi – unikniesz nieporozumień.",
-                   "Podróż z ukochaną osobą wzmocni Waszą więź.",
-                   "Nie bój się eksperymentować w miłości – monotonia to Twój wróg."],
-            career: ["Szkolenia, delegacje, kontakty z zagranicą – teraz lub nigdy. Ruszaj śmiało.",
-                     "Twój entuzjazm udzieli się innym. Bądź motorem napędowym zespołu.",
-                     "Nowe wyzwanie zawodowe – podnieś rękawicę."],
-            health: ["Wątroba i nogi – ruch na świeżym powietrzu będzie najlepszym lekarstwem.",
-                     "Unikaj przesadnej ilości kofeiny i alkoholu.",
-                     "Długi spacer po lesie lub górach – idealny pomysł na dziś."],
-            advice: ["Zrób listę 5 rzeczy, które chciałbyś przeżyć, i zacznij realizować pierwszą.",
-                     "Nie bój się porażki – to tylko kolejna lekcja.",
-                     "Uśmiech i optymizm przyciągną pozytywne zdarzenia."],
-            quote: "Optymista widzi wiatr, pesymista burzę, ale tylko żeglarz podnosi żagle.",
-            strength: "Optymizm, ciekawość świata, szczerość"
-        },
-        koziorozec: {
-            desc: "Ambicja pcha Cię do przodu, ale dziś odpoczynek jest ważniejszy niż kolejny sukces.",
-            love: ["Stabilność i lojalność – to cenisz. Pokaż partnerowi, że możesz być też spontaniczny.",
-                   "Wspólne planowanie przyszłości – dobry moment na rozmowę o wspólnych celach.",
-                   "Zrób coś swobodnego, bez planu."],
-            career: ["Długoterminowe cele są w zasięgu ręki. Cierpliwość popłaca, miej plan.",
-                     "Docenisz dziś wartość doświadczonego mentora.",
-                     "Uporządkuj dokumenty i zrób porządek w obowiązkach – odciąży Cię."],
-            health: ["Kości i stawy – nie przeciążaj się. Suplementacja magnezu pomoże.",
-                     "Znajdź czas na relaksujący masaż lub kąpiel.",
-                     "Uważaj na przeciążenie kręgosłupa – ergonomia przy biurku."],
-            advice: ["Odmów jednej rzeczy, na którą nie masz ochoty – naucz się mówić 'nie'.",
-                     "Postaw na jakość, nie ilość – w relacjach i pracy.",
-                     "Dziś bardziej słuchaj, niż mów. Wnioski będą cenne."],
-            quote: "Najtrwalsze budowle wznosi się dzień po dniu, a nie w jednym porywie.",
-            strength: "Odpowiedzialność, samodyscyplina, wytrwałość"
-        },
-        wodnik: {
-            desc: "Jesteś wizjonerem. Dziś wszyscy patrzą na Ciebie przez pryzmat oryginalności.",
-            love: ["Nie bój się zaskakiwać – oryginalność jest Twoją supermocą. Pokaż uczucia w nietypowy sposób.",
-                   "Wolność w związku – pozwól partnerowi oddychać.",
-                   "Zaskakujący gest, np. list napisany ręcznie, może wiele zmienić."],
-            career: ["Pomysły, które wydają się nierealne, mogą właśnie jutro zmienić świat. Dziel się nimi.",
-                     "Twoja niezależność zostanie dziś doceniona. Przedstaw własną ścieżkę.",
-                     "Kreatywne rozwiązanie problemu – brylujesz."],
-            health: ["Krew, układ krążenia – nawadniaj się i ruszaj się regularnie.",
-                     "Nowe techniki relaksacyjne (jak biofeedback) mogą Cię zaciekawić.",
-                     "Unikaj używek – wpływają na ciśnienie."],
-            advice: ["Wyjdź ze swojej bańki informacyjnej. Porozmawiaj z kimś o całkowicie innych poglądach.",
-                     "Skorzystaj z mediów społecznościowych, żeby szerzyć dobro.",
-                     "Zacznij coś, czego nikt przed Tobą nie zrobił."],
-            quote: "To, co dziś szalone, jutro może być normą. Bądź na wyrost.",
-            strength: "Oryginalność, humanitaryzm, niezależność"
-        },
-        ryby: {
-            desc: "Twoja intuicja jest dziś na najwyższym poziomie. Ufaj wewnętrznemu głosowi.",
-            love: ["Marzycielska natura może odrealniać relacje. Partner potrzebuje widzieć Cię w realu – nie tylko w snach.",
-                   "Sztuka, muzyka, film – to świetny pomysł na randkę.",
-                   "Okaż wrażliwość, ale nie pozwól, by Tobą manipulowano."],
-            career: ["Sztuka, muzyka, pomoc innym – tutaj możesz zabłysnąć. Unikaj toksycznego otoczenia.",
-                     "Twoja empatia pomoże rozwiązać konflikt w pracy.",
-                     "Nie bój się prosić o podwyżkę lub awans – masz argumenty."],
-            health: ["Stopy i układ limfatyczny – odpoczynek w wodzie i ćwiczenia relaksacyjne.",
-                     "Sen i medytacja – klucz do równowagi.",
-                     "Unikaj przeglądania telefonu przed snem."],
-            advice: ["Poświęć wieczór na słuchanie swojej ulubionej muzyki i analizę swoich marzeń.",
-                     "Zaufaj swojej intuicji w sprawach codziennych.",
-                     "Wybacz sobie jeden błąd – nikt nie jest doskonały."],
-            quote: "Wyobraźnia to skrzydła, ale stąpaj też twardo po ziemi.",
-            strength: "Empatia, kreatywność, duchowość"
+        upgrades: {
+            clickPower: { bought: false, cost: 100, desc: "Podwaja siłę kliknięcia (+1 cookie za klik)" },
+            grandmaEfficiency: { bought: false, cost: 1000, desc: "Babcie pracują dwa razy wydajniej" },
+            factoryBoost: { bought: false, cost: 50000, desc: "Fabryki i banki +50% CPS" },
+            goldenCookie: { bought: false, cost: 1000000, desc: "Złote ciastko – podwaja CPS na stałe" }
         }
     };
 
-    // Losowe cytaty (dla urozmaicenia, jeśli zechcemy dokleić)
-    const extraQuotes = [
-        "Nie czekaj na idealny moment – stwórz go sam.",
-        "Twój jedyny limit to Twoja wyobraźnia. Działaj!",
-        "Małe kroki każdego dnia prowadzą do wielkich zmian.",
-        "Bądź dla siebie tak wymagający, jak tylko potrafisz, ale też tak wyrozumiały, jak na to zasługujesz."
-    ];
+    // Definicje wyświetlania
+    const buildingNames = {
+        cursor: "Kursor", grandma: "Babcia", farm: "Farma", mine: "Kopalnia", factory: "Fabryka",
+        bank: "Bank", temple: "Świątynia", wizard: "Magiczna Wieża", timeMachine: "Maszyna Czasu"
+    };
+    const upgradeNames = {
+        clickPower: "Mocniejsze kliknięcie",
+        grandmaEfficiency: "Babcie turbo",
+        factoryBoost: "Efektywność fabryk",
+        goldenCookie: "Złote ciastko"
+    };
 
-    function generateHoroscope() {
-        const sign = document.getElementById('zodiacSign').value;
-        const data = horoscopeData[sign];
-        if (!data) return;
-
-        // Losowanie wariantów dla każdej sekcji
-        const loveText = data.love[Math.floor(Math.random() * data.love.length)];
-        const careerText = data.career[Math.floor(Math.random() * data.career.length)];
-        const healthText = data.health[Math.floor(Math.random() * data.health.length)];
-        const adviceText = data.advice[Math.floor(Math.random() * data.advice.length)];
-        // Losowanie cytatu (zawsze bierzemy główny, ale można dodać losowy z extra)
-        const quoteText = data.quote;
-        // dodatkowy cytat motywacyjny (można dołożyć na końcu)
-        const extraMsg = extraQuotes[Math.floor(Math.random() * extraQuotes.length)];
-
-        const signNamesPL = {
-            baran: "♈ Baran", byk: "♉ Byk", bliznieta: "♊ Bliźnięta",
-            rak: "♋ Rak", lew: "♌ Lew", panna: "♍ Panna",
-            waga: "♎ Waga", skorpion: "♏ Skorpion", strzelec: "♐ Strzelec",
-            koziorozec: "♑ Koziorożec", wodnik: "♒ Wodnik", ryby: "♓ Ryby"
-        };
-        const signName = signNamesPL[sign] || sign;
-
-        const html = `
-            <div class="horoscope-section">
-                <h4><i class="fas fa-user-astronaut"></i> Twój znak: ${signName}</h4>
-                <p>${data.desc}</p>
-            </div>
-            <div class="horoscope-section">
-                <h4><i class="fas fa-heart"></i> Miłość</h4>
-                <p>${loveText}</p>
-            </div>
-            <div class="horoscope-section">
-                <h4><i class="fas fa-briefcase"></i> Kariera i finanse</h4>
-                <p>${careerText}</p>
-            </div>
-            <div class="horoscope-section">
-                <h4><i class="fas fa-leaf"></i> Zdrowie i samopoczucie</h4>
-                <p>${healthText}</p>
-            </div>
-            <div class="horoscope-section">
-                <h4><i class="fas fa-gem"></i> Twoje mocne strony</h4>
-                <p>${data.strength}</p>
-            </div>
-            <div class="horoscope-section">
-                <h4><i class="fas fa-lightbulb"></i> Rada na dziś</h4>
-                <p>${adviceText}</p>
-            </div>
-            <div class="quote">
-                <i class="fas fa-quote-left"></i> ${quoteText} <i class="fas fa-quote-right"></i>
-                <div style="margin-top: 0.5rem; font-size: 0.9rem;">✨ ${extraMsg}</div>
-            </div>
-            <div style="margin-top: 0.8rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
-                🌟 Horoskop wygenerowany na podstawie astrologii motywacyjnej – za każdym razem inny.
-            </div>
-        `;
-        const resultDiv = document.getElementById('horoscopeResult');
-        resultDiv.style.display = 'block';
-        resultDiv.innerHTML = html;
-        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    function formatNumber(num) {
+        if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+        if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+        if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+        if (num >= 1e3) return (num / 1e3).toFixed(2) + 'k';
+        return Math.floor(num).toString();
     }
 
-    // ======================== BANER ZGÓD COOKIE ========================
-    function setCookieConsent(accepted) {
-        if (accepted) {
-            gtag('consent', 'update', {
-                'ad_storage': 'granted',
-                'analytics_storage': 'granted',
-                'functionality_storage': 'granted',
-                'personalization_storage': 'granted'
-            });
-            localStorage.setItem('cookieConsent', 'full');
-        } else {
-            gtag('consent', 'update', {
-                'ad_storage': 'denied',
-                'analytics_storage': 'denied',
-                'functionality_storage': 'denied',
-                'personalization_storage': 'denied'
-            });
-            localStorage.setItem('cookieConsent', 'necessary');
+    function calculateCPS() {
+        let cps = 0;
+        for (let b in gameState.buildings) {
+            let building = gameState.buildings[b];
+            let multiplier = 1;
+            if (b === 'grandma' && gameState.upgrades.grandmaEfficiency.bought) multiplier *= 2;
+            if ((b === 'factory' || b === 'bank') && gameState.upgrades.factoryBoost.bought) multiplier *= 1.5;
+            cps += building.owned * building.baseCPS * multiplier;
         }
-        document.getElementById('cookieConsent').style.display = 'none';
+        if (gameState.upgrades.goldenCookie.bought) cps *= 2;
+        return cps;
     }
 
-    const savedConsent = localStorage.getItem('cookieConsent');
-    if (!savedConsent) {
-        document.getElementById('cookieConsent').style.display = 'flex';
-    } else {
-        document.getElementById('cookieConsent').style.display = 'none';
+    function getBuildingCost(buildingKey) {
+        let building = gameState.buildings[buildingKey];
+        return Math.floor(building.baseCost * Math.pow(1.15, building.owned));
     }
 
-    document.getElementById('acceptCookies').onclick = () => setCookieConsent(true);
-    document.getElementById('rejectCookies').onclick = () => setCookieConsent(false);
+    function buyBuilding(buildingKey) {
+        let building = gameState.buildings[buildingKey];
+        let cost = getBuildingCost(buildingKey);
+        if (gameState.cookies >= cost) {
+            gameState.cookies -= cost;
+            building.owned++;
+            saveGame();
+            renderGame();
+        }
+    }
+
+    function buyUpgrade(upgradeKey) {
+        let upgrade = gameState.upgrades[upgradeKey];
+        if (!upgrade.bought && gameState.cookies >= upgrade.cost) {
+            gameState.cookies -= upgrade.cost;
+            upgrade.bought = true;
+            if (upgradeKey === 'clickPower') gameState.clickPower *= 2;
+            saveGame();
+            renderGame();
+        }
+    }
+
+    function clickCookie() {
+        gameState.cookies += gameState.clickPower;
+        gameState.totalCookies += gameState.clickPower;
+        saveGame();
+        renderGame();
+        // animacja
+        const cookie = document.getElementById('cookieBtn');
+        cookie.style.transform = 'scale(0.95)';
+        setTimeout(() => { cookie.style.transform = ''; }, 100);
+    }
+
+    function resetGame() {
+        if (confirm('Czy na pewno chcesz zresetować grę? Wszystkie postępy zostaną utracone!')) {
+            gameState = {
+                cookies: 0,
+                totalCookies: 0,
+                clickPower: 1,
+                buildings: {
+                    cursor: { owned: 0, baseCost: 15, baseCPS: 0.1 },
+                    grandma: { owned: 0, baseCost: 100, baseCPS: 1 },
+                    farm: { owned: 0, baseCost: 1100, baseCPS: 8 },
+                    mine: { owned: 0, baseCost: 12000, baseCPS: 47 },
+                    factory: { owned: 0, baseCost: 130000, baseCPS: 260 },
+                    bank: { owned: 0, baseCost: 1400000, baseCPS: 1400 },
+                    temple: { owned: 0, baseCost: 20000000, baseCPS: 7800 },
+                    wizard: { owned: 0, baseCost: 330000000, baseCPS: 44000 },
+                    timeMachine: { owned: 0, baseCost: 5100000000, baseCPS: 260000 }
+                },
+                upgrades: {
+                    clickPower: { bought: false, cost: 100, desc: "Podwaja siłę kliknięcia (+1 cookie za klik)" },
+                    grandmaEfficiency: { bought: false, cost: 1000, desc: "Babcie pracują dwa razy wydajniej" },
+                    factoryBoost: { bought: false, cost: 50000, desc: "Fabryki i banki +50% CPS" },
+                    goldenCookie: { bought: false, cost: 1000000, desc: "Złote ciastko – podwaja CPS na stałe" }
+                }
+            };
+            saveGame();
+            renderGame();
+        }
+    }
+
+    function saveGame() {
+        localStorage.setItem('cookieClickerSave', JSON.stringify({
+            cookies: gameState.cookies,
+            totalCookies: gameState.totalCookies,
+            clickPower: gameState.clickPower,
+            buildings: gameState.buildings,
+            upgrades: gameState.upgrades
+        }));
+    }
+
+    function loadGame() {
+        const saved = localStorage.getItem('cookieClickerSave');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                gameState.cookies = data.cookies || 0;
+                gameState.totalCookies = data.totalCookies || 0;
+                gameState.clickPower = data.clickPower || 1;
+                if (data.buildings) gameState.buildings = data.buildings;
+                if (data.upgrades) gameState.upgrades = data.upgrades;
+            } catch(e) { console.warn("Błąd wczytywania zapisu"); }
+        }
+        renderGame();
+    }
+
+    let productionInterval = null;
+    function startProduction() {
+        if (productionInterval) clearInterval(productionInterval);
+        productionInterval = setInterval(() => {
+            let cps = calculateCPS();
+            if (cps > 0) {
+                gameState.cookies += cps / 10; // co 0.1 sekundy
+                gameState.totalCookies += cps / 10;
+                saveGame();
+                renderGame();
+            }
+        }, 100);
+    }
+
+    function renderGame() {
+        document.getElementById('cookieCount').innerHTML = formatNumber(gameState.cookies);
+        document.getElementById('cpsValue').innerHTML = formatNumber(calculateCPS());
+        // budynki
+        const buildingsGrid = document.getElementById('buildingsGrid');
+        buildingsGrid.innerHTML = '';
+        for (let b in gameState.buildings) {
+            const building = gameState.buildings[b];
+            const cost = getBuildingCost(b);
+            const cpsContrib = building.owned * building.baseCPS;
+            let multiplier = 1;
+            if (b === 'grandma' && gameState.upgrades.grandmaEfficiency.bought) multiplier = 2;
+            if ((b === 'factory' || b === 'bank') && gameState.upgrades.factoryBoost.bought) multiplier = 1.5;
+            const totalCps = building.owned * building.baseCPS * multiplier;
+            const card = document.createElement('div');
+            card.className = 'building-card';
+            card.innerHTML = `
+                <div class="building-info">
+                    <div class="building-name">${buildingNames[b]}</div>
+                    <div class="building-desc">Produkcja: ${formatNumber(totalCps)} ciastek/sek</div>
+                    <div class="building-cost">Koszt: ${formatNumber(cost)}</div>
+                </div>
+                <div class="building-count">${building.owned}</div>
+                <button class="buy-btn" data-building="${b}" ${gameState.cookies < cost ? 'disabled' : ''}>Kup</button>
+            `;
+            buildingsGrid.appendChild(card);
+        }
+        // ulepszenia
+        const upgradesGrid = document.getElementById('upgradesGrid');
+        upgradesGrid.innerHTML = '';
+        for (let u in gameState.upgrades) {
+            const upgrade = gameState.upgrades[u];
+            const card = document.createElement('div');
+            card.className = 'upgrade-card';
+            card.innerHTML = `
+                <div class="upgrade-info">
+                    <div class="upgrade-name">${upgradeNames[u]}</div>
+                    <div class="upgrade-desc">${upgrade.desc}</div>
+                    <div class="building-cost">Koszt: ${formatNumber(upgrade.cost)}</div>
+                </div>
+                ${!upgrade.bought ? `<button class="buy-btn" data-upgrade="${u}" ${gameState.cookies < upgrade.cost ? 'disabled' : ''}>Kup</button>` : '<span style="color:var(--success);">✔ Zakupione</span>'}
+            `;
+            upgradesGrid.appendChild(card);
+        }
+        // eventy przycisków
+        document.querySelectorAll('[data-building]').forEach(btn => {
+            btn.removeEventListener('click', buildingHandler);
+            btn.addEventListener('click', buildingHandler);
+        });
+        document.querySelectorAll('[data-upgrade]').forEach(btn => {
+            btn.removeEventListener('click', upgradeHandler);
+            btn.addEventListener('click', upgradeHandler);
+        });
+    }
+
+    function buildingHandler(e) {
+        const buildingKey = e.currentTarget.getAttribute('data-building');
+        buyBuilding(buildingKey);
+    }
+    function upgradeHandler(e) {
+        const upgradeKey = e.currentTarget.getAttribute('data-upgrade');
+        buyUpgrade(upgradeKey);
+    }
 
     // ======================== INICJALIZACJA ========================
     fetchRates();
@@ -2383,14 +2212,33 @@
     startTimeAutoRefresh();
     const diffBaseSelect = document.getElementById('differenceBaseTZ');
     if (diffBaseSelect) diffBaseSelect.addEventListener('change', updateTimeDifferences);
-    setTimeout(() => {
-        if (diffBaseSelect && diffBaseSelect.value) updateTimeDifferences();
-    }, 500);
+    setTimeout(() => { if (diffBaseSelect && diffBaseSelect.value) updateTimeDifferences(); }, 500);
     clearProgrammer();
     switchSubTab('credit', null);
     
-    // Przypisanie przycisku horoskopu
-    document.getElementById('horoscopeBtn').addEventListener('click', generateHoroscope);
+    // Cookie Clicker init
+    document.getElementById('cookieBtn').addEventListener('click', clickCookie);
+    document.getElementById('resetGameBtn').addEventListener('click', resetGame);
+    loadGame();
+    startProduction();
+    renderGame();
+
+    // ======================== BANER ZGÓD COOKIE ========================
+    function setCookieConsent(accepted) {
+        if (accepted) {
+            gtag('consent', 'update', { 'ad_storage': 'granted', 'analytics_storage': 'granted', 'functionality_storage': 'granted', 'personalization_storage': 'granted' });
+            localStorage.setItem('cookieConsent', 'full');
+        } else {
+            gtag('consent', 'update', { 'ad_storage': 'denied', 'analytics_storage': 'denied', 'functionality_storage': 'denied', 'personalization_storage': 'denied' });
+            localStorage.setItem('cookieConsent', 'necessary');
+        }
+        document.getElementById('cookieConsent').style.display = 'none';
+    }
+    const savedConsent = localStorage.getItem('cookieConsent');
+    if (!savedConsent) document.getElementById('cookieConsent').style.display = 'flex';
+    else document.getElementById('cookieConsent').style.display = 'none';
+    document.getElementById('acceptCookies').onclick = () => setCookieConsent(true);
+    document.getElementById('rejectCookies').onclick = () => setCookieConsent(false);
 </script>
 </body>
 </html>
