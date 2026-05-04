@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MultiTool Pro – Waluty, Konwerter, Kalkulatory, Czas, IP, Szybkość + Cookie Clicker</title>
-    <meta name="description" content="Przeliczaj waluty, jednostki, sprawdź prędkość internetu, swoje IP, strefy czasowe, korzystaj z kalkulatorów finansowych i graj w Cookie Clicker – klasyczną grę idle.">
+    <meta name="description" content="Przeliczaj waluty, jednostki, sprawdź prędkość internetu, swoje IP, strefy czasowe, korzystaj z kalkulatorów finansowych i graj w klasyczne Cookie Clicker – z rozbudowanymi ulepszeniami.">
 
     <!-- Google Consent Mode - domyślnie brak zgód -->
     <script>
@@ -222,113 +222,305 @@
         .time-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
         .utc-offset { font-size: 0.75rem; background: rgba(0,0,0,0.4); display: inline-block; padding: 0.2rem 0.5rem; border-radius: 1rem; }
 
-        /* Cookie Clicker specific styles */
+        /* Cookie Clicker styles */
         .cookie-game {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-        .cookie-panel {
-            flex: 1.5;
-            min-width: 280px;
             text-align: center;
         }
-        .buildings-panel {
-            flex: 2;
-            min-width: 300px;
-        }
-        .cookie-img {
-            width: 200px;
-            height: 200px;
-            cursor: pointer;
-            transition: transform 0.1s ease;
-            background: radial-gradient(circle at 30% 30%, #f5d742, #c47e2e);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-            font-size: 6rem;
-        }
-        .cookie-img:active { transform: scale(0.96); }
         .cookie-stats {
-            margin: 1.5rem 0;
-            padding: 1rem;
-            background: rgba(0,0,0,0.4);
+            background: rgba(15,23,42,0.6);
             border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
         }
         .cookie-count {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
             background: linear-gradient(135deg, #fff, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .building-item {
+        .cookie {
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        .cookie:active {
+            transform: scale(0.95);
+        }
+        .buildings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .building-card {
             background: rgba(15,23,42,0.6);
             border: 1px solid var(--glass-border);
             border-radius: 1rem;
-            padding: 0.8rem;
-            margin-bottom: 0.7rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+            padding: 1rem;
+            transition: 0.2s;
         }
-        .building-info {
-            flex: 2;
+        .building-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
-        .building-name { font-weight: 700; }
-        .building-desc { font-size: 0.75rem; color: var(--text-muted); }
-        .building-cost, .building-cps { font-size: 0.85rem; }
-        .building-buy {
-            background: var(--primary);
-            border: none;
-            border-radius: 2rem;
-            padding: 0.4rem 1rem;
-            color: white;
-            cursor: pointer;
+        .building-name {
+            font-size: 1.2rem;
             font-weight: 600;
         }
-        .upgrade-item {
-            background: rgba(99,102,241,0.15);
-            border: 1px solid var(--glass-border);
-            border-radius: 0.8rem;
-            padding: 0.5rem 0.8rem;
-            margin-bottom: 0.5rem;
-            display: inline-block;
-            width: calc(50% - 0.5rem);
-            margin-right: 0.5rem;
-            cursor: pointer;
-            transition: 0.1s;
+        .building-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
-        .upgrade-item:hover { background: rgba(99,102,241,0.4); transform: translateY(-2px); }
-        .golden-cookie {
-            position: fixed;
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, gold, #b8860b);
-            border-radius: 50%;
+        .building-price {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+        .building-cps {
+            font-size: 0.9rem;
+            color: var(--success);
+        }
+        .upgrades-list {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .upgrade-btn {
+            background: rgba(99,102,241,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
             cursor: pointer;
-            z-index: 200;
-            animation: pulse 0.5s infinite alternate;
-            box-shadow: 0 0 20px gold;
+            transition: 0.2s;
         }
-        @keyframes pulse {
-            from { transform: scale(1); opacity: 0.9; }
-            to { transform: scale(1.1); opacity: 1; }
+        .upgrade-btn:hover:not(.disabled) {
+            background: var(--primary);
+            transform: translateY(-2px);
         }
+        .upgrade-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .prestige-btn {
+            margin-top: 1rem;
+        }
+
+        /* Calculator specific - improved layout */
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .calc-btn {
+            background: rgba(15,23,42,0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.75rem;
+            padding: 1rem 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .calc-btn:hover { background: var(--primary); transform: translateY(-2px); }
+        .calc-btn.op { background: rgba(99,102,241,0.3); color: #a5b4fc; }
+        .calc-btn.equal { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; grid-row: span 2; }
+        .calc-btn.clear { background: rgba(239,68,68,0.2); color: #f87171; }
+        .calc-btn.zero { grid-column: span 2; }
+        .calc-display {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: right;
+            font-size: 2rem;
+            font-family: monospace;
+            letter-spacing: 2px;
+            min-height: 90px;
+            word-wrap: break-word;
+            overflow-x: auto;
+        }
+        .prog-panel {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .prog-converter {
+            flex: 2;
+            min-width: 200px;
+        }
+        .prog-bitwise {
+            flex: 1;
+            min-width: 200px;
+        }
+        .bitwise-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Cookie consent banner */
+        .cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 1rem 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+        .cookie-consent p {
+            margin: 0;
+            flex: 2;
+            color: var(--text-muted);
+        }
+        .cookie-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .cookie-btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 0.85rem;
+        }
+        .cookie-accept {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+        .cookie-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+        }
+        .cookie-reject {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+        .cookie-reject:hover {
+            background: rgba(239,68,68,0.2);
+            color: #f87171;
+        }
+        
+        /* Poprawki dla mobilnych - WALUTY */
         @media (max-width: 768px) {
-            .cookie-game { flex-direction: column; }
-            .cookie-img { width: 150px; height: 150px; font-size: 4rem; }
-            .upgrade-item { width: 100%; margin-right: 0; }
-            .building-item { flex-direction: column; align-items: stretch; text-align: center; }
+            .tabs { gap: 0.2rem; }
+            .tab-btn { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
+            .calc-buttons { gap: 0.4rem; }
+            .calc-btn { padding: 0.6rem 0; font-size: 1rem; }
+            .cookie-consent { flex-direction: column; text-align: center; padding: 1rem; }
+            .currency-converter-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5rem !important;
+                align-items: center !important;
+            }
+            .currency-card {
+                width: 100%;
+                padding: 1rem !important;
+                margin: 0 !important;
+            }
+            .currency-input-row {
+                display: flex;
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+                width: 100%;
+            }
+            .currency-select {
+                width: 100% !important;
+                min-width: unset !important;
+            }
+            .currency-amount-input {
+                width: 100% !important;
+            }
+            .quick-buttons {
+                justify-content: center;
+                margin-bottom: 0.5rem;
+            }
+            .swap-button {
+                margin: 0 auto;
+                width: 56px !important;
+                height: 56px !important;
+                font-size: 1.3rem;
+            }
+            .table-wrapper {
+                font-size: 0.8rem;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .table-wrapper td, .table-wrapper th {
+                padding: 0.5rem;
+                white-space: nowrap;
+            }
+            .table-wrapper th:first-child, .table-wrapper td:first-child {
+                min-width: 120px;
+            }
+            .table-wrapper th:last-child, .table-wrapper td:last-child {
+                min-width: 100px;
+            }
+            .table-wrapper table {
+                min-width: 100%;
+                width: auto;
+            }
+            .converter-input-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .converter-value-input {
+                width: 100% !important;
+            }
+            .buildings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .currency-card {
+                padding: 0.75rem !important;
+            }
+            .quick-btn {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 0.6rem !important;
+                margin: 0.2rem;
+            }
+            .swap-button {
+                width: 48px !important;
+                height: 48px !important;
+                font-size: 1.2rem;
+            }
+            .modern-input, .modern-select {
+                font-size: 0.85rem;
+                padding: 0.6rem 0.75rem;
+            }
+            input[type="range"] {
+                height: 24px !important;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                height: 24px !important;
+                width: 24px !important;
+            }
         }
     </style>
 </head>
@@ -793,35 +985,37 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (nowa) ============ -->
+    <!-- ============ NOWA ZAKŁADKA COOKIE CLICKER ============ -->
     <div id="cookie-tab" class="tab-content">
-        <div class="glass-card">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker – klasyka idle</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj w ciastko, kupuj budynki i ulepszenia, zbieraj złote ciastka!</p>
-            <div class="cookie-game">
-                <div class="cookie-panel">
-                    <div class="cookie-img" id="cookieClicker">
-                        <i class="fas fa-cookie-bite"></i>
-                    </div>
-                    <div class="cookie-stats">
-                        <div>🍪 Ciasteczka: <span id="cookieCount" class="cookie-count">0</span></div>
-                        <div>⚡ Produkcja: <span id="cps">0</span> ciastek/sek</div>
-                        <div>✨ Bonus kliknięcia: <span id="clickMultiplier">1</span>x</div>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem;">
-                        <button class="btn btn-sm" id="saveGameBtn">💾 Zapisz</button>
-                        <button class="btn btn-sm" id="resetGameBtn">🔄 Reset (prestiż)</button>
-                        <button class="btn btn-sm" id="hardResetBtn">🗑️ Twardy reset</button>
-                    </div>
-                </div>
-                <div class="buildings-panel">
-                    <h3>Budynki</h3>
-                    <div id="buildingsList"></div>
-                    <h3 style="margin-top: 1.5rem;">Ulepszenia</h3>
-                    <div id="upgradesList" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
-                </div>
+        <div class="glass-card cookie-game">
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klasyczna gra idle. Klikaj w ciastko i rozwijaj swoją cukierkową imperię!</p>
+            
+            <div class="cookie-stats">
+                <div class="cookie-count" id="cookieDisplay">0</div>
+                <div>ciastek</div>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem;">🍪 na sekundę: <strong id="cpsDisplay">0.0</strong></div>
             </div>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">🍪 Gra zapisuje się automatycznie co 10 sekund i przy zmianie zakładki. Prestiż resetuje grę, dając trwały bonus (Heavenly Chips).</p>
+            
+            <div class="cookie" onclick="clickCookie()">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23D2A679' stroke='%238B5A2B' stroke-width='2'/%3E%3Ccircle cx='35' cy='35' r='5' fill='%234A2A1A'/%3E%3Ccircle cx='65' cy='45' r='4' fill='%234A2A1A'/%3E%3Ccircle cx='50' cy='70' r='6' fill='%234A2A1A'/%3E%3C/svg%3E" alt="Cookie" style="width: 100%; max-width: 180px; margin: 0 auto; display: block; cursor: pointer;">
+            </div>
+
+            <!-- Ulepszenia -->
+            <div style="margin-top: 1.5rem;">
+                <h3 class="section-title"><i class="fas fa-star"></i> Ulepszenia</h3>
+                <div class="upgrades-list" id="upgradesList"></div>
+            </div>
+
+            <!-- Budynki -->
+            <h3 class="section-title"><i class="fas fa-industry"></i> Budynki (automatyczna produkcja)</h3>
+            <div class="buildings-grid" id="buildingsContainer"></div>
+            
+            <!-- Przycisk resetu (prestige) -->
+            <div style="margin-top: 2rem; text-align: center;">
+                <button class="btn prestige-btn" onclick="resetGame()"><i class="fas fa-sync-alt"></i> Resetuj grę</button>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">Reset usuwa cały postęp i zaczyna od nowa.</p>
+            </div>
         </div>
     </div>
 </div>
@@ -862,10 +1056,6 @@
         }
         if (tab === 'time') {
             refreshAllTimes();
-        }
-        if (tab === 'cookie' && !window.cookieGameStarted) {
-            initCookieGame();
-            window.cookieGameStarted = true;
         }
     }
 
@@ -1892,10 +2082,10 @@
         });
         tbody.innerHTML += `
             <tr style="background:rgba(99,102,241,0.2);">
-                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td>
+                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></span></div>
                 <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
                 <td>0h</span></div>
-            </tr>
+            </td>
         `;
     }
 
@@ -1918,216 +2108,161 @@
     }
 
     // ======================== COOKIE CLICKER GAME ========================
-    let cookieCount = 0;
-    let cps = 0;
+    let cookies = 0;
+    let cookiesPerSecond = 0;
     let clickMultiplier = 1;
-    let buildings = [
-        { name: "Cursor", baseCost: 15, cost: 15, cps: 0.1, owned: 0, desc: "Automatycznie klika" },
-        { name: "Grandma", baseCost: 100, cost: 100, cps: 1, owned: 0, desc: "Piecze ciastka" },
-        { name: "Farm", baseCost: 1100, cost: 1100, cps: 8, owned: 0, desc: "Produkuje składniki" },
-        { name: "Mine", baseCost: 12000, cost: 12000, cps: 47, owned: 0, desc: "Wydobywa surowce" },
-        { name: "Factory", baseCost: 130000, cost: 130000, cps: 260, owned: 0, desc: "Masowa produkcja" },
-        { name: "Bank", baseCost: 1400000, cost: 1400000, cps: 1400, owned: 0, desc: "Generuje zyski" },
-        { name: "Temple", baseCost: 20000000, cost: 20000000, cps: 7800, owned: 0, desc: "Magiczne źródło" },
-        { name: "Wizard Tower", baseCost: 330000000, cost: 330000000, cps: 44000, owned: 0, desc: "Zaklęcia" },
-        { name: "Prism", baseCost: 5100000000, cost: 5100000000, cps: 260000, owned: 0, desc: "Światło w ciastka" }
-    ];
-    let upgrades = [
-        { id: "click2x", name: "Podwójne kliknięcie", cost: 100, bought: false, effect: () => { clickMultiplier = 2; }, desc: "Kliknięcie daje 2 ciastka" },
-        { id: "click3x", name: "Potrójne kliknięcie", cost: 1000, bought: false, effect: () => { clickMultiplier = 3; }, desc: "Kliknięcie daje 3 ciastka", requires: "click2x" },
-        { id: "cursorBoost", name: "Ulepszony kursor", cost: 500, bought: false, effect: () => { buildings[0].cps = 0.2; recalcCPS(); }, desc: "Cursor produkuje 0.2 cps", requires: "cursor" }
-    ];
-    let heavenlyChips = 0;
-    let prestigeBonus = 1;
-    let gameInterval = null;
-    let goldenCookieTimeout = null;
-    let currentGoldenCookie = null;
-    let autoSaveInterval = null;
 
-    function formatNumber(num) {
-        if (num >= 1e12) return (num / 1e12).toFixed(2) + "T";
-        if (num >= 1e9) return (num / 1e9).toFixed(2) + "B";
-        if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
-        if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
-        return Math.floor(num).toString();
-    }
+    const buildings = [
+        { name: "Kursor", baseCps: 0.1, basePrice: 15, count: 0 },
+        { name: "Babcia", baseCps: 1, basePrice: 100, count: 0 },
+        { name: "Farma", baseCps: 8, basePrice: 1100, count: 0 },
+        { name: "Fabryka", baseCps: 40, basePrice: 12000, count: 0 },
+        { name: "Bank", baseCps: 260, basePrice: 140000, count: 0 },
+        { name: "Świątynia", baseCps: 1400, basePrice: 1700000, count: 0 },
+        { name: "Wieża Magów", baseCps: 7800, basePrice: 21000000, count: 0 },
+        { name: "Wehikuł czasu", baseCps: 44000, basePrice: 260000000, count: 0 },
+        { name: "Antymateria", baseCps: 260000, basePrice: 3100000000, count: 0 },
+        { name: "Prism", baseCps: 1600000, basePrice: 71000000000, count: 0 }
+    ];
 
-    function updateUI() {
-        document.getElementById('cookieCount').innerHTML = formatNumber(cookieCount);
-        document.getElementById('cps').innerHTML = formatNumber(cps);
-        document.getElementById('clickMultiplier').innerHTML = clickMultiplier;
-        const buildingsDiv = document.getElementById('buildingsList');
-        buildingsDiv.innerHTML = '';
-        buildings.forEach((b, idx) => {
-            const div = document.createElement('div');
-            div.className = 'building-item';
-            div.innerHTML = `
-                <div class="building-info">
-                    <div class="building-name">${b.name}</div>
-                    <div class="building-desc">${b.desc}</div>
-                    <div class="building-cost">💰 ${formatNumber(b.cost)} 🍪</div>
-                    <div class="building-cps">⚡ ${b.cps} cps/szt. (${(b.owned * b.cps).toFixed(1)} łącznie)</div>
-                </div>
-                <div>Posiadane: ${b.owned}</div>
-                <button class="building-buy" data-building="${idx}">Kup</button>
-            `;
-            buildingsDiv.appendChild(div);
-        });
-        document.querySelectorAll('.building-buy').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const idx = parseInt(btn.getAttribute('data-building'));
-                buyBuilding(idx);
-            });
-        });
-        const upgradesDiv = document.getElementById('upgradesList');
-        upgradesDiv.innerHTML = '';
-        upgrades.forEach(up => {
-            if (!up.bought && (!up.requires || (up.requires === "click2x" && upgrades.find(u => u.id === "click2x")?.bought) || (up.requires === "cursor" && buildings[0].owned > 0))) {
-                const btn = document.createElement('div');
-                btn.className = 'upgrade-item';
-                btn.innerHTML = `<strong>${up.name}</strong><br>💰 ${formatNumber(up.cost)} 🍪<br><small>${up.desc}</small>`;
-                btn.onclick = () => buyUpgrade(up.id);
-                upgradesDiv.appendChild(btn);
-            }
-        });
-    }
+    const upgrades = [
+        { id: "click_power", name: "✋ Mocniejsze kliknięcie", desc: "Kliknięcie daje 2x więcej ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
+        { id: "cursor_boost", name: "🖱️ Wzmocnione kursory", desc: "Kursory dają +0.1 CPS", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.1; updateUI(); recalcCPS(); } },
+        { id: "grandma_boost", name: "👵 Super babcie", desc: "Babcie dają +1 CPS", price: 2000, purchased: false, apply: () => { buildings[1].baseCps += 1; updateUI(); recalcCPS(); } }
+    ];
 
     function recalcCPS() {
         let total = 0;
-        buildings.forEach(b => total += b.owned * b.cps);
-        cps = total * prestigeBonus;
-        updateUI();
+        for (let i = 0; i < buildings.length; i++) {
+            total += buildings[i].baseCps * buildings[i].count;
+        }
+        cookiesPerSecond = total;
+        document.getElementById('cpsDisplay').innerText = cookiesPerSecond.toFixed(2);
     }
 
-    function buyBuilding(idx) {
-        const building = buildings[idx];
-        if (cookieCount >= building.cost) {
-            cookieCount -= building.cost;
-            building.owned++;
-            building.cost = Math.floor(building.baseCost * Math.pow(1.15, building.owned));
-            recalcCPS();
-            updateUI();
-            saveGame();
+    function updateUI() {
+        document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
+        recalcCPS();
+        // Odśwież budynki
+        const container = document.getElementById('buildingsContainer');
+        container.innerHTML = '';
+        for (let i = 0; i < buildings.length; i++) {
+            const b = buildings[i];
+            const price = Math.floor(b.basePrice * Math.pow(1.15, b.count));
+            const div = document.createElement('div');
+            div.className = 'building-card';
+            div.innerHTML = `
+                <div class="building-name">${b.name}</div>
+                <div class="building-desc">Produkuje ${b.baseCps} ciastek/sek (x${b.count})</div>
+                <div class="building-price">🍪 ${Math.floor(price).toLocaleString()}</div>
+                <div class="building-cps">➕ +${(b.baseCps).toFixed(2)} CPS</div>
+                <button class="quick-btn" style="margin-top: 0.5rem;" onclick="buyBuilding(${i})">Kup (${b.count})</button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Odśwież ulepszenia
+        const upgradesContainer = document.getElementById('upgradesList');
+        upgradesContainer.innerHTML = '';
+        for (let i = 0; i < upgrades.length; i++) {
+            const u = upgrades[i];
+            if (!u.purchased) {
+                const btn = document.createElement('button');
+                btn.className = 'upgrade-btn';
+                btn.innerHTML = `${u.name}<br><span style="font-size:0.7rem;">${u.desc}<br>🍪 ${u.price.toLocaleString()}</span>`;
+                btn.onclick = () => buyUpgrade(i);
+                upgradesContainer.appendChild(btn);
+            }
         }
     }
 
-    function buyUpgrade(id) {
-        const upgrade = upgrades.find(u => u.id === id);
-        if (upgrade && !upgrade.bought && cookieCount >= upgrade.cost) {
-            cookieCount -= upgrade.cost;
-            upgrade.bought = true;
-            upgrade.effect();
+    function buyBuilding(index) {
+        const b = buildings[index];
+        const price = Math.floor(b.basePrice * Math.pow(1.15, b.count));
+        if (cookies >= price) {
+            cookies -= price;
+            b.count++;
             updateUI();
             saveGame();
+        } else {
+            alert("Nie masz tylu ciastek!");
+        }
+    }
+
+    function buyUpgrade(index) {
+        const u = upgrades[index];
+        if (!u.purchased && cookies >= u.price) {
+            cookies -= u.price;
+            u.purchased = true;
+            u.apply();
+            updateUI();
+            saveGame();
+        } else if (!u.purchased) {
+            alert("Nie masz tylu ciastek!");
         }
     }
 
     function clickCookie() {
-        cookieCount += clickMultiplier * prestigeBonus;
+        cookies += 1 * clickMultiplier;
         updateUI();
         saveGame();
     }
 
-    function spawnGoldenCookie() {
-        if (currentGoldenCookie) return;
-        const div = document.createElement('div');
-        div.className = 'golden-cookie';
-        div.innerHTML = '🍪✨';
-        const x = Math.random() * (window.innerWidth - 100);
-        const y = Math.random() * (window.innerHeight - 100);
-        div.style.left = x + 'px';
-        div.style.top = y + 'px';
-        div.onclick = () => {
-            const bonus = cookieCount * 0.1;
-            cookieCount += bonus;
-            updateUI();
-            div.remove();
-            currentGoldenCookie = null;
-            clearTimeout(goldenCookieTimeout);
-            goldenCookieTimeout = setTimeout(spawnGoldenCookie, 30000 + Math.random() * 30000);
-        };
-        document.body.appendChild(div);
-        currentGoldenCookie = div;
-        setTimeout(() => {
-            if (currentGoldenCookie) {
-                currentGoldenCookie.remove();
-                currentGoldenCookie = null;
-                goldenCookieTimeout = setTimeout(spawnGoldenCookie, 30000 + Math.random() * 30000);
-            }
-        }, 10000);
-    }
-
-    function prestigeReset() {
-        const gained = Math.floor(Math.sqrt(cookieCount / 1e6));
-        if (gained > 0) {
-            heavenlyChips += gained;
-            prestigeBonus = 1 + heavenlyChips * 0.01;
-            // resetuj wszystko oprócz prestige i bonusu
-            cookieCount = 0;
-            buildings.forEach(b => { b.owned = 0; b.cost = b.baseCost; });
-            upgrades.forEach(u => u.bought = false);
+    function resetGame() {
+        if (confirm("Czy na pewno chcesz zresetować cały postęp? Gracz rozpocznie od zera.")) {
+            cookies = 0;
             clickMultiplier = 1;
-            recalcCPS();
+            for (let b of buildings) { b.count = 0; }
+            for (let u of upgrades) { u.purchased = false; }
+            // reset baseCps dla budynków do wartości początkowych
+            buildings[0].baseCps = 0.1;
+            buildings[1].baseCps = 1;
+            // pozostałe nie zmienione przez ulepszenia, ale można przywrócić
             updateUI();
             saveGame();
-            alert(`Prestiż! Zdobyto ${gained} Heavenly Chips. Bonus produkcji: ${(prestigeBonus-1)*100}%.`);
-        } else {
-            alert("Musisz mieć co najmniej 1 milion ciastek, aby użyć prestiżu.");
-        }
-    }
-
-    function hardReset() {
-        if (confirm("Czy na pewno chcesz całkowicie zresetować grę? Stracisz wszystkie ciastka, budynki, ulepszenia i prestiż.")) {
-            localStorage.removeItem('cookieClickerSave');
-            location.reload();
         }
     }
 
     function saveGame() {
-        const save = {
-            cookieCount, cps, clickMultiplier, buildings, upgrades, heavenlyChips, prestigeBonus
+        const gameState = {
+            cookies: cookies,
+            clickMultiplier: clickMultiplier,
+            buildings: buildings.map(b => ({ count: b.count })),
+            upgrades: upgrades.map(u => ({ purchased: u.purchased }))
         };
-        localStorage.setItem('cookieClickerSave', JSON.stringify(save));
+        localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
     }
 
     function loadGame() {
         const saved = localStorage.getItem('cookieClickerSave');
         if (saved) {
-            const data = JSON.parse(saved);
-            cookieCount = data.cookieCount;
-            cps = data.cps;
-            clickMultiplier = data.clickMultiplier;
-            buildings = data.buildings;
-            upgrades = data.upgrades;
-            heavenlyChips = data.heavenlyChips;
-            prestigeBonus = data.prestigeBonus;
-            // odtwórz efekty ulepszeń
-            upgrades.forEach(up => { if (up.bought) up.effect(); });
-            recalcCPS();
+            const state = JSON.parse(saved);
+            cookies = state.cookies;
+            clickMultiplier = state.clickMultiplier;
+            for (let i = 0; i < buildings.length; i++) {
+                if (state.buildings[i]) buildings[i].count = state.buildings[i].count;
+            }
+            for (let i = 0; i < upgrades.length; i++) {
+                if (state.upgrades[i]) upgrades[i].purchased = state.upgrades[i].purchased;
+                if (upgrades[i].purchased) upgrades[i].apply();
+            }
             updateUI();
         }
     }
 
-    function productionLoop() {
-        cookieCount += cps / 10;
-        updateUI();
-        saveGame();
+    function gameLoop() {
+        if (cookiesPerSecond > 0) {
+            cookies += cookiesPerSecond / 10; // co 0.1 sekundy
+            updateUI();
+            saveGame();
+        }
+        setTimeout(gameLoop, 100);
     }
 
-    function initCookieGame() {
-        loadGame();
-        document.getElementById('cookieClicker').addEventListener('click', clickCookie);
-        document.getElementById('saveGameBtn').addEventListener('click', () => { saveGame(); alert("Gra zapisana."); });
-        document.getElementById('resetGameBtn').addEventListener('click', prestigeReset);
-        document.getElementById('hardResetBtn').addEventListener('click', hardReset);
-        if (gameInterval) clearInterval(gameInterval);
-        gameInterval = setInterval(productionLoop, 100);
-        if (autoSaveInterval) clearInterval(autoSaveInterval);
-        autoSaveInterval = setInterval(saveGame, 10000);
-        goldenCookieTimeout = setTimeout(spawnGoldenCookie, 30000);
-        updateUI();
-        window.cookieGameStarted = true;
-    }
+    // Inicjalizacja gry
+    loadGame();
+    updateUI();
+    gameLoop();
 
     // ======================== BANER ZGÓD COOKIE ========================
     function setCookieConsent(accepted) {
@@ -2176,7 +2311,6 @@
     }, 500);
     clearProgrammer();
     switchSubTab('credit', null);
-    window.cookieGameStarted = false;
 </script>
 </body>
 </html>
