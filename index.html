@@ -1022,7 +1022,7 @@
         </div>
     </div>
 
-    <!-- ============ NOWA ZAKŁADKA COOKIE CLICKER (ULEPSZONA) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (ULEPSZONA) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker</h2>
@@ -1556,7 +1556,7 @@
             const factor = activeUnits[from] || 1;
             const baseVal = val * factor;
             Object.entries(activeUnits).forEach(([unit, factor]) => {
-                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${(baseVal / factor).toFixed(4)}</td></tr>`;
+                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${(baseVal / factor).toFixed(4)}<td></tr>`;
             });
         } else {
             const units = unitCategories[cat].units;
@@ -2162,26 +2162,28 @@
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
 
+    // Ulepszone nazwy budynków
     const buildings = [
-        { name: "Kursor", baseCps: 0.1, basePrice: 15, count: 0 },
-        { name: "Babcia", baseCps: 1, basePrice: 100, count: 0 },
-        { name: "Farma", baseCps: 8, basePrice: 1100, count: 0 },
-        { name: "Fabryka", baseCps: 40, basePrice: 12000, count: 0 },
-        { name: "Bank", baseCps: 260, basePrice: 140000, count: 0 },
-        { name: "Świątynia", baseCps: 1400, basePrice: 1700000, count: 0 },
-        { name: "Wieża Magów", baseCps: 7800, basePrice: 21000000, count: 0 },
-        { name: "Wehikuł czasu", baseCps: 44000, basePrice: 260000000, count: 0 },
-        { name: "Antymateria", baseCps: 260000, basePrice: 3100000000, count: 0 },
-        { name: "Prism", baseCps: 1600000, basePrice: 71000000000, count: 0 }
+        { name: "✨ Magiczny Kursor", baseCps: 0.1, basePrice: 15, count: 0 },
+        { name: "👵 Klonująca Babcia", baseCps: 1, basePrice: 100, count: 0 },
+        { name: "🌾 Słodka Farma", baseCps: 8, basePrice: 1100, count: 0 },
+        { name: "🏭 Fabryka Ciastek", baseCps: 40, basePrice: 12000, count: 0 },
+        { name: "💰 Bank Cukierkowy", baseCps: 260, basePrice: 140000, count: 0 },
+        { name: "⛪ Świątynia Smaku", baseCps: 1400, basePrice: 1700000, count: 0 },
+        { name: "🔮 Wieża Marcepanu", baseCps: 7800, basePrice: 21000000, count: 0 },
+        { name: "⏳ Wehikuł Czasu (Ciastkowy)", baseCps: 44000, basePrice: 260000000, count: 0 },
+        { name: "💥 Antymateria Ciasteczkowa", baseCps: 260000, basePrice: 3100000000, count: 0 },
+        { name: "🌈 Pryzmat Słodkości", baseCps: 1600000, basePrice: 71000000000, count: 0 }
     ];
 
+    // Ulepszenia – atrakcyjne nazwy i opisy
     const upgrades = [
-        { id: "click_power", name: "✋ Mocniejsze kliknięcie", desc: "Kliknięcie daje 2x więcej ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
-        { id: "cursor_boost", name: "🖱️ Wzmocnione kursory", desc: "Kursory dają +0,2 CPS", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); } },
-        { id: "grandma_boost", name: "👵 Super babcie", desc: "Babcie dają +2 CPS", price: 2000, purchased: false, apply: () => { buildings[1].baseCps += 2; recalcCPS(); } },
-        { id: "factory_boost", name: "🏭 Wydajniejsze fabryki", desc: "Fabryki dają +20 CPS", price: 15000, purchased: false, apply: () => { buildings[3].baseCps += 20; recalcCPS(); } },
-        { id: "magic_mill", name: "🔮 Magiczny młyn", desc: "Wieża magów +100 CPS", price: 100000, purchased: false, apply: () => { buildings[6].baseCps += 100; recalcCPS(); } },
-        { id: "chrono_boost", name: "⏳ Kroniki czasu", desc: "Podwaja CPS wszystkich budynków", price: 1000000, purchased: false, apply: () => { 
+        { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Każde kliknięcie daje 2x więcej ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
+        { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "Kursory dają +0,2 CPS", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); } },
+        { id: "grandma_boost", name: "👵 Armia Babć", desc: "Babcie dają +2 CPS", price: 2000, purchased: false, apply: () => { buildings[1].baseCps += 2; recalcCPS(); } },
+        { id: "factory_boost", name: "🏭 Przemysł 4.0", desc: "Fabryki dają +20 CPS", price: 15000, purchased: false, apply: () => { buildings[3].baseCps += 20; recalcCPS(); } },
+        { id: "magic_mill", name: "🔮 Młyn Cudów", desc: "Wieża magów +100 CPS", price: 100000, purchased: false, apply: () => { buildings[6].baseCps += 100; recalcCPS(); } },
+        { id: "chrono_boost", name: "⏳ Kroniki Czasu", desc: "Podwaja CPS wszystkich budynków", price: 1000000, purchased: false, apply: () => { 
             buildings.forEach(b => { b.baseCps *= 2; });
             recalcCPS();
         } }
@@ -2399,11 +2401,17 @@
         setTimeout(gameLoop, 100);
     }
 
-    // Inicjalizacja gry i rankingu
-    loadGame();
-    loadRanking();
-    updateUI();
-    gameLoop();
+    // Inicjalizacja gry i rankingu – dodajemy event listener do ciastka
+    document.addEventListener('DOMContentLoaded', () => {
+        const cookieElement = document.getElementById('cookieImage');
+        if (cookieElement) {
+            cookieElement.addEventListener('click', clickCookie);
+        }
+        loadGame();
+        loadRanking();
+        updateUI();
+        gameLoop();
+    });
 
     // ======================== BANER ZGÓD COOKIE ========================
     function setCookieConsent(accepted) {
