@@ -1041,11 +1041,11 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (ULEPSZONA) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (POPRAWIONA) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj w ciastko, kupuj budynki i ulepszenia. Zapisz swój wynik w rankingu!</p>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj w ciastko, kupuj budynki i ulepszenia. Ranking zapisywany lokalnie (na tym urządzeniu).</p>
             
             <div class="cookie-stats">
                 <div class="cookie-count" id="cookieDisplay">0</div>
@@ -1054,7 +1054,7 @@
                 <div id="bonusInfo" class="bonus-info"></div>
             </div>
             
-            <div class="cookie" id="cookieImage">
+            <div class="cookie" id="cookieImage" onclick="clickCookie()">
                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23D2A679' stroke='%238B5A2B' stroke-width='2'/%3E%3Ccircle cx='35' cy='35' r='5' fill='%234A2A1A'/%3E%3Ccircle cx='65' cy='45' r='4' fill='%234A2A1A'/%3E%3Ccircle cx='50' cy='70' r='6' fill='%234A2A1A'/%3E%3C/svg%3E" alt="Cookie" style="width: 100%; max-width: 180px; margin: 0 auto; display: block; cursor: pointer;">
             </div>
 
@@ -1069,7 +1069,7 @@
             <div class="buildings-grid" id="buildingsContainer"></div>
 
             <!-- Ranking top 5 -->
-            <h3 class="section-title" style="margin-top: 2rem;"><i class="fas fa-trophy"></i> Ranking Top 5</h3>
+            <h3 class="section-title" style="margin-top: 2rem;"><i class="fas fa-trophy"></i> Ranking Top 5 (lokalny)</h3>
             <div id="rankingContainer">
                 <table class="ranking-table">
                     <thead><tr><th>#</th><th>Gracz</th><th>Ciastka</th><th>CPS</th></tr></thead>
@@ -1563,7 +1563,7 @@
             else if (from === 'K') celsius = val - 273.15;
             const results = { '°C': celsius, '°F': celsius * 9/5 + 32, 'K': celsius + 273.15 };
             Object.entries(results).forEach(([unit, value]) => {
-                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></td>`;
+                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></tr>`;
             });
             return;
         }
@@ -2177,7 +2177,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER GAME (POPRAWIONA I ULEPSZONA) ========================
+    // ======================== COOKIE CLICKER GAME (POPRAWIONA WERSJA – BRAK MIGANIA) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2185,7 +2185,6 @@
     let bonusTimer = null;
     let goldenCookieTimeout = null;
 
-    // Ulepszone nazwy budynków i wartości
     const buildings = [
         { name: "✨ Magiczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
         { name: "👵 Klonująca Babcia", baseCps: 1, basePrice: 100, count: 0 },
@@ -2201,13 +2200,13 @@
 
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Każde kliknięcie daje 2x więcej ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
-        { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "Kursory dają +0,2 CPS", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); } },
-        { id: "grandma_boost", name: "👵 Armia Babć", desc: "Babcie dają +2 CPS", price: 2000, purchased: false, apply: () => { buildings[1].baseCps += 2; recalcCPS(); } },
-        { id: "factory_boost", name: "🏭 Przemysł 4.0", desc: "Fabryki dają +20 CPS", price: 15000, purchased: false, apply: () => { buildings[3].baseCps += 20; recalcCPS(); } },
-        { id: "magic_mill", name: "🔮 Młyn Cudów", desc: "Wieża magów +100 CPS", price: 100000, purchased: false, apply: () => { buildings[6].baseCps += 100; recalcCPS(); } },
+        { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "Kursory dają +0,2 CPS", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
+        { id: "grandma_boost", name: "👵 Armia Babć", desc: "Babcie dają +2 CPS", price: 2000, purchased: false, apply: () => { buildings[1].baseCps += 2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
+        { id: "factory_boost", name: "🏭 Przemysł 4.0", desc: "Fabryki dają +20 CPS", price: 15000, purchased: false, apply: () => { buildings[3].baseCps += 20; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
+        { id: "magic_mill", name: "🔮 Młyn Cudów", desc: "Wieża magów +100 CPS", price: 100000, purchased: false, apply: () => { buildings[6].baseCps += 100; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
         { id: "chrono_boost", name: "⏳ Kroniki Czasu", desc: "Podwaja CPS wszystkich budynków", price: 1000000, purchased: false, apply: () => { 
             buildings.forEach(b => { b.baseCps *= 2; });
-            recalcCPS();
+            recalcCPS(); rebuildBuildings(); rebuildUpgrades();
         } }
     ];
 
@@ -2220,18 +2219,10 @@
         document.getElementById('cpsDisplay').innerText = cookiesPerSecond.toFixed(2);
     }
 
-    function updateUI() {
-        document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
-        recalcCPS();
-
-        // Wyświetlanie aktywnych bonusów
-        let bonusText = "";
-        if (activeBonuses.frenzy) bonusText += "⚡ Frenzy (x7 CPS)! ";
-        if (activeBonuses.clickFrenzy) bonusText += "🔥 Click Frenzy (x777 kliknięcie)! ";
-        document.getElementById('bonusInfo').innerText = bonusText;
-
-        // Odśwież budynki
+    // Funkcje budujące interfejs (wywoływane tylko przy faktycznej zmianie)
+    function rebuildBuildings() {
         const container = document.getElementById('buildingsContainer');
+        if (!container) return;
         container.innerHTML = '';
         for (let i = 0; i < buildings.length; i++) {
             const b = buildings[i];
@@ -2247,9 +2238,11 @@
             `;
             container.appendChild(div);
         }
+    }
 
-        // Odśwież ulepszenia
+    function rebuildUpgrades() {
         const upgradesContainer = document.getElementById('upgradesList');
+        if (!upgradesContainer) return;
         upgradesContainer.innerHTML = '';
         for (let i = 0; i < upgrades.length; i++) {
             const u = upgrades[i];
@@ -2261,7 +2254,22 @@
                 upgradesContainer.appendChild(btn);
             }
         }
-        updateRankingDisplay();
+    }
+
+    function updateStats() {
+        document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
+        recalcCPS();
+        let bonusText = "";
+        if (activeBonuses.frenzy) bonusText += "⚡ Frenzy (x7 CPS)! ";
+        if (activeBonuses.clickFrenzy) bonusText += "🔥 Click Frenzy (x777 kliknięcie)! ";
+        document.getElementById('bonusInfo').innerText = bonusText;
+    }
+
+    // Uproszczona aktualizacja – tylko liczby, nie przebudowujemy całego DOM
+    function updateUI() {
+        updateStats();
+        // Budynki i ulepszenia odświeżamy tylko przy zmianie (kupno/reset), ale tutaj dla bezpieczeństwa też wywołajmy rzadko
+        // Jednak w gameLoop nie chcemy tego robić – zostawiamy tylko przy zmianach.
     }
 
     function buyBuilding(index) {
@@ -2270,7 +2278,9 @@
         if (cookies >= price) {
             cookies -= price;
             b.count++;
-            updateUI();
+            updateStats();
+            rebuildBuildings();   // tylko raz po zakupie
+            rebuildUpgrades();
             saveGame();
         } else {
             alert("Nie masz tylu ciastek!");
@@ -2283,7 +2293,9 @@
             cookies -= u.price;
             u.purchased = true;
             u.apply();
-            updateUI();
+            updateStats();
+            rebuildBuildings();   // możliwe że zmieniły się CPS
+            rebuildUpgrades();
             saveGame();
         } else if (!u.purchased) {
             alert("Nie masz tylu ciastek!");
@@ -2295,14 +2307,13 @@
         if (activeBonuses.clickFrenzy) gain *= 777;
         if (activeBonuses.frenzy) gain *= 7;
         cookies += gain;
-        updateUI();
+        updateStats();
         saveGame();
         const cookieImg = document.querySelector('#cookieImage img');
         cookieImg.classList.add('cookie-animation');
         setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200);
     }
 
-    // Złote ciastko
     function spawnGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
         const golden = document.createElement('div');
@@ -2312,34 +2323,28 @@
         golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
         golden.onclick = () => {
             golden.remove();
-            // Losowy bonus
             const bonus = Math.random();
             if (bonus < 0.33) {
-                // Frenzy (x7 CPS przez 30s)
                 activeBonuses.frenzy = true;
-                document.getElementById('bonusInfo').innerHTML += "⚡ Frenzy (x7 CPS przez 30s)! ";
                 if (bonusTimer) clearTimeout(bonusTimer);
                 bonusTimer = setTimeout(() => {
                     activeBonuses.frenzy = false;
-                    updateUI();
+                    updateStats();
                 }, 30000);
-                updateUI();
+                updateStats();
             } else if (bonus < 0.66) {
-                // Natychmiastowa premia ciastek (CPS * 5)
                 const bonusCookies = cookiesPerSecond * 5;
                 cookies += bonusCookies;
-                updateUI();
+                updateStats();
                 alert(`✨ Otrzymałeś ${Math.floor(bonusCookies).toLocaleString()} bonusowych ciastek!`);
             } else {
-                // Click Frenzy (x777 na kliknięcie przez 20s)
                 activeBonuses.clickFrenzy = true;
-                document.getElementById('bonusInfo').innerHTML += "🔥 Click Frenzy (x777 kliknięcie przez 20s)! ";
                 if (bonusTimer) clearTimeout(bonusTimer);
                 bonusTimer = setTimeout(() => {
                     activeBonuses.clickFrenzy = false;
-                    updateUI();
+                    updateStats();
                 }, 20000);
-                updateUI();
+                updateStats();
             }
             saveGame();
             scheduleGoldenCookie();
@@ -2350,19 +2355,15 @@
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        const delay = 30000 + Math.random() * 60000; // 30-90 sekund
-        goldenCookieTimeout = setTimeout(() => {
-            spawnGoldenCookie();
-        }, delay);
+        const delay = 30000 + Math.random() * 60000;
+        goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
 
     function resetGame() {
         if (confirm("Czy na pewno chcesz zresetować cały postęp? Ranking pozostanie.")) {
             cookies = 0;
             clickMultiplier = 1;
-            for (let b of buildings) { 
-                b.count = 0; 
-            }
+            for (let b of buildings) { b.count = 0; }
             buildings[0].baseCps = 0.2;
             buildings[1].baseCps = 1;
             buildings[2].baseCps = 8;
@@ -2377,7 +2378,9 @@
             if (bonusTimer) clearTimeout(bonusTimer);
             if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
             activeBonuses = { frenzy: false, clickFrenzy: false };
-            updateUI();
+            updateStats();
+            rebuildBuildings();
+            rebuildUpgrades();
             saveGame();
         }
     }
@@ -2402,6 +2405,7 @@
 
     function updateRankingDisplay() {
         const tbody = document.getElementById('rankingBody');
+        if (!tbody) return;
         tbody.innerHTML = '';
         const sorted = [...ranking].sort((a,b) => b.cookies - a.cookies);
         const top5 = sorted.slice(0,5);
@@ -2467,7 +2471,9 @@
                     const chrono = upgrades.find(u => u.id === "chrono_boost");
                     if (chrono && chrono.purchased) chrono.apply();
                 }
-                updateUI();
+                updateStats();
+                rebuildBuildings();
+                rebuildUpgrades();
             } catch(e) { console.error("Błąd wczytywania gry", e); }
         }
     }
@@ -2477,7 +2483,7 @@
         if (activeBonuses.frenzy) currentCPS *= 7;
         if (currentCPS > 0) {
             cookies += currentCPS / 10;
-            updateUI();
+            updateStats();
             saveGame();
         }
         setTimeout(gameLoop, 100);
@@ -2486,7 +2492,9 @@
     // Inicjalizacja gry
     loadGame();
     loadRanking();
-    updateUI();
+    updateStats();
+    rebuildBuildings();
+    rebuildUpgrades();
     gameLoop();
     scheduleGoldenCookie();
 
