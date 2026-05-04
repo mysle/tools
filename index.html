@@ -256,6 +256,18 @@
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
+        .golden-cookie {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            z-index: 1000;
+            animation: floatGolden 0.5s ease;
+        }
+        @keyframes floatGolden {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
         .buildings-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -345,6 +357,13 @@
             padding: 0.5rem 1rem;
             color: var(--text);
             outline: none;
+        }
+        .bonus-info {
+            background: rgba(99,102,241,0.3);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
         }
 
         /* Calculator specific - improved layout */
@@ -1032,6 +1051,7 @@
                 <div class="cookie-count" id="cookieDisplay">0</div>
                 <div>ciastek</div>
                 <div style="font-size: 0.9rem; margin-top: 0.5rem;">🍪 na sekundę: <strong id="cpsDisplay">0.0</strong></div>
+                <div id="bonusInfo" class="bonus-info"></div>
             </div>
             
             <div class="cookie" id="cookieImage">
@@ -1543,7 +1563,7 @@
             else if (from === 'K') celsius = val - 273.15;
             const results = { '°C': celsius, '°F': celsius * 9/5 + 32, 'K': celsius + 273.15 };
             Object.entries(results).forEach(([unit, value]) => {
-                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></tr>`;
+                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></td>`;
             });
             return;
         }
@@ -1556,7 +1576,7 @@
             const factor = activeUnits[from] || 1;
             const baseVal = val * factor;
             Object.entries(activeUnits).forEach(([unit, factor]) => {
-                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${(baseVal / factor).toFixed(4)}<td></tr>`;
+                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${(baseVal / factor).toFixed(4)}</td></tr>`;
             });
         } else {
             const units = unitCategories[cat].units;
@@ -2135,7 +2155,7 @@
                 <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></span></div>
                 <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
                 <td>0h</span></div>
-            </td>
+            </tr>
         `;
     }
 
@@ -2157,14 +2177,17 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER GAME (ULEPSZONA) ========================
+    // ======================== COOKIE CLICKER GAME (POPRAWIONA I ULEPSZONA) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
+    let activeBonuses = { frenzy: false, clickFrenzy: false };
+    let bonusTimer = null;
+    let goldenCookieTimeout = null;
 
-    // Ulepszone nazwy budynków
+    // Ulepszone nazwy budynków i wartości
     const buildings = [
-        { name: "✨ Magiczny Kursor", baseCps: 0.1, basePrice: 15, count: 0 },
+        { name: "✨ Magiczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
         { name: "👵 Klonująca Babcia", baseCps: 1, basePrice: 100, count: 0 },
         { name: "🌾 Słodka Farma", baseCps: 8, basePrice: 1100, count: 0 },
         { name: "🏭 Fabryka Ciastek", baseCps: 40, basePrice: 12000, count: 0 },
@@ -2176,7 +2199,6 @@
         { name: "🌈 Pryzmat Słodkości", baseCps: 1600000, basePrice: 71000000000, count: 0 }
     ];
 
-    // Ulepszenia – atrakcyjne nazwy i opisy
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Każde kliknięcie daje 2x więcej ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "Kursory dają +0,2 CPS", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); } },
@@ -2201,6 +2223,13 @@
     function updateUI() {
         document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
         recalcCPS();
+
+        // Wyświetlanie aktywnych bonusów
+        let bonusText = "";
+        if (activeBonuses.frenzy) bonusText += "⚡ Frenzy (x7 CPS)! ";
+        if (activeBonuses.clickFrenzy) bonusText += "🔥 Click Frenzy (x777 kliknięcie)! ";
+        document.getElementById('bonusInfo').innerText = bonusText;
+
         // Odśwież budynki
         const container = document.getElementById('buildingsContainer');
         container.innerHTML = '';
@@ -2262,13 +2291,69 @@
     }
 
     function clickCookie() {
-        cookies += 1 * clickMultiplier;
+        let gain = clickMultiplier;
+        if (activeBonuses.clickFrenzy) gain *= 777;
+        if (activeBonuses.frenzy) gain *= 7;
+        cookies += gain;
         updateUI();
         saveGame();
-        // Animacja ciastka
         const cookieImg = document.querySelector('#cookieImage img');
         cookieImg.classList.add('cookie-animation');
         setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200);
+    }
+
+    // Złote ciastko
+    function spawnGoldenCookie() {
+        if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
+        const golden = document.createElement('div');
+        golden.className = 'golden-cookie';
+        golden.innerHTML = '<img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23FFD700\' stroke=\'%23B8860B\' stroke-width=\'2\'/%3E%3Ccircle cx=\'35\' cy=\'35\' r=\'5\' fill=\'%238B5A2B\'/%3E%3Ccircle cx=\'65\' cy=\'45\' r=\'4\' fill=\'%238B5A2B\'/%3E%3Ccircle cx=\'50\' cy=\'70\' r=\'6\' fill=\'%238B5A2B\'/%3E%3C/svg%3E" style="width:100%">';
+        golden.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+        golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+        golden.onclick = () => {
+            golden.remove();
+            // Losowy bonus
+            const bonus = Math.random();
+            if (bonus < 0.33) {
+                // Frenzy (x7 CPS przez 30s)
+                activeBonuses.frenzy = true;
+                document.getElementById('bonusInfo').innerHTML += "⚡ Frenzy (x7 CPS przez 30s)! ";
+                if (bonusTimer) clearTimeout(bonusTimer);
+                bonusTimer = setTimeout(() => {
+                    activeBonuses.frenzy = false;
+                    updateUI();
+                }, 30000);
+                updateUI();
+            } else if (bonus < 0.66) {
+                // Natychmiastowa premia ciastek (CPS * 5)
+                const bonusCookies = cookiesPerSecond * 5;
+                cookies += bonusCookies;
+                updateUI();
+                alert(`✨ Otrzymałeś ${Math.floor(bonusCookies).toLocaleString()} bonusowych ciastek!`);
+            } else {
+                // Click Frenzy (x777 na kliknięcie przez 20s)
+                activeBonuses.clickFrenzy = true;
+                document.getElementById('bonusInfo').innerHTML += "🔥 Click Frenzy (x777 kliknięcie przez 20s)! ";
+                if (bonusTimer) clearTimeout(bonusTimer);
+                bonusTimer = setTimeout(() => {
+                    activeBonuses.clickFrenzy = false;
+                    updateUI();
+                }, 20000);
+                updateUI();
+            }
+            saveGame();
+            scheduleGoldenCookie();
+        };
+        document.body.appendChild(golden);
+        setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 10000);
+    }
+
+    function scheduleGoldenCookie() {
+        if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
+        const delay = 30000 + Math.random() * 60000; // 30-90 sekund
+        goldenCookieTimeout = setTimeout(() => {
+            spawnGoldenCookie();
+        }, delay);
     }
 
     function resetGame() {
@@ -2277,10 +2362,8 @@
             clickMultiplier = 1;
             for (let b of buildings) { 
                 b.count = 0; 
-                // przywróć bazowe CPS do wartości początkowych (bez ulepszeń)
             }
-            // reset bazowych wartości budynków
-            buildings[0].baseCps = 0.1;
+            buildings[0].baseCps = 0.2;
             buildings[1].baseCps = 1;
             buildings[2].baseCps = 8;
             buildings[3].baseCps = 40;
@@ -2291,6 +2374,9 @@
             buildings[8].baseCps = 260000;
             buildings[9].baseCps = 1600000;
             for (let u of upgrades) { u.purchased = false; }
+            if (bonusTimer) clearTimeout(bonusTimer);
+            if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
+            activeBonuses = { frenzy: false, clickFrenzy: false };
             updateUI();
             saveGame();
         }
@@ -2317,7 +2403,6 @@
     function updateRankingDisplay() {
         const tbody = document.getElementById('rankingBody');
         tbody.innerHTML = '';
-        // sortuj malejąco po liczbie ciastek
         const sorted = [...ranking].sort((a,b) => b.cookies - a.cookies);
         const top5 = sorted.slice(0,5);
         for (let i = 0; i < top5.length; i++) {
@@ -2343,7 +2428,6 @@
             timestamp: Date.now()
         };
         ranking.push(scoreEntry);
-        // ogranicz do 50 wpisów, aby nie rozrosło się za bardzo
         if (ranking.length > 50) ranking = ranking.slice(-50);
         saveRanking();
         alert("Wynik zapisany w rankingu!");
@@ -2376,16 +2460,12 @@
                 if (state.upgrades) {
                     for (let i = 0; i < upgrades.length && i < state.upgrades.length; i++) {
                         upgrades[i].purchased = state.upgrades[i].purchased === true;
-                        // jeśli ulepszenie było kupione, zastosuj je ponownie (ale uwaga na podwajanie)
                         if (upgrades[i].purchased && upgrades[i].id !== "chrono_boost") {
                             upgrades[i].apply();
                         }
                     }
-                    // chrono boost zastosuj osobno, jeśli był kupiony
                     const chrono = upgrades.find(u => u.id === "chrono_boost");
-                    if (chrono && chrono.purchased) {
-                        chrono.apply();
-                    }
+                    if (chrono && chrono.purchased) chrono.apply();
                 }
                 updateUI();
             } catch(e) { console.error("Błąd wczytywania gry", e); }
@@ -2393,25 +2473,22 @@
     }
 
     function gameLoop() {
-        if (cookiesPerSecond > 0) {
-            cookies += cookiesPerSecond / 10;
+        let currentCPS = cookiesPerSecond;
+        if (activeBonuses.frenzy) currentCPS *= 7;
+        if (currentCPS > 0) {
+            cookies += currentCPS / 10;
             updateUI();
             saveGame();
         }
         setTimeout(gameLoop, 100);
     }
 
-    // Inicjalizacja gry i rankingu – dodajemy event listener do ciastka
-    document.addEventListener('DOMContentLoaded', () => {
-        const cookieElement = document.getElementById('cookieImage');
-        if (cookieElement) {
-            cookieElement.addEventListener('click', clickCookie);
-        }
-        loadGame();
-        loadRanking();
-        updateUI();
-        gameLoop();
-    });
+    // Inicjalizacja gry
+    loadGame();
+    loadRanking();
+    updateUI();
+    gameLoop();
+    scheduleGoldenCookie();
 
     // ======================== BANER ZGÓD COOKIE ========================
     function setCookieConsent(accepted) {
@@ -2445,7 +2522,7 @@
     document.getElementById('acceptCookies').onclick = () => setCookieConsent(true);
     document.getElementById('rejectCookies').onclick = () => setCookieConsent(false);
 
-    // ======================== INICJALIZACJA ========================
+    // ======================== INICJALIZACJA POZOSTAŁYCH MODUŁÓW ========================
     fetchRates();
     updateConverter();
     document.getElementById('amount').addEventListener('wheel', e => e.preventDefault());
