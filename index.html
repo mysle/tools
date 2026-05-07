@@ -296,12 +296,27 @@
             height: 80px;
             cursor: pointer;
             z-index: 1000;
-            animation: floatGolden 0.5s ease;
+            animation: floatGolden 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
             filter: drop-shadow(0 0 20px gold);
         }
+        /* Lepsza animacja dla Złotego Ciasteczka – wejście z odbiciem i obrotem */
         @keyframes floatGolden {
-            0% { transform: scale(0) rotate(0deg); opacity: 0; }
-            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            40% {
+                transform: scale(1.15) rotate(180deg);
+                opacity: 0.9;
+            }
+            70% {
+                transform: scale(0.95) rotate(270deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(360deg);
+                opacity: 1;
+            }
         }
         .buildings-grid {
             display: grid;
@@ -1062,8 +1077,8 @@
     <!-- ============ ZAKŁADKA COOKIE CLICKER – POPRAWIONA + NOWE BONUSY ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">𝕮𝖔𝖔𝖐𝖎𝖊 𝕮𝖑𝖎𝖈𝖐𝖊𝖗</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj w mistyczne ciastko i rozwijaj cukierkowe imperium!</p>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj w mistyczne ciastko, rozwijaj cukierkowe imperium i zaskakuj znajomych!</p>
             
             <div class="cookie-stats">
                 <div class="cookie-count" id="cookieDisplay">0</div>
@@ -1594,7 +1609,7 @@
             else if (from === 'K') celsius = val - 273.15;
             const results = { '°C': celsius, '°F': celsius * 9/5 + 32, 'K': celsius + 273.15 };
             Object.entries(results).forEach(([unit, value]) => {
-                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></table>`;
+                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></tr>`;
             });
             return;
         }
@@ -2395,11 +2410,35 @@
         }
     }
 
+    // === ZŁOTE CIASTECZKO – NOWA GRAFIKA I ANIMACJA ===
     function spawnGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
         const golden = document.createElement('div');
         golden.className = 'golden-cookie';
-        golden.innerHTML = '<img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 200 200\'%3E%3Cdefs%3E%3CradialGradient id=\'goldGrad\' cx=\'50%25\' cy=\'50%25\' r=\'50%25\'%3E%3Cstop offset=\'0%25\' stop-color=\'%23FFF0A0\'/%3E%3Cstop offset=\'70%25\' stop-color=\'%23FFD700\'/%3E%3Cstop offset=\'100%25\' stop-color=\'%23B8860B\'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx=\'100\' cy=\'100\' r=\'85\' fill=\'url(%23goldGrad)\' stroke=\'%238B5A2B\' stroke-width=\'4\'/%3E%3Cpath d=\'M30,100 Q50,70 70,90 Q90,60 110,80 Q130,40 150,70 Q160,90 170,110\' stroke=\'%23FFE0A0\' stroke-width=\'22\' stroke-linecap=\'round\' fill=\'none\' opacity=\'0.9\'/%3E%3Ccircle cx=\'45\' cy=\'45\' r=\'6\' fill=\'%23FF8C42\'/%3E%3Ccircle cx=\'155\' cy=\'55\' r=\'7\' fill=\'%23FFD700\'/%3E%3Ccircle cx=\'65\' cy=\'130\' r=\'5\' fill=\'%23FFB347\'/%3E%3Ccircle cx=\'120\' cy=\'150\' r=\'8\' fill=\'%23FFD700\'/%3E%3C/svg%3E" style="width:100%">';
+        // Nowe SVG złotego ciasteczka – identyczny kształt jak zwykłe, ale w złotych kolorach
+        golden.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" style="width: 100%; height: 100%; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
+            <defs>
+                <radialGradient id="goldenGrad" cx="40%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#FFF8DC"/>
+                    <stop offset="60%" stop-color="#FFD700"/>
+                    <stop offset="100%" stop-color="#DAA520"/>
+                </radialGradient>
+            </defs>
+            <circle cx="100" cy="100" r="85" fill="url(#goldenGrad)" stroke="#B8860B" stroke-width="4"/>
+            <!-- Piegi / kropki czekolady w ciemnym złocie -->
+            <circle cx="65" cy="65" r="7" fill="#A0522D"/>
+            <circle cx="130" cy="70" r="6" fill="#A0522D"/>
+            <circle cx="95" cy="135" r="8" fill="#A0522D"/>
+            <circle cx="70" cy="120" r="5" fill="#A0522D"/>
+            <circle cx="120" cy="110" r="7" fill="#A0522D"/>
+            <circle cx="50" cy="95" r="5" fill="#A0522D"/>
+            <circle cx="145" cy="120" r="6" fill="#A0522D"/>
+            <circle cx="85" cy="45" r="5" fill="#A0522D"/>
+            <circle cx="135" cy="45" r="6" fill="#A0522D"/>
+            <circle cx="155" cy="90" r="5" fill="#A0522D"/>
+            <circle cx="45" cy="135" r="5" fill="#A0522D"/>
+            <circle cx="110" cy="85" r="5" fill="#A0522D"/>
+        </svg>`;
         golden.style.left = Math.random() * (window.innerWidth - 100) + 'px';
         golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
         golden.onclick = () => {
