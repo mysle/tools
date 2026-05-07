@@ -162,7 +162,7 @@
             position: fixed; bottom: 2rem; right: 2rem; background: var(--glass); backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); padding: 0.75rem 1.25rem; border-radius: 2rem;
             display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; z-index: 100;
-            transform: translateZ(0); backface-visibility: hidden; will-change: transform;
+            transform: translateZ(0); will-change: transform; backface-visibility: hidden;
         }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); animation: blink 2s infinite; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
@@ -1037,7 +1037,7 @@
     <!-- ============ ZAKŁADKA COOKIE CLICKER – POPRAWIONA + NOWE BONUSY ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker – Słodka Imperia</h2>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj w mistyczne ciastko, rozwijaj cukierkowe imperium i zaskakuj znajomych!</p>
             
             <div class="cookie-stats">
@@ -1048,7 +1048,7 @@
             </div>
             
             <div class="cookie" id="cookieImage" onclick="clickCookie()">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23D2A679' stroke='%238B5A2B' stroke-width='2'/%3E%3Ccircle cx='35' cy='35' r='5' fill='%234A2A1A'/%3E%3Ccircle cx='65' cy='45' r='4' fill='%234A2A1A'/%3E%3Ccircle cx='50' cy='70' r='6' fill='%234A2A1A'/%3E%3C/svg%3E" alt="Cookie" style="width: 100%; max-width: 180px; margin: 0 auto; display: block; cursor: pointer;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='cookieGrad' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23F3C78E'/%3E%3Cstop offset='70%25' stop-color='%23D28B4A'/%3E%3Cstop offset='100%25' stop-color='%238C531C'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='85' fill='url(%23cookieGrad)' stroke='%23A05E2C' stroke-width='4'/%3E%3C!-- lukier --%3E%3Cpath d='M30,100 Q50,70 70,90 Q90,60 110,80 Q130,40 150,70 Q160,90 170,110' stroke='%23FFF5E0' stroke-width='22' stroke-linecap='round' fill='none' opacity='0.8'/%3E%3C!-- posypka --%3E%3Ccircle cx='45' cy='45' r='6' fill='%23FF6B6B'/%3E%3Ccircle cx='155' cy='55' r='7' fill='%23FFD93D'/%3E%3Ccircle cx='65' cy='130' r='5' fill='%236BCB77'/%3E%3Ccircle cx='120' cy='150' r='8' fill='%23FF8C42'/%3E%3Ccircle cx='85' cy='80' r='4' fill='%234D3B2A'/%3E%3Ccircle cx='145' cy='110' r='6' fill='%23FF6B6B'/%3E%3Ccircle cx='55' cy='95' r='4' fill='%23FFF'/%3E%3C/svg%3E" alt="Cookie" style="width: 100%; max-width: 180px; margin: 0 auto; display: block; cursor: pointer;">
             </div>
 
             <!-- Ulepszenia -->
@@ -2132,9 +2132,9 @@
         });
         tbody.innerHTML += `
             <tr style="background:rgba(99,102,241,0.2);">
-                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></span></div>
+                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></div>
                 <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
-                <td>0h</span></div>
+                <td>0h</div>
             </tr>
         `;
     }
@@ -2166,6 +2166,12 @@
     let goldenCookieTimeout = null;
     let stormInterval = null;
 
+    // Nowe zmienne globalne dla dodatkowych ulepszeń
+    let globalCPSMultiplier = 1;
+    let extraClickBonusPercent = 0;   // dodatkowy procent od kliknięcia (np. 10% obecnych ciastek)
+    let doubleClickChance = 0;        // szansa na podwójne ciasteczko (0-1)
+    let goldenCookieFrequencyMultiplier = 1; // im mniejszy delay, tym częściej – ulepszenie zmniejsza delay
+
     // Nowe budynki – więcej, lepsze nazwy
     const buildings = [
         { name: "✨ Mistyczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
@@ -2178,13 +2184,13 @@
         { name: "⏳ Wehikuł Czasu", baseCps: 44000, basePrice: 260000000, count: 0 },
         { name: "💥 Antymateria", baseCps: 260000, basePrice: 3100000000, count: 0 },
         { name: "🌈 Pryzmat Słodkości", baseCps: 1600000, basePrice: 71000000000, count: 0 },
-        { name: "🚀 Rakieta Konfetti", baseCps: 10000000, basePrice: 1.2e12, count: 0 },      // nowy
-        { name: "🧙 Magiczny Piekarnik", baseCps: 65000000, basePrice: 1.4e13, count: 0 },    // nowy
-        { name: "✨ Gwiezdny Pył", baseCps: 430000000, basePrice: 1.7e14, count: 0 },         // nowy
-        { name: "🌌 Czarodziejska Piekarnia", baseCps: 2.8e9, basePrice: 2.1e15, count: 0 }   // nowy
+        { name: "🚀 Rakieta Konfetti", baseCps: 10000000, basePrice: 1.2e12, count: 0 },
+        { name: "🧙 Magiczny Piekarnik", baseCps: 65000000, basePrice: 1.4e13, count: 0 },
+        { name: "✨ Gwiezdny Pył", baseCps: 430000000, basePrice: 1.7e14, count: 0 },
+        { name: "🌌 Czarodziejska Piekarnia", baseCps: 2.8e9, basePrice: 2.1e15, count: 0 }
     ];
 
-    // Więcej ulepszeń
+    // Więcej ulepszeń (dodano 5 nowych)
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Kliknięcia dają 2x ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "+0,2 CPS za kursor", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
@@ -2192,10 +2198,16 @@
         { id: "factory_boost", name: "🏭 Przemysł 4.0", desc: "+20 CPS za fabrykę", price: 15000, purchased: false, apply: () => { buildings[3].baseCps += 20; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
         { id: "magic_mill", name: "🔮 Młyn Cudów", desc: "+100 CPS za wieżę", price: 100000, purchased: false, apply: () => { buildings[6].baseCps += 100; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
         { id: "chrono_boost", name: "⏳ Kroniki Czasu", desc: "Podwaja CPS wszystkich budynków", price: 1000000, purchased: false, apply: () => { buildings.forEach(b => { b.baseCps *= 2; }); recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
-        { id: "golden_luck", name: "🏆 Złoty Blask", desc: "Złote ciasteczka pojawiają się częściej", price: 5000000, purchased: false, apply: () => { /* zmiana częstotliwości w spawnGoldenCookie */ scheduleGoldenCookie(); } },
+        { id: "golden_luck", name: "🏆 Złoty Blask", desc: "Złote ciasteczka pojawiają się częściej", price: 5000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier = 0.6; scheduleGoldenCookie(); } },
         { id: "lucky_charm", name: "🍀 Szczęśliwy Traf", desc: "Bonusy od Złotego Ciasteczka są lepsze", price: 25000000, purchased: false, apply: () => { window.luckyCharm = true; } },
         { id: "divine_intervention", name: "✨ Boska Interwencja", desc: "Czasami podwaja CPS na 10s", price: 100000000, purchased: false, apply: () => { window.divineIntervention = true; } },
-        { id: "quantum_accelerator", name: "⚡ Przyspieszenie Kwantowe", desc: "Bonusy trwają dłużej", price: 500000000, purchased: false, apply: () => { window.quantumAccelerator = true; } }
+        { id: "quantum_accelerator", name: "⚡ Przyspieszenie Kwantowe", desc: "Bonusy trwają dłużej", price: 500000000, purchased: false, apply: () => { window.quantumAccelerator = true; } },
+        // NOWE ULEPSZENIA
+        { id: "caramel_revolution", name: "🍬 Karmelowa Rewolucja", desc: "Podwaja całkowitą produkcję ciastek", price: 50000000, purchased: false, apply: () => { globalCPSMultiplier *= 2; recalcCPS(); } },
+        { id: "rainbow_sprinkles", name: "🌈 Tęczowa Posypka", desc: "Kliknięcia dają dodatkowe 10% posiadanych ciastek", price: 200000000, purchased: false, apply: () => { extraClickBonusPercent = 0.1; } },
+        { id: "hourglass_of_time", name: "⏳ Klepsydra Czasu", desc: "Zwiększa CPS o 50%", price: 500000000, purchased: false, apply: () => { globalCPSMultiplier *= 1.5; recalcCPS(); } },
+        { id: "stardust", name: "✨ Gwiazdkowy Pył", desc: "Złote ciasteczka pojawiają się 2x częściej", price: 1000000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.5; scheduleGoldenCookie(); } },
+        { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } }
     ];
 
     function recalcCPS() {
@@ -2203,8 +2215,35 @@
         for (let i = 0; i < buildings.length; i++) {
             total += buildings[i].baseCps * buildings[i].count;
         }
-        cookiesPerSecond = total;
+        cookiesPerSecond = total * globalCPSMultiplier;
         document.getElementById('cpsDisplay').innerText = cookiesPerSecond.toFixed(2);
+    }
+
+    // Funkcja do ponownego stosowania wszystkich ulepszeń (po wczytaniu stanu)
+    function applyAllUpgrades() {
+        // Reset zmiennych globalnych
+        clickMultiplier = 1;
+        globalCPSMultiplier = 1;
+        extraClickBonusPercent = 0;
+        doubleClickChance = 0;
+        goldenCookieFrequencyMultiplier = 1;
+        window.luckyCharm = false;
+        window.divineIntervention = false;
+        window.quantumAccelerator = false;
+        // Reset bazowych CPS budynków do wartości domyślnych
+        const defaultBaseCps = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
+        for (let i = 0; i < buildings.length; i++) {
+            buildings[i].baseCps = defaultBaseCps[i];
+        }
+        // Zastosuj wszystkie zakupione ulepszenia
+        for (let u of upgrades) {
+            if (u.purchased) {
+                u.apply();
+            }
+        }
+        recalcCPS();
+        rebuildBuildings();
+        rebuildUpgrades();
     }
 
     function rebuildBuildings() {
@@ -2287,6 +2326,14 @@
         let gain = clickMultiplier;
         if (activeBonuses.clickFrenzy) gain *= 777;
         if (activeBonuses.frenzy) gain *= 7;
+        // Dodatkowy bonus procentowy
+        if (extraClickBonusPercent > 0) {
+            gain += cookies * extraClickBonusPercent;
+        }
+        // Podwójne ciasteczko
+        if (doubleClickChance > 0 && Math.random() < doubleClickChance) {
+            gain *= 2;
+        }
         cookies += gain;
         updateStats();
         saveGame();
@@ -2299,49 +2346,42 @@
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
         const golden = document.createElement('div');
         golden.className = 'golden-cookie';
-        golden.innerHTML = '<img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23FFD700\' stroke=\'%23B8860B\' stroke-width=\'2\'/%3E%3Ccircle cx=\'35\' cy=\'35\' r=\'5\' fill=\'%238B5A2B\'/%3E%3Ccircle cx=\'65\' cy=\'45\' r=\'4\' fill=\'%238B5A2B\'/%3E%3Ccircle cx=\'50\' cy=\'70\' r=\'6\' fill=\'%238B5A2B\'/%3E%3C/svg%3E" style="width:100%">';
+        golden.innerHTML = '<img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 200 200\'%3E%3Cdefs%3E%3CradialGradient id=\'goldGrad\' cx=\'50%25\' cy=\'50%25\' r=\'50%25\'%3E%3Cstop offset=\'0%25\' stop-color=\'%23FFF0A0\'/%3E%3Cstop offset=\'70%25\' stop-color=\'%23FFD700\'/%3E%3Cstop offset=\'100%25\' stop-color=\'%23B8860B\'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx=\'100\' cy=\'100\' r=\'85\' fill=\'url(%23goldGrad)\' stroke=\'%238B5A2B\' stroke-width=\'4\'/%3E%3Cpath d=\'M30,100 Q50,70 70,90 Q90,60 110,80 Q130,40 150,70 Q160,90 170,110\' stroke=\'%23FFE0A0\' stroke-width=\'22\' stroke-linecap=\'round\' fill=\'none\' opacity=\'0.9\'/%3E%3Ccircle cx=\'45\' cy=\'45\' r=\'6\' fill=\'%23FF8C42\'/%3E%3Ccircle cx=\'155\' cy=\'55\' r=\'7\' fill=\'%23FFD700\'/%3E%3Ccircle cx=\'65\' cy=\'130\' r=\'5\' fill=\'%23FFB347\'/%3E%3Ccircle cx=\'120\' cy=\'150\' r=\'8\' fill=\'%23FFD700\'/%3E%3C/svg%3E" style="width:100%">';
         golden.style.left = Math.random() * (window.innerWidth - 100) + 'px';
         golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
         golden.onclick = () => {
             golden.remove();
             const bonus = Math.random();
-            // Dodatkowe bonusy
             if (bonus < 0.2 && window.luckyCharm) {
-                // Frenzy na dłużej
                 activeBonuses.frenzy = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
                 let duration = window.quantumAccelerator ? 45000 : 30000;
                 bonusTimer = setTimeout(() => { activeBonuses.frenzy = false; updateStats(); }, duration);
                 updateStats();
             } else if (bonus < 0.35) {
-                // Frenzy
                 activeBonuses.frenzy = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
                 let duration = window.quantumAccelerator ? 40000 : 30000;
                 bonusTimer = setTimeout(() => { activeBonuses.frenzy = false; updateStats(); }, duration);
                 updateStats();
             } else if (bonus < 0.55) {
-                // Click Frenzy
                 activeBonuses.clickFrenzy = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
                 let duration = window.quantumAccelerator ? 30000 : 20000;
                 bonusTimer = setTimeout(() => { activeBonuses.clickFrenzy = false; updateStats(); }, duration);
                 updateStats();
             } else if (bonus < 0.7) {
-                // Budżetowa Gwiazdka (10x CPS natychmiast)
                 const bonusCookies = cookiesPerSecond * 10;
                 cookies += bonusCookies;
                 updateStats();
                 if (window.luckyCharm) cookies += bonusCookies * 0.5;
                 alert(`✨ Otrzymałeś ${Math.floor(bonusCookies).toLocaleString()} bonusowych ciastek!`);
             } else if (bonus < 0.85) {
-                // Czasoprzestrzenny Skok (produkcja z 1 minuty w przód)
                 const bonusCookies = cookiesPerSecond * 60;
                 cookies += bonusCookies;
                 updateStats();
                 alert(`⏰ Dostałeś ${Math.floor(bonusCookies).toLocaleString()} ciastek z przyszłości!`);
             } else {
-                // Słodka Ulewa – spadające ciasteczka przez 10s
                 if (stormInterval) clearInterval(stormInterval);
                 activeBonuses.cookieStorm = true;
                 stormInterval = setInterval(() => {
@@ -2361,14 +2401,13 @@
             scheduleGoldenCookie();
         };
         document.body.appendChild(golden);
-        let timeoutDelay = window.goldenLuck ? 8000 : 10000;
+        let timeoutDelay = 10000 * goldenCookieFrequencyMultiplier;
         setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, timeoutDelay);
     }
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 30000;
-        if (upgrades.find(u => u.id === "golden_luck")?.purchased) baseDelay = 20000;
+        let baseDelay = 30000 * goldenCookieFrequencyMultiplier;
         const delay = baseDelay + Math.random() * 40000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
@@ -2386,6 +2425,11 @@
             if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
             if (stormInterval) clearInterval(stormInterval);
             activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false };
+            // Reset nowych zmiennych
+            globalCPSMultiplier = 1;
+            extraClickBonusPercent = 0;
+            doubleClickChance = 0;
+            goldenCookieFrequencyMultiplier = 1;
             window.luckyCharm = false;
             window.divineIntervention = false;
             window.quantumAccelerator = false;
@@ -2404,7 +2448,11 @@
             upgrades: upgrades.map(u => ({ purchased: u.purchased })),
             luckyCharm: window.luckyCharm || false,
             divineIntervention: window.divineIntervention || false,
-            quantumAccelerator: window.quantumAccelerator || false
+            quantumAccelerator: window.quantumAccelerator || false,
+            globalCPSMultiplier: globalCPSMultiplier,
+            extraClickBonusPercent: extraClickBonusPercent,
+            doubleClickChance: doubleClickChance,
+            goldenCookieFrequencyMultiplier: goldenCookieFrequencyMultiplier
         };
         localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
     }
@@ -2425,16 +2473,17 @@
                 if (state.upgrades) {
                     for (let i = 0; i < upgrades.length && i < state.upgrades.length; i++) {
                         upgrades[i].purchased = state.upgrades[i].purchased === true;
-                        if (upgrades[i].purchased && upgrades[i].id !== "chrono_boost") {
-                            upgrades[i].apply();
-                        }
                     }
-                    const chrono = upgrades.find(u => u.id === "chrono_boost");
-                    if (chrono && chrono.purchased) chrono.apply();
                 }
                 if (state.luckyCharm) window.luckyCharm = state.luckyCharm;
                 if (state.divineIntervention) window.divineIntervention = state.divineIntervention;
                 if (state.quantumAccelerator) window.quantumAccelerator = state.quantumAccelerator;
+                if (state.globalCPSMultiplier) globalCPSMultiplier = state.globalCPSMultiplier;
+                if (state.extraClickBonusPercent) extraClickBonusPercent = state.extraClickBonusPercent;
+                if (state.doubleClickChance) doubleClickChance = state.doubleClickChance;
+                if (state.goldenCookieFrequencyMultiplier) goldenCookieFrequencyMultiplier = state.goldenCookieFrequencyMultiplier;
+                // Zastosuj wszystkie ulepszenia ponownie, aby poprawić spójność
+                applyAllUpgrades();
                 updateStats();
                 rebuildBuildings();
                 rebuildUpgrades();
@@ -2448,7 +2497,7 @@
         if (activeBonuses.frenzy) currentCPS *= 7;
         if (window.divineIntervention && Math.random() < 0.01) {
             currentCPS *= 2;
-            setTimeout(() => { /* efekt tylko na jedną pętlę */ }, 100);
+            setTimeout(() => {}, 100);
         }
         if (currentCPS > 0) {
             cookies += currentCPS / 10;
