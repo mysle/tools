@@ -159,7 +159,7 @@
         .metric-card:hover { transform: translateY(-5px); border-color: var(--primary); }
         .chart-container { margin-top: 2rem; height: 300px; position: relative; }
 
-        /* STATUS BAR - NIGDY NIE SKACZE (USUNIĘTA ANIMACJA, STAŁA SZEROKOŚĆ) */
+        /* STATUS BAR - NIGDY NIE SKACZE (usunięto animację, stała szerokość) */
         .status-bar {
             position: fixed;
             bottom: 2rem;
@@ -181,8 +181,7 @@
             white-space: nowrap;
             pointer-events: none;
             box-sizing: border-box;
-            text-align: center;
-            justify-content: center;
+            width: min-content;
         }
         .status-dot {
             width: 8px;
@@ -190,7 +189,7 @@
             border-radius: 50%;
             background: var(--success);
             box-shadow: 0 0 10px var(--success);
-            /* BEZ ANIMACJI BLINK – KOŃCZYMY SKAKANIE */
+            /* brak animacji – pasek nie miga i nie skacze */
         }
 
         .result-box { margin-top: 1rem; padding: 1.5rem; background: rgba(99,102,241,0.1); border-radius: 1rem; border: 1px solid var(--glass-border); }
@@ -253,7 +252,7 @@
         .time-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
         .utc-offset { font-size: 0.75rem; background: rgba(0,0,0,0.4); display: inline-block; padding: 0.2rem 0.5rem; border-radius: 1rem; }
 
-        /* Cookie Clicker styles - ulepszone, stabilne */
+        /* Cookie Clicker styles - ulepszone */
         .cookie-game {
             text-align: center;
         }
@@ -267,19 +266,18 @@
             box-shadow: 0 0 20px rgba(99,102,241,0.2);
         }
         .cookie-count {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
             background: linear-gradient(135deg, #fff, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            word-break: break-word;
         }
         .cookie {
             cursor: pointer;
             transition: transform 0.1s ease;
-            max-width: 220px;
+            max-width: 200px;
             margin: 0 auto;
-            filter: drop-shadow(0 0 15px rgba(210,166,121,0.8));
+            filter: drop-shadow(0 0 15px rgba(210,166,121,0.6));
         }
         .cookie:active {
             transform: scale(0.95);
@@ -289,7 +287,7 @@
         }
         @keyframes cookiePop {
             0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
         .golden-cookie {
@@ -1061,7 +1059,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER – NOWA GRAFIKA I STABILNOŚĆ ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER – POPRAWIONA + NOWE BONUSY ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker</h2>
@@ -1075,45 +1073,32 @@
             </div>
             
             <div class="cookie" id="cookieImage" onclick="clickCookie()">
-                <!-- PIĘKNE CIASTKO Z PIEgUSKAMI, LUKREM I POSYPKĄ -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" style="width: 100%; max-width: 220px; margin: 0 auto; display: block; cursor: pointer; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));">
+                <!-- PRZEPIĘKNE CIASTKO Z PIEGUSKAMI I GRADIENTEM -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" style="width: 100%; max-width: 200px; margin: 0 auto; display: block; cursor: pointer; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));">
                     <defs>
-                        <radialGradient id="cookieBase" cx="45%" cy="40%" r="60%">
-                            <stop offset="0%" stop-color="#FDE68A"/>
-                            <stop offset="70%" stop-color="#D97706"/>
-                            <stop offset="100%" stop-color="#92400E"/>
+                        <radialGradient id="cookieGrad" cx="40%" cy="30%" r="70%">
+                            <stop offset="0%" stop-color="#FBD38D"/>
+                            <stop offset="60%" stop-color="#DD6B20"/>
+                            <stop offset="100%" stop-color="#9C4221"/>
                         </radialGradient>
-                        <radialGradient id="icingGlow" cx="30%" cy="30%" r="50%">
-                            <stop offset="0%" stop-color="#FFF8E7"/>
-                            <stop offset="100%" stop-color="#FFE4B5"/>
-                        </radialGradient>
-                        <filter id="cookieShadow" x="-10%" y="-10%" width="120%" height="120%">
-                            <feDropShadow dx="4" dy="6" stdDeviation="5" flood-color="#00000055"/>
+                        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                            <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#00000055"/>
                         </filter>
                     </defs>
-                    <!-- Ciacho -->
-                    <circle cx="100" cy="100" r="85" fill="url(#cookieBase)" stroke="#78350F" stroke-width="4" filter="url(#cookieShadow)"/>
-                    <!-- Lukier -->
-                    <path d="M30,100 Q55,65 85,85 Q110,50 135,75 Q155,60 170,95 Q175,115 170,135" stroke="url(#icingGlow)" stroke-width="18" stroke-linecap="round" fill="none" opacity="0.85"/>
-                    <!-- Piegi (ciemne kropki) -->
-                    <circle cx="50" cy="55" r="5" fill="#4A1C0E"/>
-                    <circle cx="70" cy="45" r="4" fill="#4A1C0E"/>
-                    <circle cx="145" cy="65" r="6" fill="#4A1C0E"/>
-                    <circle cx="125" cy="50" r="4" fill="#4A1C0E"/>
-                    <circle cx="160" cy="90" r="5" fill="#4A1C0E"/>
-                    <circle cx="85" cy="135" r="5" fill="#4A1C0E"/>
-                    <circle cx="110" cy="145" r="6" fill="#4A1C0E"/>
-                    <circle cx="55" cy="130" r="4" fill="#4A1C0E"/>
-                    <circle cx="145" cy="130" r="5" fill="#4A1C0E"/>
-                    <circle cx="38" cy="85" r="4" fill="#4A1C0E"/>
-                    <!-- Kolorowa posypka -->
-                    <circle cx="65" cy="70" r="5" fill="#FF6B6B"/>
-                    <circle cx="120" cy="90" r="6" fill="#FFD93D"/>
-                    <circle cx="90" cy="115" r="5" fill="#6BCB77"/>
-                    <circle cx="140" cy="115" r="5" fill="#FF8C42"/>
-                    <circle cx="75" cy="100" r="4" fill="#FFD93D"/>
-                    <circle cx="130" cy="75" r="5" fill="#FF6B6B"/>
-                    <circle cx="100" cy="65" r="4" fill="#6BCB77"/>
+                    <circle cx="100" cy="100" r="85" fill="url(#cookieGrad)" stroke="#78350F" stroke-width="4" filter="url(#shadow)"/>
+                    <!-- Piegi / kropki czekolady -->
+                    <circle cx="65" cy="65" r="7" fill="#3E1A0A"/>
+                    <circle cx="130" cy="70" r="6" fill="#3E1A0A"/>
+                    <circle cx="95" cy="135" r="8" fill="#3E1A0A"/>
+                    <circle cx="70" cy="120" r="5" fill="#3E1A0A"/>
+                    <circle cx="120" cy="110" r="7" fill="#3E1A0A"/>
+                    <circle cx="50" cy="95" r="5" fill="#3E1A0A"/>
+                    <circle cx="145" cy="120" r="6" fill="#3E1A0A"/>
+                    <circle cx="85" cy="45" r="5" fill="#3E1A0A"/>
+                    <circle cx="135" cy="45" r="6" fill="#3E1A0A"/>
+                    <circle cx="155" cy="90" r="5" fill="#3E1A0A"/>
+                    <circle cx="45" cy="135" r="5" fill="#3E1A0A"/>
+                    <circle cx="110" cy="85" r="5" fill="#3E1A0A"/>
                 </svg>
             </div>
 
@@ -1148,7 +1133,6 @@
     <p>© 2026 MultiTool Pro | <a href="polityka.html" style="color: var(--primary);">Polityka prywatności</a> | <a href="kontakt.html" style="color: var(--primary);">Kontakt</a></p>
 </footer>
 
-<!-- STABILNY PASEK STATUSU – NIGDY NIE SKACZE -->
 <div class="status-bar"><div class="status-dot"></div><span>Połączenie aktywne</span></div>
 
 <!-- BANER ZGÓD COOKIE -->
@@ -1610,7 +1594,7 @@
             else if (from === 'K') celsius = val - 273.15;
             const results = { '°C': celsius, '°F': celsius * 9/5 + 32, 'K': celsius + 273.15 };
             Object.entries(results).forEach(([unit, value]) => {
-                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></tr>`;
+                tbody.innerHTML += `<tr><td>${formatUnit(unit)}</td><td>${value.toFixed(4)}</td></table>`;
             });
             return;
         }
@@ -2199,9 +2183,9 @@
         });
         tbody.innerHTML += `
             <tr style="background:rgba(99,102,241,0.2);">
-                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></div>
+                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td>
                 <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
-                <td>0h</div>
+                <td>0h</span></div>
             </tr>
         `;
     }
@@ -2224,7 +2208,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER – STABILNA WERSJA Z FORMATOWANIEM LICZB ========================
+    // ======================== COOKIE CLICKER – NOWA, BARDZIEJ ROZBUDOWANA WERSJA ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2233,11 +2217,13 @@
     let goldenCookieTimeout = null;
     let stormInterval = null;
 
+    // Nowe zmienne globalne dla dodatkowych ulepszeń
     let globalCPSMultiplier = 1;
-    let extraClickBonusPercent = 0;
-    let doubleClickChance = 0;
-    let goldenCookieFrequencyMultiplier = 1;
+    let extraClickBonusPercent = 0;   // dodatkowy procent od kliknięcia (np. 10% obecnych ciastek)
+    let doubleClickChance = 0;        // szansa na podwójne ciasteczko (0-1)
+    let goldenCookieFrequencyMultiplier = 1; // im mniejszy delay, tym częściej – ulepszenie zmniejsza delay
 
+    // Nowe budynki – więcej, lepsze nazwy
     const buildings = [
         { name: "✨ Mistyczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
         { name: "👵 Armia Babć", baseCps: 1, basePrice: 100, count: 0 },
@@ -2255,6 +2241,7 @@
         { name: "🌌 Czarodziejska Piekarnia", baseCps: 2.8e9, basePrice: 2.1e15, count: 0 }
     ];
 
+    // Więcej ulepszeń (dodano 5 nowych)
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Kliknięcia dają 2x ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "+0,2 CPS za kursor", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
@@ -2266,20 +2253,13 @@
         { id: "lucky_charm", name: "🍀 Szczęśliwy Traf", desc: "Bonusy od Złotego Ciasteczka są lepsze", price: 25000000, purchased: false, apply: () => { window.luckyCharm = true; } },
         { id: "divine_intervention", name: "✨ Boska Interwencja", desc: "Czasami podwaja CPS na 10s", price: 100000000, purchased: false, apply: () => { window.divineIntervention = true; } },
         { id: "quantum_accelerator", name: "⚡ Przyspieszenie Kwantowe", desc: "Bonusy trwają dłużej", price: 500000000, purchased: false, apply: () => { window.quantumAccelerator = true; } },
+        // NOWE ULEPSZENIA
         { id: "caramel_revolution", name: "🍬 Karmelowa Rewolucja", desc: "Podwaja całkowitą produkcję ciastek", price: 50000000, purchased: false, apply: () => { globalCPSMultiplier *= 2; recalcCPS(); } },
         { id: "rainbow_sprinkles", name: "🌈 Tęczowa Posypka", desc: "Kliknięcia dają dodatkowe 10% posiadanych ciastek", price: 200000000, purchased: false, apply: () => { extraClickBonusPercent = 0.1; } },
         { id: "hourglass_of_time", name: "⏳ Klepsydra Czasu", desc: "Zwiększa CPS o 50%", price: 500000000, purchased: false, apply: () => { globalCPSMultiplier *= 1.5; recalcCPS(); } },
         { id: "stardust", name: "✨ Gwiazdkowy Pył", desc: "Złote ciasteczka pojawiają się 2x częściej", price: 1000000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.5; scheduleGoldenCookie(); } },
         { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } }
     ];
-
-    // Formatowanie dużej liczby ciastek (stabilizacja szerokości)
-    function formatCookies(num) {
-        if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
-        if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
-        if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
-        return Math.floor(num).toLocaleString();
-    }
 
     function recalcCPS() {
         let total = 0;
@@ -2290,7 +2270,9 @@
         document.getElementById('cpsDisplay').innerText = cookiesPerSecond.toFixed(2);
     }
 
+    // Funkcja do ponownego stosowania wszystkich ulepszeń (po wczytaniu stanu)
     function applyAllUpgrades() {
+        // Reset zmiennych globalnych
         clickMultiplier = 1;
         globalCPSMultiplier = 1;
         extraClickBonusPercent = 0;
@@ -2299,9 +2281,17 @@
         window.luckyCharm = false;
         window.divineIntervention = false;
         window.quantumAccelerator = false;
+        // Reset bazowych CPS budynków do wartości domyślnych
         const defaultBaseCps = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
-        for (let i = 0; i < buildings.length; i++) buildings[i].baseCps = defaultBaseCps[i];
-        for (let u of upgrades) if (u.purchased) u.apply();
+        for (let i = 0; i < buildings.length; i++) {
+            buildings[i].baseCps = defaultBaseCps[i];
+        }
+        // Zastosuj wszystkie zakupione ulepszenia
+        for (let u of upgrades) {
+            if (u.purchased) {
+                u.apply();
+            }
+        }
         recalcCPS();
         rebuildBuildings();
         rebuildUpgrades();
@@ -2344,7 +2334,7 @@
     }
 
     function updateStats() {
-        document.getElementById('cookieDisplay').innerText = formatCookies(cookies);
+        document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
         recalcCPS();
         let bonusText = "";
         if (activeBonuses.frenzy) bonusText += "⚡ Frenzy (x7 CPS)! ";
@@ -2387,13 +2377,19 @@
         let gain = clickMultiplier;
         if (activeBonuses.clickFrenzy) gain *= 777;
         if (activeBonuses.frenzy) gain *= 7;
-        if (extraClickBonusPercent > 0) gain += cookies * extraClickBonusPercent;
-        if (doubleClickChance > 0 && Math.random() < doubleClickChance) gain *= 2;
+        // Dodatkowy bonus procentowy
+        if (extraClickBonusPercent > 0) {
+            gain += cookies * extraClickBonusPercent;
+        }
+        // Podwójne ciasteczko
+        if (doubleClickChance > 0 && Math.random() < doubleClickChance) {
+            gain *= 2;
+        }
         cookies += gain;
         updateStats();
         saveGame();
-        const cookieImg = document.querySelector('#cookieImage svg');
-        if (cookieImg) {
+        const cookieImg = document.querySelector('#cookieImage svg'); // zmieniono selektor na svg
+        if(cookieImg) {
             cookieImg.classList.add('cookie-animation');
             setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200);
         }
@@ -2473,14 +2469,16 @@
         if (confirm("Czy na pewno chcesz rozpocząć nową grę? Wszystkie zapisane postępy zostaną utracone.")) {
             cookies = 0;
             clickMultiplier = 1;
-            for (let b of buildings) b.count = 0;
+            for (let b of buildings) { b.count = 0; }
+            // Przywróć domyślne baseCps
             const defaults = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
             for (let i = 0; i < buildings.length; i++) buildings[i].baseCps = defaults[i];
-            for (let u of upgrades) u.purchased = false;
+            for (let u of upgrades) { u.purchased = false; }
             if (bonusTimer) clearTimeout(bonusTimer);
             if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
             if (stormInterval) clearInterval(stormInterval);
             activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false };
+            // Reset nowych zmiennych
             globalCPSMultiplier = 1;
             extraClickBonusPercent = 0;
             doubleClickChance = 0;
@@ -2537,6 +2535,7 @@
                 if (state.extraClickBonusPercent) extraClickBonusPercent = state.extraClickBonusPercent;
                 if (state.doubleClickChance) doubleClickChance = state.doubleClickChance;
                 if (state.goldenCookieFrequencyMultiplier) goldenCookieFrequencyMultiplier = state.goldenCookieFrequencyMultiplier;
+                // Zastosuj wszystkie ulepszenia ponownie, aby poprawić spójność
                 applyAllUpgrades();
                 updateStats();
                 rebuildBuildings();
@@ -2545,16 +2544,20 @@
         }
     }
 
+    let lastCookies = 0;
     function gameLoop() {
         let currentCPS = cookiesPerSecond;
         if (activeBonuses.frenzy) currentCPS *= 7;
-        if (window.divineIntervention && Math.random() < 0.01) currentCPS *= 2;
+        if (window.divineIntervention && Math.random() < 0.01) {
+            currentCPS *= 2;
+        }
         if (currentCPS > 0) {
-            cookies += currentCPS / 10;  // co 100 ms? nie, to wywołanie jest co 250 ms, więc /4? Ale zachowujemy /10 dla kompatybilności.
+            cookies += currentCPS / 10;
             updateStats();
             saveGame();
         }
-        setTimeout(gameLoop, 250); // Zmniejszamy częstotliwość aktualizacji (było 100ms)
+        // Zmniejszamy częstotliwość aktualizacji do 200 ms, aby jeszcze bardziej ustabilizować pasek
+        setTimeout(gameLoop, 200);
     }
 
     loadGame();
