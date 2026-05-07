@@ -127,6 +127,7 @@
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
         th { color: var(--text-muted); font-weight: 600; }
+        th:last-child { text-align: right; }  /* Wyrównanie nagłówka "Wynik" do prawej */
         td:first-child, th:first-child { width: 40%; }
         td:last-child { text-align: right; font-family: 'Monaco', 'Menlo', monospace; font-size: 1rem; letter-spacing: 0.5px; }
         .sub-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
@@ -721,7 +722,12 @@
             </div>
             <div class="table-wrapper">
                 <table id="convTable">
-                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Jednostka</th>
+                            <th>Wynik</th>
+                        </tr>
+                    </thead>
                     <tbody id="convTableBody"></tbody>
                 </table>
             </div>
@@ -1266,7 +1272,7 @@
         if (customIP && customIP.trim()) fetchIPInfo(customIP.trim());
     }
 
-    // ======================== MODUŁ WALUTY (bez zmian) ========================
+    // ======================== MODUŁ WALUTY ========================
     let exchangeRates = {};
     let previousRates = {};
     let lastSuccessfulRates = null;
@@ -1568,8 +1574,8 @@
 
     let currentCategory = 'length';
     let currentFromUnit = 'm';
-    let currentDataMode = '1000'; // '1000' lub '1024'
-    let resultElements = []; // przechowuje referencje do komórek wyników i jednostek
+    let currentDataMode = '1000';
+    let resultElements = [];
 
     function formatUnit(unit) {
         const name = unitNames[unit] || '';
@@ -1602,7 +1608,7 @@
             cellValue.setAttribute('data-unit', unit);
             resultElements.push({ unit: unit, element: cellValue });
         });
-        convertUnits(); // natychmiast wypełnij wartościami
+        convertUnits();
     }
 
     function convertUnits() {
@@ -1610,7 +1616,6 @@
         const val = parseFloat(document.getElementById('convValue').value) || 0;
         const fromUnit = currentFromUnit;
 
-        // Oblicz wszystkie wyniki dla danej kategorii
         if (cat === 'temperature') {
             let celsius;
             if (fromUnit === '°C') celsius = val;
@@ -1646,7 +1651,6 @@
             return;
         }
 
-        // pozostałe kategorie
         const unitsMap = unitCategories[cat].units;
         const factor = unitsMap[fromUnit] || 1;
         const baseVal = val * factor;
@@ -1674,11 +1678,9 @@
         currentFromUnit = units[0];
         select.value = currentFromUnit;
 
-        // pokaż/ukryj radio dla danych
         const dataModeDiv = document.getElementById('dataModeDiv');
         dataModeDiv.style.display = currentCategory === 'data' ? 'block' : 'none';
 
-        // odśwież tabelę
         rebuildConverterTable();
     }
 
@@ -1701,13 +1703,13 @@
             }
         }
         if (currentCategory === 'data') {
-            rebuildConverterTable(); // przebuduj tabelę dla nowego trybu
+            rebuildConverterTable();
         } else {
             convertUnits();
         }
     }
 
-    // ======================== MODUŁ KALKULATORÓW (bez zmian) ========================
+    // ======================== MODUŁ KALKULATORÓW ========================
     function switchSubTab(sub, event) {
         document.querySelectorAll('#finance-tab .sub-content').forEach(el => el.style.display = 'none');
         document.querySelectorAll('#finance-tab .sub-tab-btn').forEach(el => el.classList.remove('active'));
@@ -1912,7 +1914,7 @@
         updateFromDecimal();
     }
 
-    // ======================== MODUŁ SPEED TESTU (bez zmian) ========================
+    // ======================== MODUŁ SPEED TESTU ========================
     let speedChart = null;
     let isTesting = false;
 
@@ -2098,7 +2100,7 @@
         isTesting = false;
     }
 
-    // ======================== MODUŁ CZASU I STREF (bez zmian) ========================
+    // ======================== MODUŁ CZASU I STREF ========================
     let timezoneCards = [];
     const defaultCards = [
         { name: "Warszawa", tz: "Europe/Warsaw" },
@@ -2264,16 +2266,16 @@
             tbody.innerHTML += `
                 <tr>
                     <td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td>
-                    <td>${time}<br><span style="font-size:0.7rem;">${date}</span></div></td>
-                    <td>${diffStr}</div></td>
+                    <td>${time}<br><span style="font-size:0.7rem;">${date}</span></td>
+                    <td>${diffStr}</td>
                 </tr>
             `;
         });
         tbody.innerHTML += `
             <tr style="background:rgba(99,102,241,0.2);">
-                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></div></td>
-                    <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></div></div></td>
-                    <td>0h</div></div></td>
+                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td>
+                <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
+                <td>0h</div></td>
             </tr>
         `;
     }
@@ -2296,7 +2298,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (bez zmian) ========================
+    // ======================== COOKIE CLICKER ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2688,7 +2690,6 @@
 
     // ======================== INICJALIZACJA ========================
     fetchRates();
-    // Inicjalizacja konwertera
     currentCategory = 'length';
     currentDataMode = '1000';
     updateConverter();
