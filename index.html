@@ -124,9 +124,11 @@
         .btn-sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
         .result-big { font-size: 2rem; font-weight: 800; color: var(--primary); }
         .table-wrapper { overflow-x: auto; margin-top: 1rem; }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
         th { color: var(--text-muted); font-weight: 600; }
+        td:first-child, th:first-child { width: 40%; }
+        td:last-child { text-align: right; font-family: 'Monaco', 'Menlo', monospace; font-size: 1rem; letter-spacing: 0.5px; }
         .sub-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
         .sub-tab-btn {
             padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(255,255,255,0.05);
@@ -251,7 +253,7 @@
         .time-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
         .utc-offset { font-size: 0.75rem; background: rgba(0,0,0,0.4); display: inline-block; padding: 0.2rem 0.5rem; border-radius: 1rem; }
 
-        /* Cookie Clicker styles - ulepszone */
+        /* Cookie Clicker styles */
         .cookie-game {
             text-align: center;
         }
@@ -397,7 +399,7 @@
             100% { opacity: 0.7; }
         }
 
-        /* Calculator specific - improved layout */
+        /* Calculator specific */
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -567,10 +569,6 @@
             .table-wrapper th:last-child, .table-wrapper td:last-child {
                 min-width: 100px;
             }
-            .table-wrapper table {
-                min-width: 100%;
-                width: auto;
-            }
             .converter-input-row {
                 flex-direction: column;
                 gap: 0.5rem;
@@ -694,7 +692,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA KONWERTER (POPRAWIONA – BEZ TRZĘSIENIA) ============ -->
+    <!-- ============ ZAKŁADKA KONWERTER - POPRAWIONA (brak drżenia i przesuwania) ============ -->
     <div id="converter-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📏 Konwerter Pro</h2>
@@ -713,18 +711,18 @@
                     <option value="pressure">🧪 Ciśnienie (Pressure)</option>
                     <option value="volume">💧 Objętość (Volume)</option>
                 </select>
-                <input type="number" id="convValue" class="modern-input converter-value-input" style="flex:3;" placeholder="Wartość" value="1" oninput="updateConverterValues()">
-                <select id="convFrom" class="modern-select" style="flex:1;" onchange="onFromChange()"></select>
+                <input type="number" id="convValue" class="modern-input converter-value-input" style="flex:3;" placeholder="Wartość" value="1" oninput="convertUnits()">
+                <select id="convFrom" class="modern-select" style="flex:1;" onchange="onFromUnitChange()"></select>
             </div>
             <div id="dataModeDiv" style="margin-bottom: 1rem; display: none; text-align: center;">
                 <label style="color: var(--text-muted); margin-right: 1rem;">System przeliczania:</label>
-                <label style="margin-right: 1rem; cursor: pointer;"><input type="radio" name="dataMode" value="1000" checked onchange="onDataModeChange()"> SI (1 KB = 1000 B)</label>
+                <label style="margin-right: 1rem; cursor: pointer;"><input type="radio" name="dataMode" value="1000" onchange="onDataModeChange()"> SI (1 KB = 1000 B)</label>
                 <label style="cursor: pointer;"><input type="radio" name="dataMode" value="1024" onchange="onDataModeChange()"> IEC (1 KiB = 1024 B)</label>
             </div>
             <div class="table-wrapper">
                 <table id="convTable">
                     <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
-                    <tbody></tbody>
+                    <tbody id="convTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -913,11 +911,14 @@
             </div>
 
             <div id="ipContent" style="display: none;">
+                <!-- Hero IP -->
                 <div class="ip-hero">
                     <div class="label" style="font-size: 1rem;">Twój adres IP</div>
                     <div class="ip-display" id="ipAddress">0.0.0.0</div>
                     <button class="btn btn-sm" onclick="copyIP()" style="margin-top: 0.5rem;"><i class="fas fa-copy"></i> Kopiuj IP</button>
                 </div>
+
+                <!-- Podstawowe info -->
                 <div class="info-grid" id="ipInfoGrid">
                     <div class="info-item"><div class="label">Typ IP</div><div class="value" id="ipType">—</div></div>
                     <div class="info-item"><div class="label">Dostawca (ISP)</div><div class="value" id="ipIsp">—</div></div>
@@ -926,15 +927,21 @@
                     <div class="info-item"><div class="label">Kod pocztowy</div><div class="value" id="ipPostal">—</div></div>
                     <div class="info-item"><div class="label">Strefa czasowa</div><div class="value" id="ipTimezone">—</div></div>
                 </div>
+
+                <!-- Szczegóły sieci -->
                 <h3 class="section-title"><i class="fas fa-network-wired"></i> Szczegóły sieci</h3>
                 <div class="info-grid">
                     <div class="info-item"><div class="label">ASN</div><div class="value" id="ipAsn">—</div></div>
                     <div class="info-item"><div class="label">Organizacja</div><div class="value" id="ipOrg">—</div></div>
                     <div class="info-item"><div class="label">Host</div><div class="value" id="ipHost">—</div></div>
                 </div>
-                <h3 class="section-title"><i class="fas fa-map-marked-alt"></i> Geolokalizacja IP (najdokładniejsza możliwa)</h3>
+
+                <!-- Mapa -->
+                <h3 class="section-title"><i class="fas fa-map-marked-alt"></i> Geolokalizacja IP</h3>
                 <div id="ipMap"></div>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Lokalizacja na podstawie IP – maksymalna dokładność dostępna z bazy IP. Współrzędne uzyskane z ipapi.co.</p>
+
+                <!-- Dodatkowe informacje o lokalizacji -->
                 <h3 class="section-title"><i class="fas fa-info-circle"></i> Dodatkowe informacje o lokalizacji</h3>
                 <div class="info-grid" id="ipExtraInfo">
                     <div class="info-item"><div class="label">Flaga</div><div class="value" id="extraFlag">—</div></div>
@@ -943,6 +950,8 @@
                     <div class="info-item"><div class="label">Język(i)</div><div class="value" id="extraLang">—</div></div>
                     <div class="info-item"><div class="label">Kod kierunkowy</div><div class="value" id="extraCallingCode">—</div></div>
                 </div>
+
+                <!-- Urządzenie -->
                 <h3 class="section-title" style="margin-top: 2rem;"><i class="fas fa-laptop"></i> Informacje o urządzeniu</h3>
                 <div class="info-grid">
                     <div class="info-item"><div class="label">Przeglądarka</div><div class="value" id="devBrowser">—</div></div>
@@ -950,6 +959,8 @@
                     <div class="info-item"><div class="label">Urządzenie</div><div class="value" id="devDevice">—</div></div>
                     <div class="info-item"><div class="label">Język</div><div class="value" id="devLang">—</div></div>
                 </div>
+
+                <!-- Akcje -->
                 <div class="ip-actions">
                     <button class="btn" onclick="copyIP()"><i class="fas fa-copy"></i> Kopiuj IP</button>
                     <button class="btn" onclick="checkCustomIP()" style="background: rgba(255,255,255,0.1);"><i class="fas fa-search"></i> Sprawdź inne IP</button>
@@ -1116,18 +1127,21 @@
     </div>
 </div>
 
+<!-- ============ SEKCJA KONTAKT ============ -->
 <div id="kontakt" class="glass-card" style="margin: 2rem auto; max-width: 1400px; text-align: center;">
     <h3 style="margin-bottom: 1rem;"><i class="fas fa-envelope"></i> Kontakt</h3>
     <p>Masz pytania lub uwagi? Napisz do nas przez formularz:</p>
     <p><a href="kontakt.html" style="color: var(--primary); font-size: 1.2rem;">✉️ Przejdź do formularza kontaktowego</a></p>
 </div>
 
+<!-- STOPKA -->
 <footer style="text-align: center; padding: 1.5rem; border-top: 1px solid var(--glass-border); margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem;">
     <p>© 2026 MultiTool Pro | <a href="polityka.html" style="color: var(--primary);">Polityka prywatności</a> | <a href="kontakt.html" style="color: var(--primary);">Kontakt</a></p>
 </footer>
 
 <div class="status-bar"><div class="status-dot"></div><span>Połączenie aktywne</span></div>
 
+<!-- BANER ZGÓD COOKIE -->
 <div id="cookieConsent" class="cookie-consent" style="display: none;">
     <p>🍪 Ta strona używa plików cookie Google Analytics i AdSense. Dalsze korzystanie oznacza zgodę na ich użycie, chyba że je odrzucisz. <a href="polityka.html" style="color: var(--primary);">Dowiedz się więcej</a>.</p>
     <div class="cookie-buttons">
@@ -1160,6 +1174,7 @@
     async function fetchIPInfo(ip = '') {
         document.getElementById('ipLoading').style.display = 'flex';
         document.getElementById('ipContent').style.display = 'none';
+
         try {
             const url = ip ? `https://ipapi.co/${ip}/json/` : 'https://ipapi.co/json/';
             const res = await fetch(url);
@@ -1179,6 +1194,7 @@
     function renderIPData(data) {
         document.getElementById('ipLoading').style.display = 'none';
         document.getElementById('ipContent').style.display = 'block';
+
         document.getElementById('ipAddress').textContent = data.ip || '—';
         document.getElementById('ipType').textContent = data.ip?.includes(':') ? 'IPv6' : 'IPv4';
         document.getElementById('ipIsp').textContent = data.org || data.isp || '—';
@@ -1189,6 +1205,7 @@
         document.getElementById('ipAsn').textContent = data.asn || '—';
         document.getElementById('ipOrg').textContent = data.org || '—';
         document.getElementById('ipHost').textContent = data.ip || '—';
+
         const countryCode = data.country_code ? data.country_code.toLowerCase() : '';
         const flagEmoji = countryCode ? String.fromCodePoint(...[...countryCode.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : '🏳️';
         document.getElementById('extraFlag').innerHTML = `${flagEmoji} ${data.country_name || '—'}`;
@@ -1198,6 +1215,7 @@
         document.getElementById('extraCurrency').textContent = currencyText;
         document.getElementById('extraLang').textContent = data.languages ? data.languages.replace(/;/g, ', ') : '—';
         document.getElementById('extraCallingCode').textContent = data.country_calling_code || '—';
+
         if (data.latitude && data.longitude) {
             if (ipMap) ipMap.remove();
             ipMap = L.map('ipMap').setView([data.latitude, data.longitude], 15);
@@ -1207,6 +1225,7 @@
             L.marker([data.latitude, data.longitude]).addTo(ipMap)
                 .bindPopup(`${data.city || ''}, ${data.country_name || ''}<br>Współrzędne: ${data.latitude}, ${data.longitude}`).openPopup();
         }
+
         const ua = navigator.userAgent;
         document.getElementById('devBrowser').textContent = getBrowser(ua);
         document.getElementById('devOs').textContent = getOS(ua);
@@ -1221,6 +1240,7 @@
         if (ua.includes('Safari')) return 'Safari';
         return 'Inna';
     }
+
     function getOS(ua) {
         if (ua.includes('Windows')) return 'Windows';
         if (ua.includes('Mac')) return 'macOS';
@@ -1229,6 +1249,7 @@
         if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
         return '—';
     }
+
     function copyIP() {
         const ip = document.getElementById('ipAddress').textContent;
         navigator.clipboard.writeText(ip).then(() => {
@@ -1239,12 +1260,13 @@
             }
         });
     }
+
     function checkCustomIP() {
         const customIP = prompt('Wpisz adres IP do sprawdzenia:');
         if (customIP && customIP.trim()) fetchIPInfo(customIP.trim());
     }
 
-    // ======================== MODUŁ WALUTY ========================
+    // ======================== MODUŁ WALUTY (bez zmian) ========================
     let exchangeRates = {};
     let previousRates = {};
     let lastSuccessfulRates = null;
@@ -1263,12 +1285,14 @@
             document.getElementById('amount').value = val;
         }
     }
+
     function getAmountValue() {
         let val = document.getElementById('amount').value;
         if (val === '') return 0;
         let num = parseFloat(val);
         return isNaN(num) ? 0 : num;
     }
+
     function populateCurrencyLists() {
         const currencies = Object.keys(exchangeRates).sort();
         const fromList = document.getElementById('currencyListFrom');
@@ -1285,6 +1309,7 @@
         if (!toInput.value || !currencies.includes(toInput.value.toUpperCase())) toInput.value = 'PLN';
         convert();
     }
+
     function onBaseCurrencyChange() {
         clearTimeout(baseChangeTimer);
         baseChangeTimer = setTimeout(() => {
@@ -1298,6 +1323,7 @@
             }
         }, 150);
     }
+
     async function fetchRates() {
         if (isFetching) return;
         isFetching = true;
@@ -1306,6 +1332,7 @@
             if (!res.ok) throw new Error('Błąd sieci');
             const data = await res.json();
             const newRates = data.rates;
+
             if (!statsReady) {
                 previousRates = { ...newRates };
                 for (let key in previousRates) {
@@ -1313,8 +1340,10 @@
                 }
                 statsReady = true;
             }
+
             exchangeRates = newRates;
             lastSuccessfulRates = { ...exchangeRates };
+
             populateCurrencyLists();
             updateMarketStats();
         } catch (e) {
@@ -1338,6 +1367,7 @@
         }
         convert();
     }
+
     function updateMarketStats() {
         try {
             const baseCurrency = lastBaseCurrency;
@@ -1346,42 +1376,87 @@
                 document.getElementById('allStats').innerHTML = '';
                 return;
             }
+
             document.getElementById('statsBaseCurrency').textContent = baseCurrency;
             const statsContainer = document.getElementById('allStats');
             const topMoversContainer = document.getElementById('topMovers');
             const currentBaseRate = exchangeRates[baseCurrency];
+
             if (!statsReady || Object.keys(previousRates).length === 0) {
                 topMoversContainer.innerHTML = '<p>Zbieranie danych historycznych...</p>';
                 statsContainer.innerHTML = '';
                 return;
             }
+
             const previousBaseRate = previousRates[baseCurrency] || currentBaseRate;
-            const currencyEntries = Object.keys(exchangeRates).filter(c => c !== baseCurrency).sort();
+
+            const currencyEntries = Object.keys(exchangeRates)
+                .filter(c => c !== baseCurrency)
+                .sort();
+
             const changes = [];
             const allStatsData = [];
+
             currencyEntries.forEach(currency => {
                 const currentRate = exchangeRates[currency];
                 if (!currentRate || currentRate <= 0) return;
+
                 const valueInBase = currentBaseRate / currentRate;
                 let changePercent = 0;
+
                 if (previousRates[currency]) {
                     const oldValueInBase = (previousRates[baseCurrency] || previousBaseRate) / previousRates[currency];
-                    if (oldValueInBase > 0) changePercent = ((valueInBase - oldValueInBase) / oldValueInBase) * 100;
+                    if (oldValueInBase > 0) {
+                        changePercent = ((valueInBase - oldValueInBase) / oldValueInBase) * 100;
+                    }
                 }
+
                 changes.push({ currency, valueInBase, changePercent });
                 allStatsData.push({ currency, valueInBase, changePercent });
             });
+
             changes.sort((a, b) => b.changePercent - a.changePercent);
             const topGainers = changes.slice(0, 5);
             const topLosers = changes.slice(-5).reverse();
-            const gainersHTML = topGainers.length > 0 ? topGainers.map(c => `<div class="mover-item"><span><strong>${c.currency}</strong> ${c.valueInBase.toFixed(4)} ${baseCurrency}</span><span class="stat-positive">+${c.changePercent.toFixed(2)}% <i class="fas fa-arrow-up"></i></span></div>`).join('') : '<p>Brak danych</p>';
-            const losersHTML = topLosers.length > 0 ? topLosers.map(c => `<div class="mover-item"><span><strong>${c.currency}</strong> ${c.valueInBase.toFixed(4)} ${baseCurrency}</span><span class="stat-negative">${c.changePercent.toFixed(2)}% <i class="fas fa-arrow-down"></i></span></div>`).join('') : '<p>Brak danych</p>';
-            topMoversContainer.innerHTML = `<div class="mover-group"><h4 style="margin-bottom: 0.5rem; color: var(--success);">🔥 Top 5 Wzrosty</h4>${gainersHTML}</div><div class="mover-group"><h4 style="margin-bottom: 0.5rem; color: var(--danger);">📉 Top 5 Spadki</h4>${losersHTML}</div>`;
+
+            const gainersHTML = topGainers.length > 0 ? topGainers.map(c => `
+                <div class="mover-item">
+                    <span><strong>${c.currency}</strong> ${c.valueInBase.toFixed(4)} ${baseCurrency}</span>
+                    <span class="stat-positive">+${c.changePercent.toFixed(2)}% <i class="fas fa-arrow-up"></i></span>
+                </div>
+            `).join('') : '<p>Brak danych</p>';
+
+            const losersHTML = topLosers.length > 0 ? topLosers.map(c => `
+                <div class="mover-item">
+                    <span><strong>${c.currency}</strong> ${c.valueInBase.toFixed(4)} ${baseCurrency}</span>
+                    <span class="stat-negative">${c.changePercent.toFixed(2)}% <i class="fas fa-arrow-down"></i></span>
+                </div>
+            `).join('') : '<p>Brak danych</p>';
+
+            topMoversContainer.innerHTML = `
+                <div class="mover-group">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--success);">🔥 Top 5 Wzrosty</h4>
+                    ${gainersHTML}
+                </div>
+                <div class="mover-group">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--danger);">📉 Top 5 Spadki</h4>
+                    ${losersHTML}
+                </div>
+            `;
+
             statsContainer.innerHTML = allStatsData.map(c => {
                 const changeClass = c.changePercent > 0.01 ? 'stat-positive' : c.changePercent < -0.01 ? 'stat-negative' : '';
                 const icon = c.changePercent > 0.01 ? 'fa-arrow-up' : c.changePercent < -0.01 ? 'fa-arrow-down' : 'fa-minus';
                 const changeText = Math.abs(c.changePercent) < 0.01 ? '~0%' : `${c.changePercent.toFixed(2)}% <i class="fas ${icon}"></i>`;
-                return `<div class="stats-card"><div><strong>${c.currency}</strong><div style="font-size: 0.9rem; color: var(--text-muted);">1 ${c.currency} = ${c.valueInBase.toFixed(4)} ${baseCurrency}</div></div><div class="${changeClass}">${changeText}</div></div>`;
+                return `
+                    <div class="stats-card">
+                        <div>
+                            <strong>${c.currency}</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-muted);">1 ${c.currency} = ${c.valueInBase.toFixed(4)} ${baseCurrency}</div>
+                        </div>
+                        <div class="${changeClass}">${changeText}</div>
+                    </div>
+                `;
             }).join('');
         } catch (e) {
             console.error('Błąd aktualizacji statystyk:', e);
@@ -1389,6 +1464,7 @@
             document.getElementById('allStats').innerHTML = '';
         }
     }
+
     function convert() {
         let amount = getAmountValue();
         const from = document.getElementById('fromCurrencyInput').value.toUpperCase();
@@ -1402,33 +1478,41 @@
         document.getElementById('result').value = result;
         document.getElementById('rateDisplay').textContent = `1 ${from} = ${rate.toFixed(4)} ${to}`;
     }
+
     function setAmount(val) {
         document.getElementById('amount').value = val;
         document.getElementById('amountSlider').value = val;
         updateSliderRange(val);
         convert();
     }
+
     function updateSliderFromAmount() {
         let val = getAmountValue();
         const slider = document.getElementById('amountSlider');
         slider.value = val;
         updateSliderRange(val);
     }
+
     function updateAmountFromSlider() {
         const val = parseFloat(document.getElementById('amountSlider').value) || 0;
         document.getElementById('amount').value = val;
         convert();
     }
+
     function updateSliderRange(val) {
         const slider = document.getElementById('amountSlider');
-        if (val > slider.max) { slider.max = val * 2; }
+        if (val > slider.max) {
+            slider.max = val * 2;
+        }
     }
+
     function swapCurrencies() {
         const from = document.getElementById('fromCurrencyInput');
         const to = document.getElementById('toCurrencyInput');
         [from.value, to.value] = [to.value, from.value];
         onBaseCurrencyChange();
     }
+
     function copyResult() {
         const result = document.getElementById('result').value;
         navigator.clipboard.writeText(result).then(() => {
@@ -1437,16 +1521,21 @@
                 btn.innerHTML = '<i class="fas fa-check"></i> Skopiowano!';
                 setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Kopiuj wynik'; }, 1500);
             }
-        }).catch(() => alert('Nie udało się skopiować. Spróbuj ręcznie.'));
+        }).catch(() => {
+            alert('Nie udało się skopiować. Spróbuj ręcznie.');
+        });
     }
+
     function togglePrecision() {
         showFullPrecision = !showFullPrecision;
         const btn = document.getElementById('precisionBtn');
-        btn.innerHTML = showFullPrecision ? '<i class="fas fa-search-minus"></i> Mniej miejsc po przecinku' : '<i class="fas fa-search-plus"></i> Więcej miejsc po przecinku';
+        btn.innerHTML = showFullPrecision
+            ? '<i class="fas fa-search-minus"></i> Mniej miejsc po przecinku'
+            : '<i class="fas fa-search-plus"></i> Więcej miejsc po przecinku';
         convert();
     }
 
-    // ======================== MODUŁ KONWERTERA – POPRAWIONA WERSJA (BEZ TRZĘSIENIA) ========================
+    // ======================== MODUŁ KONWERTERA - NOWA, STABILNA WERSJA ========================
     const unitNames = {
         mm: 'milimetr', cm: 'centymetr', dm: 'decymetr', m: 'metr', km: 'kilometr',
         in: 'cal', ft: 'stopa', yd: 'jard', mi: 'mila', nmi: 'mila morska',
@@ -1463,6 +1552,7 @@
         ml: 'mililitr', l: 'litr', 'm³': 'metr sześcienny', gal: 'galon', pint: 'pinta', cup: 'szklanka',
         '°C': 'stopień Celsjusza', '°F': 'stopień Fahrenheita', 'K': 'kelwin'
     };
+
     const unitCategories = {
         length: { base: 'm', units: { mm:0.001, cm:0.01, dm:0.1, m:1, km:1000, in:0.0254, ft:0.3048, yd:0.9144, mi:1609.344, nmi:1852 } },
         weight: { base: 'kg', units: { mg:1e-6, g:0.001, kg:1, t:1000, oz:0.0283495, lb:0.453592, st:6.35029 } },
@@ -1475,127 +1565,167 @@
         pressure: { base: 'Pa', units: { Pa:1, hPa:100, bar:1e5, atm:101325, mmHg:133.322 } },
         volume: { base: 'l', units: { ml:0.001, l:1, 'm³':1000, gal:3.78541, pint:0.473176, cup:0.236588 } }
     };
-    function formatUnit(unit) { const name = unitNames[unit] || ''; return name ? `${unit} (${name})` : unit; }
 
-    let currentConverterCategory = 'length';
-    let currentConverterFrom = 'm';
-    let currentDataMode = '1000';
+    let currentCategory = 'length';
+    let currentFromUnit = 'm';
+    let currentDataMode = '1000'; // '1000' lub '1024'
+    let resultElements = []; // przechowuje referencje do komórek wyników i jednostek
 
-    function onCategoryChange() {
-        currentConverterCategory = document.getElementById('convCategory').value;
-        const dataModeDiv = document.getElementById('dataModeDiv');
-        if (currentConverterCategory === 'data') dataModeDiv.style.display = 'block';
-        else dataModeDiv.style.display = 'none';
-        const fromSelect = document.getElementById('convFrom');
-        fromSelect.innerHTML = '';
-        if (currentConverterCategory === 'temperature') {
-            ['°C','°F','K'].forEach(u => fromSelect.add(new Option(formatUnit(u), u)));
-            currentConverterFrom = '°C';
-        } else {
-            const units = Object.keys(unitCategories[currentConverterCategory].units);
-            units.forEach(u => fromSelect.add(new Option(formatUnit(u), u)));
-            currentConverterFrom = units[0];
-        }
-        fromSelect.value = currentConverterFrom;
-        rebuildConverterTable();
+    function formatUnit(unit) {
+        const name = unitNames[unit] || '';
+        return name ? `${unit} (${name})` : unit;
     }
-    function onFromChange() {
-        currentConverterFrom = document.getElementById('convFrom').value;
-        rebuildConverterTable();
-    }
-    function onDataModeChange() {
-        const radios = document.querySelectorAll('input[name="dataMode"]');
-        for (let r of radios) if (r.checked) { currentDataMode = r.value; break; }
-        rebuildConverterTable();
-    }
-    function rebuildConverterTable() {
-        const tbody = document.querySelector('#convTable tbody');
-        tbody.innerHTML = '';
-        if (currentConverterCategory === 'temperature') {
-            const units = ['°C','°F','K'];
-            for (let unit of units) {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = formatUnit(unit);
-                row.insertCell(1).textContent = '0.00';
-            }
-        } else if (currentConverterCategory === 'data') {
+
+    function getActiveUnits() {
+        const cat = currentCategory;
+        if (cat === 'temperature') return ['°C', '°F', 'K'];
+        if (cat === 'data') {
             const mode = currentDataMode;
-            const units = mode === '1000' ? ['bit','byte','KB','MB','GB','TB','PB'] : ['bit','byte','KiB','MiB','GiB','TiB','PiB'];
-            for (let unit of units) {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = formatUnit(unit);
-                row.insertCell(1).textContent = '0.00';
-            }
-        } else {
-            const units = Object.keys(unitCategories[currentConverterCategory].units);
-            for (let unit of units) {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = formatUnit(unit);
-                row.insertCell(1).textContent = '0.00';
-            }
+            if (mode === '1000') return ['bit', 'byte', 'KB', 'MB', 'GB', 'TB', 'PB'];
+            else return ['bit', 'byte', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
         }
-        updateConverterValues();
+        return Object.keys(unitCategories[cat].units);
     }
-    function updateConverterValues() {
+
+    function rebuildConverterTable() {
+        const tbody = document.getElementById('convTableBody');
+        tbody.innerHTML = '';
+        resultElements = [];
+        const units = getActiveUnits();
+
+        units.forEach(unit => {
+            const row = tbody.insertRow();
+            const cellUnit = row.insertCell(0);
+            const cellValue = row.insertCell(1);
+            cellUnit.textContent = formatUnit(unit);
+            cellValue.className = 'result-value';
+            cellValue.setAttribute('data-unit', unit);
+            resultElements.push({ unit: unit, element: cellValue });
+        });
+        convertUnits(); // natychmiast wypełnij wartościami
+    }
+
+    function convertUnits() {
+        const cat = currentCategory;
         const val = parseFloat(document.getElementById('convValue').value) || 0;
-        const fromUnit = currentConverterFrom;
-        const tbody = document.querySelector('#convTable tbody');
-        if (!tbody) return;
-        const rows = tbody.rows;
-        if (currentConverterCategory === 'temperature') {
+        const fromUnit = currentFromUnit;
+
+        // Oblicz wszystkie wyniki dla danej kategorii
+        if (cat === 'temperature') {
             let celsius;
             if (fromUnit === '°C') celsius = val;
             else if (fromUnit === '°F') celsius = (val - 32) * 5/9;
             else if (fromUnit === 'K') celsius = val - 273.15;
-            const results = { '°C': celsius, '°F': celsius * 9/5 + 32, 'K': celsius + 273.15 };
-            for (let i = 0; i < rows.length; i++) {
-                const unitCell = rows[i].cells[0];
-                const unitText = unitCell.textContent.split(' ')[0];
-                const result = results[unitText];
-                rows[i].cells[1].textContent = result.toFixed(4);
-            }
+            const results = {
+                '°C': celsius,
+                '°F': celsius * 9/5 + 32,
+                'K': celsius + 273.15
+            };
+            resultElements.forEach(item => {
+                const value = results[item.unit];
+                item.element.textContent = value !== undefined ? value.toFixed(4) : '--';
+            });
             return;
         }
-        if (currentConverterCategory === 'data') {
+
+        if (cat === 'data') {
             const mode = currentDataMode;
             const activeUnits = mode === '1000' ? 
                 { bit:0.125, byte:1, KB:1000, MB:1e6, GB:1e9, TB:1e12, PB:1e15 } :
                 { bit:0.125, byte:1, KiB:1024, MiB:1048576, GiB:1073741824, TiB:1099511627776, PiB:1125899906842624 };
             const factor = activeUnits[fromUnit] || 1;
             const baseVal = val * factor;
-            for (let i = 0; i < rows.length; i++) {
-                const unitCell = rows[i].cells[0];
-                const unitKey = unitCell.textContent.split(' ')[0];
-                const unitFactor = activeUnits[unitKey];
-                if (unitFactor) rows[i].cells[1].textContent = (baseVal / unitFactor).toFixed(4);
-            }
+            resultElements.forEach(item => {
+                const unitFactor = activeUnits[item.unit];
+                if (unitFactor !== undefined) {
+                    item.element.textContent = (baseVal / unitFactor).toFixed(4);
+                } else {
+                    item.element.textContent = '?';
+                }
+            });
             return;
         }
-        const units = unitCategories[currentConverterCategory].units;
-        const factor = units[fromUnit] || 1;
+
+        // pozostałe kategorie
+        const unitsMap = unitCategories[cat].units;
+        const factor = unitsMap[fromUnit] || 1;
         const baseVal = val * factor;
-        for (let i = 0; i < rows.length; i++) {
-            const unitCell = rows[i].cells[0];
-            const unitKey = unitCell.textContent.split(' ')[0];
-            const unitFactor = units[unitKey];
-            if (unitFactor) rows[i].cells[1].textContent = (baseVal / unitFactor).toFixed(4);
+        resultElements.forEach(item => {
+            const unitFactor = unitsMap[item.unit];
+            if (unitFactor !== undefined) {
+                item.element.textContent = (baseVal / unitFactor).toFixed(4);
+            } else {
+                item.element.textContent = '?';
+            }
+        });
+    }
+
+    function updateConverter() {
+        currentCategory = document.getElementById('convCategory').value;
+        const select = document.getElementById('convFrom');
+        const units = getActiveUnits();
+        select.innerHTML = '';
+        units.forEach(u => {
+            const option = document.createElement('option');
+            option.value = u;
+            option.textContent = formatUnit(u);
+            select.appendChild(option);
+        });
+        currentFromUnit = units[0];
+        select.value = currentFromUnit;
+
+        // pokaż/ukryj radio dla danych
+        const dataModeDiv = document.getElementById('dataModeDiv');
+        dataModeDiv.style.display = currentCategory === 'data' ? 'block' : 'none';
+
+        // odśwież tabelę
+        rebuildConverterTable();
+    }
+
+    function onCategoryChange() {
+        updateConverter();
+    }
+
+    function onFromUnitChange() {
+        const select = document.getElementById('convFrom');
+        currentFromUnit = select.value;
+        convertUnits();
+    }
+
+    function onDataModeChange() {
+        const radios = document.querySelectorAll('input[name="dataMode"]');
+        for (let r of radios) {
+            if (r.checked) {
+                currentDataMode = r.value;
+                break;
+            }
+        }
+        if (currentCategory === 'data') {
+            rebuildConverterTable(); // przebuduj tabelę dla nowego trybu
+        } else {
+            convertUnits();
         }
     }
 
-    // ======================== MODUŁ KALKULATORÓW ========================
+    // ======================== MODUŁ KALKULATORÓW (bez zmian) ========================
     function switchSubTab(sub, event) {
         document.querySelectorAll('#finance-tab .sub-content').forEach(el => el.style.display = 'none');
         document.querySelectorAll('#finance-tab .sub-tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById('sub-' + sub).style.display = 'block';
         if (event) event.currentTarget.classList.add('active');
-        else { const btn = document.querySelector(`#finance-tab .sub-tab-btn[onclick*="${sub}"]`); if (btn) btn.classList.add('active'); }
+        else {
+            const btn = document.querySelector(`#finance-tab .sub-tab-btn[onclick*="${sub}"]`);
+            if (btn) btn.classList.add('active');
+        }
     }
+
     function setCreditAmount(val) { document.getElementById('crAmount').value = val; calcCredit(); }
     function clearCredit() { document.getElementById('crAmount').value = 100000; document.getElementById('crRate').value = 7; document.getElementById('crYears').value = 25; document.getElementById('crType').value = 'equal'; calcCredit(); }
     function clearDeposit() { document.getElementById('depAmount').value = 10000; document.getElementById('depRate').value = 5; document.getElementById('depYears').value = 5; document.getElementById('depCap').value = 'monthly'; calcDeposit(); }
     function clearInflation() { document.getElementById('infAmount').value = 1000; document.getElementById('infRate').value = 5; document.getElementById('infYears').value = 10; calcInflation(); }
     function clearPercent() { document.getElementById('percX').value = ''; document.getElementById('percY').value = ''; document.getElementById('percBase').value = ''; document.getElementById('percPct').value = ''; document.getElementById('diffA').value = ''; document.getElementById('diffB').value = ''; document.getElementById('percResult').textContent = ''; document.getElementById('percUpResult').textContent = ''; document.getElementById('diffResult').textContent = ''; }
     function clearTax() { document.getElementById('taxBrutto').value = 123; document.getElementById('taxVat').value = 23; calcTax(); }
+
     function calcCredit() {
         const amount = parseFloat(document.getElementById('crAmount').value) || 0;
         const rate = (parseFloat(document.getElementById('crRate').value) || 0) / 100 / 12;
@@ -1619,7 +1749,9 @@
         } else if (type === 'decreasing') {
             const capitalPart = amount / months;
             total = 0;
-            for (let i = 0; i < months; i++) total += capitalPart + (amount - (capitalPart * i)) * rate;
+            for (let i = 0; i < months; i++) {
+                total += capitalPart + (amount - (capitalPart * i)) * rate;
+            }
             installment = capitalPart + amount * rate;
             interest = total - amount;
         }
@@ -1627,15 +1759,19 @@
         document.getElementById('crTotal').textContent = total.toFixed(2);
         document.getElementById('crInterest').textContent = interest.toFixed(2);
     }
+
     function calcDeposit() {
         const amount = parseFloat(document.getElementById('depAmount').value) || 0;
         const rate = (parseFloat(document.getElementById('depRate').value) || 0) / 100;
         const years = parseFloat(document.getElementById('depYears').value) || 0;
         const cap = document.getElementById('depCap').value;
-        const final = cap === 'monthly' ? amount * Math.pow(1 + rate/12, years * 12) : amount * Math.pow(1 + rate, years);
+        let final;
+        if (cap === 'monthly') final = amount * Math.pow(1 + rate/12, years * 12);
+        else final = amount * Math.pow(1 + rate, years);
         document.getElementById('depFinal').textContent = final.toFixed(2);
         document.getElementById('depProfit').textContent = (final - amount).toFixed(2);
     }
+
     function calcInflation() {
         const amount = parseFloat(document.getElementById('infAmount').value) || 0;
         const rate = (parseFloat(document.getElementById('infRate').value) || 0) / 100;
@@ -1645,6 +1781,7 @@
         document.getElementById('infValue').textContent = realValue.toFixed(2);
         document.getElementById('infLoss').textContent = loss.toFixed(2);
     }
+
     function calcPercent() {
         const x = parseFloat(document.getElementById('percX').value) || 0;
         const y = parseFloat(document.getElementById('percY').value) || 0;
@@ -1661,6 +1798,7 @@
         if (b === 0) { document.getElementById('diffResult').textContent = '—'; return; }
         document.getElementById('diffResult').textContent = ((a - b) / b * 100).toFixed(2) + '%';
     }
+
     function calcTax() {
         const brutto = parseFloat(document.getElementById('taxBrutto').value) || 0;
         const vat = (parseFloat(document.getElementById('taxVat').value) || 0) / 100;
@@ -1668,6 +1806,7 @@
         document.getElementById('taxNetto').textContent = netto.toFixed(2);
         document.getElementById('taxVatVal').textContent = (brutto - netto).toFixed(2);
     }
+
     let calcExpression = "0";
     function updateCalcDisplay() { document.getElementById('calcDisplay').innerText = calcExpression; }
     function clearCalculator() { calcExpression = "0"; updateCalcDisplay(); }
@@ -1690,9 +1829,13 @@
         } catch(e) { calcExpression = "Błąd"; updateCalcDisplay(); setTimeout(() => { calcExpression = "0"; updateCalcDisplay(); }, 1500); }
     }
     function handleBackspace() {
-        if (calcExpression === "Błąd") calcExpression = "0";
-        else if (calcExpression.length > 1) calcExpression = calcExpression.slice(0, -1);
-        else calcExpression = "0";
+        if (calcExpression === "Błąd") {
+            calcExpression = "0";
+        } else if (calcExpression.length > 1) {
+            calcExpression = calcExpression.slice(0, -1);
+        } else {
+            calcExpression = "0";
+        }
         updateCalcDisplay();
     }
     document.addEventListener('click', function(e) {
@@ -1709,6 +1852,7 @@
             updateCalcDisplay();
         }
     });
+
     let currentDec = 0;
     function updateFromDecimal() {
         let dec = parseInt(document.getElementById('progDecimal').value, 10);
@@ -1768,9 +1912,10 @@
         updateFromDecimal();
     }
 
-    // ======================== MODUŁ SPEED TESTU ========================
+    // ======================== MODUŁ SPEED TESTU (bez zmian) ========================
     let speedChart = null;
     let isTesting = false;
+
     function updateGauge(value, max, label) {
         const circle = document.getElementById('gaugeProgress');
         const circumference = 2 * Math.PI * 120;
@@ -1779,6 +1924,7 @@
         document.getElementById('gaugeValue').textContent = value.toFixed(1);
         document.getElementById('gaugeLabel').textContent = label;
     }
+
     async function measurePing() {
         const measurements = [];
         const url = 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png';
@@ -1798,6 +1944,7 @@
         const jitter = Math.sqrt(measurements.map(p => (p-avg)**2).reduce((a,b) => a+b, 0) / measurements.length);
         return { ping: avg, jitter };
     }
+
     async function measureDownload() {
         const parallelDownloads = 4;
         const sizePerDownload = 5 * 1024 * 1024;
@@ -1805,18 +1952,23 @@
         let totalLoaded = 0;
         const start = performance.now();
         const promises = [];
+
         const updateProgress = (loadedInChunk) => {
             totalLoaded += loadedInChunk;
             const progress = Math.min(100, (totalLoaded / totalExpectedSize) * 100);
             document.getElementById('dlProgress').style.width = progress + '%';
             document.getElementById('dlProgressText').textContent = Math.round(progress) + '%';
         };
+
         for (let i = 0; i < parallelDownloads; i++) {
             promises.push((async () => {
                 try {
                     const controller = new AbortController();
                     const timeout = setTimeout(() => controller.abort(), 15000);
-                    const response = await fetch(`https://speed.cloudflare.com/__down?bytes=${sizePerDownload}`, { cache: 'no-store', signal: controller.signal });
+                    const response = await fetch(`https://speed.cloudflare.com/__down?bytes=${sizePerDownload}`, {
+                        cache: 'no-store',
+                        signal: controller.signal
+                    });
                     clearTimeout(timeout);
                     if (!response.ok) throw new Error('Status: ' + response.status);
                     const reader = response.body.getReader();
@@ -1825,9 +1977,12 @@
                         if (done) break;
                         updateProgress(value.length);
                     }
-                } catch (e) { console.warn('Błąd pobierania:', e.message); }
+                } catch (e) {
+                    console.warn('Błąd pobierania:', e.message);
+                }
             })());
         }
+
         await Promise.all(promises);
         const end = performance.now();
         const duration = (end - start) / 1000;
@@ -1836,18 +1991,21 @@
         updateGauge(mbps, 1000, 'Pobieranie zakończone');
         return mbps;
     }
+
     async function measureUpload() {
         const parallelUploads = 2;
         const sizePerUpload = 2 * 1024 * 1024;
         let totalSent = 0;
         const start = performance.now();
         const promises = [];
+
         const updateProgress = (sentInChunk) => {
             totalSent += sentInChunk;
             const progress = Math.min(100, (totalSent / (sizePerUpload * parallelUploads)) * 100);
             document.getElementById('ulProgress').style.width = progress + '%';
             document.getElementById('ulProgressText').textContent = Math.round(progress) + '%';
         };
+
         for (let i = 0; i < parallelUploads; i++) {
             promises.push((async () => {
                 try {
@@ -1855,14 +2013,24 @@
                     const controller = new AbortController();
                     const timeout = setTimeout(() => controller.abort(), 15000);
                     const res = await fetch('https://httpbin.org/post', {
-                        method: 'POST', body: data, headers: { 'Content-Type': 'application/octet-stream' }, signal: controller.signal
+                        method: 'POST',
+                        body: data,
+                        headers: { 'Content-Type': 'application/octet-stream' },
+                        signal: controller.signal
                     });
                     clearTimeout(timeout);
-                    if (res.ok) updateProgress(sizePerUpload);
-                    else throw new Error('Upload failed');
-                } catch (e) { console.warn('Błąd wysyłania:', e.message); updateProgress(sizePerUpload); }
+                    if (res.ok) {
+                        updateProgress(sizePerUpload);
+                    } else {
+                        throw new Error('Upload failed');
+                    }
+                } catch (e) {
+                    console.warn('Błąd wysyłania:', e.message);
+                    updateProgress(sizePerUpload);
+                }
             })());
         }
+
         await Promise.all(promises);
         const end = performance.now();
         const duration = (end - start) / 1000;
@@ -1871,6 +2039,7 @@
         updateGauge(mbps, 500, 'Wysyłanie zakończone');
         return mbps;
     }
+
     async function startSpeedTest() {
         if (isTesting) return;
         isTesting = true;
@@ -1884,32 +2053,52 @@
         document.getElementById('dlProgress').style.width = '0%';
         document.getElementById('ulProgress').style.width = '0%';
         document.getElementById('pingProgress').style.width = '0%';
+
         const results = {};
-        try { const pingData = await measurePing(); results.ping = pingData.ping.toFixed(1); results.jitter = pingData.jitter.toFixed(1); document.getElementById('pingText').textContent = results.ping + ' ms'; document.getElementById('pingProgress').style.width = '100%'; updateGauge(pingData.ping, 200, 'Ping zakończony'); } catch (e) { results.ping = '--'; results.jitter = '--'; }
+        try {
+            const pingData = await measurePing();
+            results.ping = pingData.ping.toFixed(1);
+            results.jitter = pingData.jitter.toFixed(1);
+            document.getElementById('pingText').textContent = results.ping + ' ms';
+            document.getElementById('pingProgress').style.width = '100%';
+            updateGauge(pingData.ping, 200, 'Ping zakończony');
+        } catch (e) { results.ping = '--'; results.jitter = '--'; }
+
         try { results.download = await measureDownload(); } catch (e) { results.download = 0; }
         try { results.upload = await measureUpload(); } catch (e) { results.upload = 0; }
+
         updateGauge(results.download || 0, 1000, 'Test ukończony!');
         document.getElementById('dlResult').textContent = (results.download || 0).toFixed(2);
         document.getElementById('ulResult').textContent = (results.upload || 0).toFixed(2);
         document.getElementById('pingResult').textContent = (results.ping || '--') + ' ms';
         document.getElementById('jitterResult').textContent = (results.jitter || '--') + ' ms';
         document.getElementById('resultsGrid').style.display = 'grid';
+
         if (results.download || results.upload) {
             document.getElementById('chartContainer').style.display = 'block';
             const ctx = document.getElementById('speedChart').getContext('2d');
             if (speedChart) speedChart.destroy();
             speedChart = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: ['Pobieranie', 'Wysyłanie', 'Ping (÷10)', 'Stabilność (÷10)'], datasets: [{ data: [results.download||0, results.upload||0, (parseFloat(results.ping)||0)/10, (parseFloat(results.jitter)||0)/10], backgroundColor: ['rgba(99,102,241,0.8)','rgba(139,92,246,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)'], borderColor: ['rgba(99,102,241,1)','rgba(139,92,246,1)','rgba(16,185,129,1)','rgba(245,158,11,1)'], borderWidth: 2, borderRadius: 8 }] },
+                data: {
+                    labels: ['Pobieranie', 'Wysyłanie', 'Ping (÷10)', 'Stabilność (÷10)'],
+                    datasets: [{
+                        data: [results.download||0, results.upload||0, (parseFloat(results.ping)||0)/10, (parseFloat(results.jitter)||0)/10],
+                        backgroundColor: ['rgba(99,102,241,0.8)','rgba(139,92,246,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)'],
+                        borderColor: ['rgba(99,102,241,1)','rgba(139,92,246,1)','rgba(16,185,129,1)','rgba(245,158,11,1)'],
+                        borderWidth: 2, borderRadius: 8
+                    }]
+                },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
+
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-redo"></i> Powtórz test';
         isTesting = false;
     }
 
-    // ======================== MODUŁ CZASU ========================
+    // ======================== MODUŁ CZASU I STREF (bez zmian) ========================
     let timezoneCards = [];
     const defaultCards = [
         { name: "Warszawa", tz: "Europe/Warsaw" },
@@ -1920,11 +2109,21 @@
         { name: "Los Angeles", tz: "America/Los_Angeles" },
         { name: "Dubaj", tz: "Asia/Dubai" }
     ];
+
     function initTimezoneCards() { timezoneCards = [...defaultCards]; }
+
     function getAllTimezones() {
-        if (typeof Intl !== 'undefined' && Intl.supportedValuesOf) return Intl.supportedValuesOf('timeZone');
-        else return [ "Europe/Warsaw", "Europe/London", "Europe/Paris", "Europe/Berlin", "America/New_York", "America/Los_Angeles", "Asia/Tokyo", "Asia/Dubai", "Australia/Sydney", "Africa/Cairo", "Asia/Shanghai", "Asia/Kolkata", "America/Sao_Paulo", "America/Toronto", "Pacific/Auckland", "UTC" ];
+        if (typeof Intl !== 'undefined' && Intl.supportedValuesOf) {
+            return Intl.supportedValuesOf('timeZone');
+        } else {
+            return [
+                "Europe/Warsaw", "Europe/London", "Europe/Paris", "Europe/Berlin", "America/New_York", "America/Los_Angeles",
+                "Asia/Tokyo", "Asia/Dubai", "Australia/Sydney", "Africa/Cairo", "Asia/Shanghai", "Asia/Kolkata",
+                "America/Sao_Paulo", "America/Toronto", "Pacific/Auckland", "UTC"
+            ];
+        }
     }
+
     function getFormattedTimeInZone(timezone) {
         const now = new Date();
         const optionsTime = { timeZone: timezone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
@@ -1939,11 +2138,13 @@
         const offsetStr = `UTC${sign}${offsetHours.toString().padStart(2,'0')}:${offsetMins.toString().padStart(2,'0')}`;
         return { time: timeStr, date: dateStr, offset: offsetStr };
     }
+
     function getTimezoneOffsetMinutes(timeZone, date = new Date()) {
         const tzDate = new Date(date.toLocaleString('en-US', { timeZone }));
         const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
         return (tzDate.getTime() - utcDate.getTime()) / 60000;
     }
+
     function renderTimeCards() {
         const container = document.getElementById('worldClocksContainer');
         if (!container) return;
@@ -1952,7 +2153,13 @@
             const { time, date, offset } = getFormattedTimeInZone(card.tz);
             const cardDiv = document.createElement('div');
             cardDiv.className = 'time-card';
-            cardDiv.innerHTML = `<div class="close-btn" data-index="${idx}">&times;</div><div class="city-name">${card.name} <span style="font-size:0.7rem;">(${card.tz.split('/').pop()})</span></div><div class="time-digits">${time}</div><div class="time-date">${date}</div><div class="utc-offset">${offset}</div>`;
+            cardDiv.innerHTML = `
+                <div class="close-btn" data-index="${idx}">&times;</div>
+                <div class="city-name">${card.name} <span style="font-size:0.7rem;">(${card.tz.split('/').pop()})</span></div>
+                <div class="time-digits">${time}</div>
+                <div class="time-date">${date}</div>
+                <div class="utc-offset">${offset}</div>
+            `;
             container.appendChild(cardDiv);
         });
         document.querySelectorAll('.time-card .close-btn').forEach(btn => {
@@ -1968,6 +2175,7 @@
             });
         });
     }
+
     function updateTimeCardsContent() {
         const cards = document.querySelectorAll('.time-card');
         cards.forEach((card, idx) => {
@@ -1982,17 +2190,22 @@
             if (utcOffsetSpan) utcOffsetSpan.textContent = offset;
         });
     }
+
     function addCustomTimezoneCard() {
         const select = document.getElementById('customTimezoneSelect');
         const selectedTZ = select.value;
         if (!selectedTZ) return;
         const tzName = selectedTZ.split('/').pop().replace(/_/g, ' ');
-        if (timezoneCards.some(card => card.tz === selectedTZ)) { alert('Ta strefa jest już wyświetlana.'); return; }
+        if (timezoneCards.some(card => card.tz === selectedTZ)) {
+            alert('Ta strefa jest już wyświetlana.');
+            return;
+        }
         timezoneCards.push({ name: tzName, tz: selectedTZ });
         renderTimeCards();
         populateTimezoneSelects();
         updateTimeDifferences();
     }
+
     function populateTimezoneSelects() {
         const allTZs = getAllTimezones();
         const selects = ['customTimezoneSelect', 'convertFromTZ', 'convertToTZ', 'differenceBaseTZ'];
@@ -2014,6 +2227,7 @@
             else if (id === 'customTimezoneSelect') selectEl.value = 'Europe/London';
         });
     }
+
     function convertTimeBetweenZones() {
         const timeInput = document.getElementById('convertTimeInput').value;
         const fromTZ = document.getElementById('convertFromTZ').value;
@@ -2032,6 +2246,7 @@
         document.getElementById('convertedTimeDisplay').textContent = convertedTime;
         document.getElementById('convertedDateHint').textContent = `(data: ${convertedDateStr})`;
     }
+
     function updateTimeDifferences() {
         const baseTZ = document.getElementById('differenceBaseTZ').value;
         if (!baseTZ) return;
@@ -2046,21 +2261,42 @@
             const diffHours = diffMinutes / 60;
             const diffStr = diffHours === 0 ? '0h' : (diffHours > 0 ? `+${diffHours.toFixed(1)}h` : `${diffHours.toFixed(1)}h`);
             const { time, date } = getFormattedTimeInZone(card.tz);
-            tbody.innerHTML += `<tr><td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td><td>${time}<br><span style="font-size:0.7rem;">${date}</span></td><td>${diffStr}</td></tr>`;
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td>
+                    <td>${time}<br><span style="font-size:0.7rem;">${date}</span></div></td>
+                    <td>${diffStr}</div></td>
+                </tr>
+            `;
         });
-        tbody.innerHTML += `<tr style="background:rgba(99,102,241,0.2);"><td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td><td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td><td>0h</td></tr>`;
+        tbody.innerHTML += `
+            <tr style="background:rgba(99,102,241,0.2);">
+                <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></div></td>
+                    <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></div></div></td>
+                    <td>0h</div></div></td>
+            </tr>
+        `;
     }
+
     function refreshAllTimes() {
         updateTimeCardsContent();
-        if (document.getElementById('differenceBaseTZ') && document.getElementById('differenceBaseTZ').value) updateTimeDifferences();
+        if (document.getElementById('differenceBaseTZ') && document.getElementById('differenceBaseTZ').value) {
+            updateTimeDifferences();
+        }
     }
+
     let timeRefreshInterval = null;
     function startTimeAutoRefresh() {
         if (timeRefreshInterval) clearInterval(timeRefreshInterval);
-        timeRefreshInterval = setInterval(() => { if (document.getElementById('time-tab').classList.contains('active')) refreshAllTimes(); }, 1000);
+        timeRefreshInterval = setInterval(() => {
+            const timeTab = document.getElementById('time-tab');
+            if (timeTab && timeTab.classList.contains('active')) {
+                refreshAllTimes();
+            }
+        }, 1000);
     }
 
-    // ======================== COOKIE CLICKER ========================
+    // ======================== COOKIE CLICKER (bez zmian) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2068,10 +2304,12 @@
     let bonusTimer = null;
     let goldenCookieTimeout = null;
     let stormInterval = null;
+
     let globalCPSMultiplier = 1;
     let extraClickBonusPercent = 0;
     let doubleClickChance = 0;
     let goldenCookieFrequencyMultiplier = 1;
+
     const buildings = [
         { name: "✨ Mistyczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
         { name: "👵 Armia Babć", baseCps: 1, basePrice: 100, count: 0 },
@@ -2088,6 +2326,7 @@
         { name: "✨ Gwiezdny Pył", baseCps: 430000000, basePrice: 1.7e14, count: 0 },
         { name: "🌌 Czarodziejska Piekarnia", baseCps: 2.8e9, basePrice: 2.1e15, count: 0 }
     ];
+
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Kliknięcia dają 2x ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "+0,2 CPS za kursor", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
@@ -2105,12 +2344,16 @@
         { id: "stardust", name: "✨ Gwiazdkowy Pył", desc: "Złote ciasteczka pojawiają się 2x częściej", price: 1000000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.5; scheduleGoldenCookie(); } },
         { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } }
     ];
+
     function recalcCPS() {
         let total = 0;
-        for (let i = 0; i < buildings.length; i++) total += buildings[i].baseCps * buildings[i].count;
+        for (let i = 0; i < buildings.length; i++) {
+            total += buildings[i].baseCps * buildings[i].count;
+        }
         cookiesPerSecond = total * globalCPSMultiplier;
         document.getElementById('cpsDisplay').innerText = cookiesPerSecond.toFixed(2);
     }
+
     function applyAllUpgrades() {
         clickMultiplier = 1;
         globalCPSMultiplier = 1;
@@ -2121,12 +2364,19 @@
         window.divineIntervention = false;
         window.quantumAccelerator = false;
         const defaultBaseCps = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
-        for (let i = 0; i < buildings.length; i++) buildings[i].baseCps = defaultBaseCps[i];
-        for (let u of upgrades) if (u.purchased) u.apply();
+        for (let i = 0; i < buildings.length; i++) {
+            buildings[i].baseCps = defaultBaseCps[i];
+        }
+        for (let u of upgrades) {
+            if (u.purchased) {
+                u.apply();
+            }
+        }
         recalcCPS();
         rebuildBuildings();
         rebuildUpgrades();
     }
+
     function rebuildBuildings() {
         const container = document.getElementById('buildingsContainer');
         if (!container) return;
@@ -2136,10 +2386,17 @@
             const price = Math.floor(b.basePrice * Math.pow(1.15, b.count));
             const div = document.createElement('div');
             div.className = 'building-card';
-            div.innerHTML = `<div class="building-name">${b.name}</div><div class="building-desc">Produkuje ${b.baseCps.toFixed(2)} ciastek/sek (x${b.count})</div><div class="building-price">🍪 ${Math.floor(price).toLocaleString()}</div><div class="building-cps">➕ +${(b.baseCps).toFixed(2)} CPS</div><button class="quick-btn" style="margin-top: 0.5rem;" onclick="buyBuilding(${i})">Kup (${b.count})</button>`;
+            div.innerHTML = `
+                <div class="building-name">${b.name}</div>
+                <div class="building-desc">Produkuje ${b.baseCps.toFixed(2)} ciastek/sek (x${b.count})</div>
+                <div class="building-price">🍪 ${Math.floor(price).toLocaleString()}</div>
+                <div class="building-cps">➕ +${(b.baseCps).toFixed(2)} CPS</div>
+                <button class="quick-btn" style="margin-top: 0.5rem;" onclick="buyBuilding(${i})">Kup (${b.count})</button>
+            `;
             container.appendChild(div);
         }
     }
+
     function rebuildUpgrades() {
         const upgradesContainer = document.getElementById('upgradesList');
         if (!upgradesContainer) return;
@@ -2155,6 +2412,7 @@
             }
         }
     }
+
     function updateStats() {
         document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
         recalcCPS();
@@ -2164,6 +2422,7 @@
         if (activeBonuses.cookieStorm) bonusText += "🌪️ Słodka Ulewa! ";
         document.getElementById('bonusInfo').innerText = bonusText;
     }
+
     function buyBuilding(index) {
         const b = buildings[index];
         let price = Math.floor(b.basePrice * Math.pow(1.15, b.count));
@@ -2174,8 +2433,11 @@
             rebuildBuildings();
             rebuildUpgrades();
             saveGame();
-        } else alert("Nie masz tylu ciastek!");
+        } else {
+            alert("Nie masz tylu ciastek!");
+        }
     }
+
     function buyUpgrade(index) {
         const u = upgrades[index];
         if (!u.purchased && cookies >= u.price) {
@@ -2186,25 +2448,57 @@
             rebuildBuildings();
             rebuildUpgrades();
             saveGame();
-        } else if (!u.purchased) alert("Nie masz tylu ciastek!");
+        } else if (!u.purchased) {
+            alert("Nie masz tylu ciastek!");
+        }
     }
+
     function clickCookie() {
         let gain = clickMultiplier;
         if (activeBonuses.clickFrenzy) gain *= 777;
         if (activeBonuses.frenzy) gain *= 7;
-        if (extraClickBonusPercent > 0) gain += cookies * extraClickBonusPercent;
-        if (doubleClickChance > 0 && Math.random() < doubleClickChance) gain *= 2;
+        if (extraClickBonusPercent > 0) {
+            gain += cookies * extraClickBonusPercent;
+        }
+        if (doubleClickChance > 0 && Math.random() < doubleClickChance) {
+            gain *= 2;
+        }
         cookies += gain;
         updateStats();
         saveGame();
         const cookieImg = document.querySelector('#cookieImage svg');
-        if(cookieImg) { cookieImg.classList.add('cookie-animation'); setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200); }
+        if(cookieImg) {
+            cookieImg.classList.add('cookie-animation');
+            setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200);
+        }
     }
+
     function spawnGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
         const golden = document.createElement('div');
         golden.className = 'golden-cookie';
-        golden.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" style="width: 100%; height: 100%; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));"><defs><radialGradient id="goldenGrad" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#FFF8DC"/><stop offset="60%" stop-color="#FFD700"/><stop offset="100%" stop-color="#DAA520"/></radialGradient></defs><circle cx="100" cy="100" r="85" fill="url(#goldenGrad)" stroke="#B8860B" stroke-width="4"/><circle cx="65" cy="65" r="7" fill="#A0522D"/><circle cx="130" cy="70" r="6" fill="#A0522D"/><circle cx="95" cy="135" r="8" fill="#A0522D"/><circle cx="70" cy="120" r="5" fill="#A0522D"/><circle cx="120" cy="110" r="7" fill="#A0522D"/><circle cx="50" cy="95" r="5" fill="#A0522D"/><circle cx="145" cy="120" r="6" fill="#A0522D"/><circle cx="85" cy="45" r="5" fill="#A0522D"/><circle cx="135" cy="45" r="6" fill="#A0522D"/><circle cx="155" cy="90" r="5" fill="#A0522D"/><circle cx="45" cy="135" r="5" fill="#A0522D"/><circle cx="110" cy="85" r="5" fill="#A0522D"/></svg>`;
+        golden.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" style="width: 100%; height: 100%; display: block; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
+            <defs>
+                <radialGradient id="goldenGrad" cx="40%" cy="30%" r="70%">
+                    <stop offset="0%" stop-color="#FFF8DC"/>
+                    <stop offset="60%" stop-color="#FFD700"/>
+                    <stop offset="100%" stop-color="#DAA520"/>
+                </radialGradient>
+            </defs>
+            <circle cx="100" cy="100" r="85" fill="url(#goldenGrad)" stroke="#B8860B" stroke-width="4"/>
+            <circle cx="65" cy="65" r="7" fill="#A0522D"/>
+            <circle cx="130" cy="70" r="6" fill="#A0522D"/>
+            <circle cx="95" cy="135" r="8" fill="#A0522D"/>
+            <circle cx="70" cy="120" r="5" fill="#A0522D"/>
+            <circle cx="120" cy="110" r="7" fill="#A0522D"/>
+            <circle cx="50" cy="95" r="5" fill="#A0522D"/>
+            <circle cx="145" cy="120" r="6" fill="#A0522D"/>
+            <circle cx="85" cy="45" r="5" fill="#A0522D"/>
+            <circle cx="135" cy="45" r="6" fill="#A0522D"/>
+            <circle cx="155" cy="90" r="5" fill="#A0522D"/>
+            <circle cx="45" cy="135" r="5" fill="#A0522D"/>
+            <circle cx="110" cy="85" r="5" fill="#A0522D"/>
+        </svg>`;
         golden.style.left = Math.random() * (window.innerWidth - 100) + 'px';
         golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
         golden.onclick = () => {
@@ -2243,11 +2537,17 @@
                 if (stormInterval) clearInterval(stormInterval);
                 activeBonuses.cookieStorm = true;
                 stormInterval = setInterval(() => {
-                    if (!activeBonuses.cookieStorm) { clearInterval(stormInterval); return; }
+                    if (!activeBonuses.cookieStorm) {
+                        clearInterval(stormInterval);
+                        return;
+                    }
                     cookies += clickMultiplier * (activeBonuses.frenzy ? 7 : 1);
                     updateStats();
                 }, 100);
-                setTimeout(() => { activeBonuses.cookieStorm = false; clearInterval(stormInterval); }, 10000);
+                setTimeout(() => {
+                    activeBonuses.cookieStorm = false;
+                    clearInterval(stormInterval);
+                }, 10000);
             }
             saveGame();
             scheduleGoldenCookie();
@@ -2256,20 +2556,22 @@
         let timeoutDelay = 10000 * goldenCookieFrequencyMultiplier;
         setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, timeoutDelay);
     }
+
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
         let baseDelay = 30000 * goldenCookieFrequencyMultiplier;
         const delay = baseDelay + Math.random() * 40000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
+
     function resetGame() {
         if (confirm("Czy na pewno chcesz rozpocząć nową grę? Wszystkie zapisane postępy zostaną utracone.")) {
             cookies = 0;
             clickMultiplier = 1;
-            for (let b of buildings) b.count = 0;
+            for (let b of buildings) { b.count = 0; }
             const defaults = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
             for (let i = 0; i < buildings.length; i++) buildings[i].baseCps = defaults[i];
-            for (let u of upgrades) u.purchased = false;
+            for (let u of upgrades) { u.purchased = false; }
             if (bonusTimer) clearTimeout(bonusTimer);
             if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
             if (stormInterval) clearInterval(stormInterval);
@@ -2287,6 +2589,7 @@
             saveGame();
         }
     }
+
     function saveGame() {
         const gameState = {
             cookies: cookies,
@@ -2303,6 +2606,7 @@
         };
         localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
     }
+
     function loadGame() {
         const saved = localStorage.getItem('cookieClickerSave');
         if (saved) {
@@ -2310,8 +2614,17 @@
                 const state = JSON.parse(saved);
                 cookies = typeof state.cookies === 'number' && !isNaN(state.cookies) ? state.cookies : 0;
                 clickMultiplier = typeof state.clickMultiplier === 'number' ? state.clickMultiplier : 1;
-                if (state.buildings) for (let i = 0; i < buildings.length && i < state.buildings.length; i++) { if (typeof state.buildings[i].count === 'number') buildings[i].count = state.buildings[i].count; if (typeof state.buildings[i].baseCps === 'number') buildings[i].baseCps = state.buildings[i].baseCps; }
-                if (state.upgrades) for (let i = 0; i < upgrades.length && i < state.upgrades.length; i++) upgrades[i].purchased = state.upgrades[i].purchased === true;
+                if (state.buildings) {
+                    for (let i = 0; i < buildings.length && i < state.buildings.length; i++) {
+                        if (typeof state.buildings[i].count === 'number') buildings[i].count = state.buildings[i].count;
+                        if (typeof state.buildings[i].baseCps === 'number') buildings[i].baseCps = state.buildings[i].baseCps;
+                    }
+                }
+                if (state.upgrades) {
+                    for (let i = 0; i < upgrades.length && i < state.upgrades.length; i++) {
+                        upgrades[i].purchased = state.upgrades[i].purchased === true;
+                    }
+                }
                 if (state.luckyCharm) window.luckyCharm = state.luckyCharm;
                 if (state.divineIntervention) window.divineIntervention = state.divineIntervention;
                 if (state.quantumAccelerator) window.quantumAccelerator = state.quantumAccelerator;
@@ -2326,50 +2639,80 @@
             } catch(e) { console.error("Błąd wczytywania gry", e); }
         }
     }
+
     function gameLoop() {
         let currentCPS = cookiesPerSecond;
         if (activeBonuses.frenzy) currentCPS *= 7;
-        if (window.divineIntervention && Math.random() < 0.01) currentCPS *= 2;
-        if (currentCPS > 0) { cookies += currentCPS / 10; updateStats(); saveGame(); }
+        if (window.divineIntervention && Math.random() < 0.01) {
+            currentCPS *= 2;
+        }
+        if (currentCPS > 0) {
+            cookies += currentCPS / 10;
+            updateStats();
+            saveGame();
+        }
         setTimeout(gameLoop, 200);
     }
-    loadGame();
-    updateStats();
-    rebuildBuildings();
-    rebuildUpgrades();
-    gameLoop();
-    scheduleGoldenCookie();
 
     // ======================== BANER ZGÓD COOKIE ========================
     function setCookieConsent(accepted) {
         if (accepted) {
-            gtag('consent', 'update', { 'ad_storage': 'granted', 'analytics_storage': 'granted', 'functionality_storage': 'granted', 'personalization_storage': 'granted' });
+            gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'analytics_storage': 'granted',
+                'functionality_storage': 'granted',
+                'personalization_storage': 'granted'
+            });
             localStorage.setItem('cookieConsent', 'full');
         } else {
-            gtag('consent', 'update', { 'ad_storage': 'denied', 'analytics_storage': 'denied', 'functionality_storage': 'denied', 'personalization_storage': 'denied' });
+            gtag('consent', 'update', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied',
+                'functionality_storage': 'denied',
+                'personalization_storage': 'denied'
+            });
             localStorage.setItem('cookieConsent', 'necessary');
         }
         document.getElementById('cookieConsent').style.display = 'none';
     }
+
     const savedConsent = localStorage.getItem('cookieConsent');
-    if (!savedConsent) document.getElementById('cookieConsent').style.display = 'flex';
-    else document.getElementById('cookieConsent').style.display = 'none';
+    if (!savedConsent) {
+        document.getElementById('cookieConsent').style.display = 'flex';
+    } else {
+        document.getElementById('cookieConsent').style.display = 'none';
+    }
+
     document.getElementById('acceptCookies').onclick = () => setCookieConsent(true);
     document.getElementById('rejectCookies').onclick = () => setCookieConsent(false);
 
     // ======================== INICJALIZACJA ========================
     fetchRates();
-    onCategoryChange(); // dla konwertera
+    // Inicjalizacja konwertera
+    currentCategory = 'length';
+    currentDataMode = '1000';
+    updateConverter();
+
     document.getElementById('amount').addEventListener('wheel', e => e.preventDefault());
+
     initTimezoneCards();
     renderTimeCards();
     populateTimezoneSelects();
     startTimeAutoRefresh();
     const diffBaseSelect = document.getElementById('differenceBaseTZ');
     if (diffBaseSelect) diffBaseSelect.addEventListener('change', updateTimeDifferences);
-    setTimeout(() => { if (diffBaseSelect && diffBaseSelect.value) updateTimeDifferences(); }, 500);
+    setTimeout(() => {
+        if (diffBaseSelect && diffBaseSelect.value) updateTimeDifferences();
+    }, 500);
     clearProgrammer();
     switchSubTab('credit', null);
+
+    loadGame();
+    updateStats();
+    rebuildBuildings();
+    rebuildUpgrades();
+    gameLoop();
+    scheduleGoldenCookie();
 </script>
 </body>
 </html>
