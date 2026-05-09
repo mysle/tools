@@ -162,12 +162,12 @@
         .metric-card:hover { transform: translateY(-5px); border-color: var(--primary); }
         .chart-container { margin-top: 2rem; height: 300px; position: relative; }
 
-        /* STATUS BAR - NIGDY NIE SKACZE */
+        /* ===== STATUS BAR - NAPRAWIONY: NIGDY NIE DRŻY ANI NIE MIGOCZE ===== */
         .status-bar {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: var(--glass);
+            background: rgba(30, 41, 59, 0.85);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             padding: 0.75rem 1.25rem;
@@ -176,15 +176,19 @@
             align-items: center;
             gap: 0.75rem;
             font-size: 0.875rem;
-            z-index: 100;
-            transform: translateZ(0);
+            z-index: 10000;
+            /* Kluczowe właściwości eliminujące drgania */
+            transform: translate3d(0, 0, 0);
+            will-change: auto;
             backface-visibility: hidden;
-            will-change: transform;
-            min-width: 180px;
-            white-space: nowrap;
+            contain: strict;
             pointer-events: none;
+            white-space: nowrap;
+            width: auto;
+            min-width: 180px;
             box-sizing: border-box;
-            width: min-content;
+            /* Dodatkowe zabezpieczenie przed reflow */
+            isolation: isolate;
         }
         .status-dot {
             width: 8px;
@@ -192,6 +196,7 @@
             border-radius: 50%;
             background: var(--success);
             box-shadow: 0 0 10px var(--success);
+            flex-shrink: 0;
         }
 
         .result-box { margin-top: 1rem; padding: 1.5rem; background: rgba(99,102,241,0.1); border-radius: 1rem; border: 1px solid var(--glass-border); }
