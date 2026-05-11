@@ -2432,7 +2432,7 @@
                 <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td>
                 <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
                 <td>0h</div></td>
-            </tr>
+            <tr>
         `;
     }
 
@@ -2998,7 +2998,7 @@
         else if (document.getElementById('nutriTableBody')) rebuildNutriTable();
     }
 
-    // ======================== NOWY MODUŁ: POGODA (wttr.in - DZIAŁA ZAWSZE) ========================
+    // ======================== NOWY MODUŁ: POGODA (wttr.in - DZIAŁA ZAWSZE) - POPRAWIONY ========================
     let weatherUnitsSystem = 'metric'; // metric lub imperial
 
     async function searchWeatherByCity() {
@@ -3134,7 +3134,17 @@
                     const maxTemp = Math.round(day.maxtempC);
                     const minTemp = Math.round(day.mintempC);
                     const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
-                    const rain = day.hourly.reduce((sum, h) => sum + (h.precipMM || 0), 0);
+                    // bezpieczne sumowanie opadów (precipMM może być stringiem lub nie istnieć)
+                    let rain = 0;
+                    if (day.hourly && Array.isArray(day.hourly)) {
+                        rain = day.hourly.reduce((sum, h) => {
+                            let val = h.precipMM;
+                            if (val === undefined || val === null) return sum;
+                            if (typeof val === 'string') val = parseFloat(val);
+                            if (isNaN(val)) return sum;
+                            return sum + val;
+                        }, 0);
+                    }
                     const icon = getWeatherIconWttr(day.hourly[0]?.weatherCode || '113');
                     return `
                         <div class="forecast-card">
