@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MultiTool Pro – Waluty, Konwerter, Kalkulatory, Czas, IP, Szybkość + Cookie Clicker</title>
-    <meta name="description" content="Przeliczaj waluty, jednostki, sprawdź prędkość internetu, swoje IP, strefy czasowe, korzystaj z kalkulatorów finansowych i graj w rozbudowanego Cookie Clickera.">
+    <title>MultiTool Pro – Waluty, Konwerter, Kalkulatory, Czas, IP, Szybkość + Cookie Clicker + Żywność + Pogoda</title>
+    <meta name="description" content="Przeliczaj waluty, jednostki, wartości odżywcze, sprawdź pogodę, prędkość internetu, swoje IP, strefy czasowe, korzystaj z kalkulatorów finansowych i graj w rozbudowanego Cookie Clickera.">
 
     <!-- Google Consent Mode - domyślnie brak zgód -->
     <script>
@@ -127,7 +127,7 @@
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
         th { color: var(--text-muted); font-weight: 600; }
-        th:last-child { text-align: right; }  /* Wyrównanie nagłówka "Wynik" do prawej */
+        th:last-child { text-align: right; }
         td:first-child, th:first-child { width: 40%; }
         td:last-child { text-align: right; font-family: 'Monaco', 'Menlo', monospace; font-size: 1rem; letter-spacing: 0.5px; }
         .sub-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
@@ -177,7 +177,6 @@
             gap: 0.75rem;
             font-size: 0.875rem;
             z-index: 10000;
-            /* Kluczowe właściwości eliminujące drgania */
             transform: translate3d(0, 0, 0);
             will-change: auto;
             backface-visibility: hidden;
@@ -187,7 +186,6 @@
             width: auto;
             min-width: 180px;
             box-sizing: border-box;
-            /* Dodatkowe zabezpieczenie przed reflow */
             isolation: isolate;
         }
         .status-dot {
@@ -585,6 +583,13 @@
             .buildings-grid {
                 grid-template-columns: 1fr;
             }
+            /* Nowe style dla pogody i żywności */
+            .weather-current {
+                flex-direction: column;
+            }
+            .forecast-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -613,6 +618,77 @@
                 width: 24px !important;
             }
         }
+
+        /* --- Nowe style dla pogody --- */
+        .weather-current {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            background: rgba(15,23,42,0.4);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+        }
+        .weather-main {
+            flex: 2;
+            text-align: center;
+        }
+        .weather-main .temp {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .weather-details {
+            flex: 3;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+            gap: 1rem;
+        }
+        .weather-detail-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+        }
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .forecast-card {
+            background: rgba(15,23,42,0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .forecast-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        .forecast-day {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .forecast-icon {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+        }
+        .forecast-temp {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        /* --- Style dla konwertera żywności --- */
+        .portion-panel {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -629,6 +705,9 @@
             <button class="tab-btn" onclick="switchTab('speed', event)"><i class="fas fa-tachometer-alt"></i> Test szybkości</button>
             <button class="tab-btn" onclick="switchTab('time', event)"><i class="fas fa-clock"></i> 📅 Czas i strefy</button>
             <button class="tab-btn" onclick="switchTab('cookie', event)"><i class="fas fa-cookie-bite"></i> 🍪 Cookie Clicker</button>
+            <!-- NOWE ZAKŁADKI -->
+            <button class="tab-btn" onclick="switchTab('nutrition', event)"><i class="fas fa-apple-alt"></i> 🥗 Żywność</button>
+            <button class="tab-btn" onclick="switchTab('weather', event)"><i class="fas fa-cloud-sun"></i> 🌤️ Pogoda</button>
         </div>
     </div>
 </nav>
@@ -698,7 +777,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA KONWERTER - POPRAWIONA (brak drżenia i przesuwania) ============ -->
+    <!-- ============ ZAKŁADKA KONWERTER ============ -->
     <div id="converter-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📏 Konwerter Pro</h2>
@@ -1136,6 +1215,64 @@
             </div>
         </div>
     </div>
+
+    <!-- ============ NOWA ZAKŁADKA: KONWERTER WARTOŚCI ODŻYWCZYCH ============ -->
+    <div id="nutrition-tab" class="tab-content">
+        <div class="glass-card">
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🥗 Konwerter wartości odżywczych</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Przeliczaj kalorie, makroskładniki i porcje – wszystko w jednym miejscu.</p>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <select id="nutriCategory" class="modern-select" style="flex:1;" onchange="onNutriCategoryChange()">
+                    <option value="energy">🔥 Energia (kcal, kJ, J, Wh)</option>
+                    <option value="fat">🧈 Tłuszcz (g, kcal z tłuszczu)</option>
+                    <option value="protein">🍗 Białko (g, kcal z białka)</option>
+                    <option value="carbs">🍚 Węglowodany (g, kcal)</option>
+                    <option value="sugar">🍬 Cukier (g, łyżeczki, kostki)</option>
+                    <option value="portions">🍽️ Porcje (gramy, sztuki - własne)</option>
+                </select>
+                <input type="number" id="nutriValue" class="modern-input" style="flex:2;" value="1" step="any" oninput="convertNutrition()">
+                <select id="nutriFromUnit" class="modern-select" style="flex:1;" onchange="onNutriFromUnitChange()"></select>
+            </div>
+            <div class="table-wrapper">
+                <table id="nutriTable">
+                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
+                    <tbody id="nutriTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Panel własnych porcji -->
+            <div class="portion-panel">
+                <h4><i class="fas fa-utensils"></i> Moje własne porcje</h4>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                    <input type="text" id="newPortionName" class="modern-input" placeholder="Nazwa (np. plaster chleba)" style="flex:2;">
+                    <input type="number" id="newPortionGrams" class="modern-input" placeholder="Gramy (g)" style="flex:1;">
+                    <button class="btn btn-sm" onclick="addCustomPortion()"><i class="fas fa-plus"></i> Dodaj</button>
+                </div>
+                <div id="customPortionsList" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+                <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Własne porcje są zapisywane w przeglądarce i widoczne w kategorii "Porcje".</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ NOWA ZAKŁADKA: ROZBUDOWANA POGODA ============ -->
+    <div id="weather-tab" class="tab-content">
+        <div class="glass-card">
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Pogoda i prognoza</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie.</p>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
+                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork" style="flex:3;">
+                <button class="btn" onclick="searchWeatherByCity()"><i class="fas fa-search"></i> Szukaj</button>
+                <button class="btn" onclick="getWeatherByGeolocation()"><i class="fas fa-location-dot"></i> Moja lokalizacja</button>
+            </div>
+            <div id="weatherLoading" class="loading-spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Ładowanie pogody...</div>
+            <div id="weatherContent"></div>
+            <div style="margin-top: 1rem; text-align: center;">
+                <button class="btn btn-sm" onclick="toggleWeatherUnits()" id="weatherUnitsBtn">Jednostki: °C / km/h</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- ============ SEKCJA KONTAKT ============ -->
@@ -1174,6 +1311,20 @@
         }
         if (tab === 'time') {
             refreshAllTimes();
+        }
+        if (tab === 'nutrition') {
+            if (!window.nutritionInitialized) {
+                initNutritionConverter();
+                window.nutritionInitialized = true;
+            } else {
+                refreshNutritionTable(); // odświeżenie tabeli przy każdym wejściu
+            }
+        }
+        if (tab === 'weather') {
+            if (!window.weatherInitialized) {
+                initWeather();
+                window.weatherInitialized = true;
+            }
         }
     }
 
@@ -1546,7 +1697,7 @@
         convert();
     }
 
-    // ======================== MODUŁ KONWERTERA - NOWA, STABILNA WERSJA ========================
+    // ======================== MODUŁ KONWERTERA ========================
     const unitNames = {
         mm: 'milimetr', cm: 'centymetr', dm: 'decymetr', m: 'metr', km: 'kilometr',
         in: 'cal', ft: 'stopa', yd: 'jard', mi: 'mila', nmi: 'mila morska',
@@ -2661,6 +2812,333 @@
         setTimeout(gameLoop, 200);
     }
 
+    // ======================== NOWY MODUŁ: KONWERTER WARTOŚCI ODŻYWCZYCH ========================
+    const nutritionCategories = {
+        energy: { base: 'kcal', units: { kcal: 1, kJ: 4.184, J: 4184, Wh: 1.16222 } },
+        fat: { base: 'g', units: { 'g tłuszczu': 1, 'kcal z tłuszczu': 9 } },
+        protein: { base: 'g', units: { 'g białka': 1, 'kcal z białka': 4 } },
+        carbs: { base: 'g', units: { 'g węglowodanów': 1, 'kcal z węglowodanów': 4 } },
+        sugar: { base: 'g', units: { 'g cukru': 1, 'łyżeczki (5g)': 5, 'kostki (5g)': 5 } },
+        portions: { base: 'g', units: { 'gramy': 1 } }
+    };
+
+    let nutriCurrentCategory = 'energy';
+    let nutriCurrentFromUnit = 'kcal';
+    let nutriResultElements = [];
+    let customPortions = [];
+
+    function loadCustomPortions() {
+        const saved = localStorage.getItem('customPortions');
+        if (saved) {
+            try { customPortions = JSON.parse(saved); } catch(e) { customPortions = []; }
+        } else { customPortions = []; }
+        renderCustomPortionsList();
+        if (nutriCurrentCategory === 'portions') rebuildNutriTable();
+    }
+
+    function saveCustomPortions() {
+        localStorage.setItem('customPortions', JSON.stringify(customPortions));
+    }
+
+    function renderCustomPortionsList() {
+        const container = document.getElementById('customPortionsList');
+        if (!container) return;
+        container.innerHTML = '';
+        customPortions.forEach((p, idx) => {
+            const tag = document.createElement('span');
+            tag.className = 'quick-btn';
+            tag.innerHTML = `${p.name} (${p.grams}g) <i class="fas fa-times" style="margin-left: 0.3rem;"></i>`;
+            tag.onclick = () => {
+                customPortions.splice(idx, 1);
+                saveCustomPortions();
+                renderCustomPortionsList();
+                if (nutriCurrentCategory === 'portions') rebuildNutriTable();
+            };
+            container.appendChild(tag);
+        });
+    }
+
+    function addCustomPortion() {
+        const name = document.getElementById('newPortionName').value.trim();
+        const grams = parseFloat(document.getElementById('newPortionGrams').value);
+        if (!name || isNaN(grams) || grams <= 0) {
+            alert('Podaj nazwę i wagę w gramach.');
+            return;
+        }
+        customPortions.push({ name, grams });
+        saveCustomPortions();
+        renderCustomPortionsList();
+        document.getElementById('newPortionName').value = '';
+        document.getElementById('newPortionGrams').value = '';
+        if (nutriCurrentCategory === 'portions') rebuildNutriTable();
+    }
+
+    function getActiveNutriUnits() {
+        if (nutriCurrentCategory === 'portions') {
+            let units = { 'gramy': 1 };
+            customPortions.forEach(p => { units[p.name] = p.grams; });
+            return units;
+        }
+        return nutritionCategories[nutriCurrentCategory].units;
+    }
+
+    function rebuildNutriTable() {
+        const tbody = document.getElementById('nutriTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        nutriResultElements = [];
+        const units = getActiveNutriUnits();
+        for (let unit in units) {
+            const row = tbody.insertRow();
+            const cellUnit = row.insertCell(0);
+            const cellValue = row.insertCell(1);
+            cellUnit.textContent = unit;
+            cellValue.className = 'result-value';
+            cellValue.setAttribute('data-unit', unit);
+            nutriResultElements.push({ unit: unit, element: cellValue });
+        }
+        convertNutrition();
+    }
+
+    function convertNutrition() {
+        const val = parseFloat(document.getElementById('nutriValue').value) || 0;
+        const fromUnit = nutriCurrentFromUnit;
+        const units = getActiveNutriUnits();
+        let baseValue = 0;
+        if (nutriCurrentCategory === 'energy') {
+            const factorFrom = units[fromUnit];
+            if (!factorFrom) return;
+            baseValue = val * factorFrom;
+        } else if (nutriCurrentCategory === 'fat') {
+            if (fromUnit === 'g tłuszczu') baseValue = val;
+            else if (fromUnit === 'kcal z tłuszczu') baseValue = val / 9;
+            else return;
+        } else if (nutriCurrentCategory === 'protein') {
+            if (fromUnit === 'g białka') baseValue = val;
+            else if (fromUnit === 'kcal z białka') baseValue = val / 4;
+            else return;
+        } else if (nutriCurrentCategory === 'carbs') {
+            if (fromUnit === 'g węglowodanów') baseValue = val;
+            else if (fromUnit === 'kcal z węglowodanów') baseValue = val / 4;
+            else return;
+        } else if (nutriCurrentCategory === 'sugar') {
+            if (fromUnit === 'g cukru') baseValue = val;
+            else if (fromUnit === 'łyżeczki (5g)') baseValue = val * 5;
+            else if (fromUnit === 'kostki (5g)') baseValue = val * 5;
+            else return;
+        } else if (nutriCurrentCategory === 'portions') {
+            if (fromUnit === 'gramy') baseValue = val;
+            else {
+                const grams = units[fromUnit];
+                if (grams && grams !== 1) baseValue = val * grams;
+                else baseValue = val;
+            }
+        }
+        for (let item of nutriResultElements) {
+            const targetUnit = item.unit;
+            const targetFactor = units[targetUnit];
+            if (targetFactor === undefined) continue;
+            let result;
+            if (nutriCurrentCategory === 'energy') {
+                result = baseValue / targetFactor;
+            } else if (nutriCurrentCategory === 'fat') {
+                if (targetUnit === 'g tłuszczu') result = baseValue;
+                else result = baseValue * 9;
+            } else if (nutriCurrentCategory === 'protein') {
+                if (targetUnit === 'g białka') result = baseValue;
+                else result = baseValue * 4;
+            } else if (nutriCurrentCategory === 'carbs') {
+                if (targetUnit === 'g węglowodanów') result = baseValue;
+                else result = baseValue * 4;
+            } else if (nutriCurrentCategory === 'sugar') {
+                if (targetUnit === 'g cukru') result = baseValue;
+                else if (targetUnit === 'łyżeczki (5g)') result = baseValue / 5;
+                else if (targetUnit === 'kostki (5g)') result = baseValue / 5;
+                else result = baseValue;
+            } else if (nutriCurrentCategory === 'portions') {
+                if (targetUnit === 'gramy') result = baseValue;
+                else {
+                    const grams = units[targetUnit];
+                    if (grams && grams !== 1) result = baseValue / grams;
+                    else result = baseValue;
+                }
+            }
+            item.element.textContent = result.toFixed(2);
+        }
+    }
+
+    function onNutriCategoryChange() {
+        nutriCurrentCategory = document.getElementById('nutriCategory').value;
+        const fromSelect = document.getElementById('nutriFromUnit');
+        const units = getActiveNutriUnits();
+        fromSelect.innerHTML = '';
+        for (let u in units) {
+            const opt = document.createElement('option');
+            opt.value = u;
+            opt.textContent = u;
+            fromSelect.appendChild(opt);
+        }
+        nutriCurrentFromUnit = Object.keys(units)[0];
+        fromSelect.value = nutriCurrentFromUnit;
+        rebuildNutriTable();
+    }
+
+    function onNutriFromUnitChange() {
+        nutriCurrentFromUnit = document.getElementById('nutriFromUnit').value;
+        convertNutrition();
+    }
+
+    function initNutritionConverter() {
+        onNutriCategoryChange();
+        loadCustomPortions();
+    }
+
+    function refreshNutritionTable() {
+        if (nutriResultElements.length) convertNutrition();
+        else if (document.getElementById('nutriTableBody')) rebuildNutriTable();
+    }
+
+    // ======================== NOWY MODUŁ: POGODA (bez klucza, Open-Meteo) ========================
+    let weatherUnitsSystem = 'metric'; // metric = °C/km/h, imperial = °F/mph
+    let currentWeatherData = null;
+
+    async function searchWeatherByCity() {
+        const city = document.getElementById('weatherCityInput').value.trim();
+        if (!city) return;
+        document.getElementById('weatherLoading').style.display = 'flex';
+        document.getElementById('weatherContent').innerHTML = '';
+        try {
+            const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=pl&format=json`;
+            const geoRes = await fetch(geoUrl);
+            const geoData = await geoRes.json();
+            if (!geoData.results || geoData.results.length === 0) throw new Error('Nie znaleziono miasta');
+            const { latitude, longitude, name, country } = geoData.results[0];
+            await fetchWeather(latitude, longitude, name, country);
+        } catch (err) {
+            document.getElementById('weatherLoading').style.display = 'none';
+            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}</div>`;
+        }
+    }
+
+    async function getWeatherByGeolocation() {
+        if (!navigator.geolocation) {
+            alert('Twoja przeglądarka nie wspiera geolokalizacji.');
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            document.getElementById('weatherLoading').style.display = 'flex';
+            document.getElementById('weatherContent').innerHTML = '';
+            await fetchWeather(lat, lon, 'Twoja lokalizacja', '');
+        }, (err) => {
+            alert('Nie udało się pobrać lokalizacji: ' + err.message);
+        });
+    }
+
+    async function fetchWeather(lat, lon, cityName, countryCode) {
+        try {
+            const unitsParam = weatherUnitsSystem === 'metric' ? 'metric' : 'fahrenheit';
+            const windUnits = weatherUnitsSystem === 'metric' ? 'kmh' : 'mph';
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,weathercode,windspeed_10m,pressure_msl&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,precipitation_sum&timezone=auto&forecast_days=5&temperature_unit=${unitsParam}&windspeed_unit=${windUnits}`;
+            const res = await fetch(url);
+            const data = await res.ok ? await res.json() : null;
+            if (!data) throw new Error('Brak odpowiedzi z API');
+            displayWeather(data, cityName, countryCode);
+        } catch (err) {
+            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd pobierania pogody: ${err.message}</div>`;
+        } finally {
+            document.getElementById('weatherLoading').style.display = 'none';
+        }
+    }
+
+    function getWeatherIcon(weatherCode) {
+        if (weatherCode === 0) return '<i class="fas fa-sun"></i>';
+        if (weatherCode === 1 || weatherCode === 2) return '<i class="fas fa-cloud-sun"></i>';
+        if (weatherCode === 3) return '<i class="fas fa-cloud"></i>';
+        if (weatherCode >= 45 && weatherCode <= 48) return '<i class="fas fa-smog"></i>';
+        if (weatherCode >= 51 && weatherCode <= 55) return '<i class="fas fa-cloud-rain"></i>';
+        if (weatherCode >= 56 && weatherCode <= 57) return '<i class="fas fa-cloud-meatball"></i>';
+        if (weatherCode >= 61 && weatherCode <= 65) return '<i class="fas fa-cloud-showers-heavy"></i>';
+        if (weatherCode >= 66 && weatherCode <= 67) return '<i class="fas fa-cloud-hail"></i>';
+        if (weatherCode >= 71 && weatherCode <= 75) return '<i class="fas fa-snowflake"></i>';
+        if (weatherCode === 77) return '<i class="fas fa-snowman"></i>';
+        if (weatherCode >= 80 && weatherCode <= 82) return '<i class="fas fa-cloud-rain"></i>';
+        if (weatherCode >= 85 && weatherCode <= 86) return '<i class="fas fa-snowflake"></i>';
+        if (weatherCode >= 95 && weatherCode <= 99) return '<i class="fas fa-cloud-bolt"></i>';
+        return '<i class="fas fa-cloud"></i>';
+    }
+
+    function displayWeather(data, cityName, country) {
+        const current = data.current_weather;
+        const daily = data.daily;
+        const tempUnit = weatherUnitsSystem === 'metric' ? '°C' : '°F';
+        const windUnit = weatherUnitsSystem === 'metric' ? 'km/h' : 'mph';
+        const pressureUnit = 'hPa';
+        const html = `
+            <div class="weather-current">
+                <div class="weather-main">
+                    <div><i class="fas fa-map-marker-alt"></i> ${cityName} ${country ? `, ${country}` : ''}</div>
+                    <div class="temp">${Math.round(current.temperature)}${tempUnit}</div>
+                    <div>${getWeatherIcon(current.weathercode)}</div>
+                    <div>Odczuwalna: ${Math.round(current.windchill || current.temperature)}${tempUnit}</div>
+                </div>
+                <div class="weather-details">
+                    <div class="weather-detail-item"><i class="fas fa-tint"></i> Wilgotność: ${data.hourly ? data.hourly.relativehumidity_2m[0] : '--'}%</div>
+                    <div class="weather-detail-item"><i class="fas fa-wind"></i> Wiatr: ${current.windspeed} ${windUnit}</div>
+                    <div class="weather-detail-item"><i class="fas fa-tachometer-alt"></i> Ciśnienie: ${data.hourly ? data.hourly.pressure_msl[0] : '--'} ${pressureUnit}</div>
+                    <div class="weather-detail-item"><i class="fas fa-cloud"></i> Zachmurzenie: --</div>
+                </div>
+            </div>
+            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 5-dniowa</h3>
+            <div class="forecast-grid">
+                ${daily.time.slice(0,5).map((day, idx) => {
+                    const date = new Date(day);
+                    const dayName = date.toLocaleDateString('pl-PL', { weekday: 'short' });
+                    const maxTemp = Math.round(daily.temperature_2m_max[idx]);
+                    const minTemp = Math.round(daily.temperature_2m_min[idx]);
+                    const wind = Math.round(daily.windspeed_10m_max[idx]);
+                    const rain = daily.precipitation_sum[idx] || 0;
+                    const icon = getWeatherIcon(daily.weathercode[idx]);
+                    return `
+                        <div class="forecast-card">
+                            <div class="forecast-day">${dayName}<br>${date.toLocaleDateString('pl-PL', {day:'numeric',month:'short'})}</div>
+                            <div class="forecast-icon">${icon}</div>
+                            <div class="forecast-temp">${maxTemp}${tempUnit} / ${minTemp}${tempUnit}</div>
+                            <div><i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
+                            <div><i class="fas fa-cloud-rain"></i> ${rain} mm</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+        document.getElementById('weatherContent').innerHTML = html;
+    }
+
+    function toggleWeatherUnits() {
+        weatherUnitsSystem = weatherUnitsSystem === 'metric' ? 'imperial' : 'metric';
+        const btn = document.getElementById('weatherUnitsBtn');
+        btn.innerHTML = weatherUnitsSystem === 'metric' ? 'Jednostki: °C / km/h' : 'Jednostki: °F / mph';
+        const cityInput = document.getElementById('weatherCityInput').value;
+        if (cityInput) searchWeatherByCity();
+        else getWeatherByGeolocation();
+    }
+
+    function initWeather() {
+        // próbuj przez IP
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                if (data.city) {
+                    document.getElementById('weatherCityInput').value = data.city;
+                    searchWeatherByCity();
+                } else {
+                    getWeatherByGeolocation();
+                }
+            })
+            .catch(() => getWeatherByGeolocation());
+    }
+
     // ======================== BANER ZGÓD COOKIE ========================
     function setCookieConsent(accepted) {
         if (accepted) {
@@ -2693,7 +3171,7 @@
     document.getElementById('acceptCookies').onclick = () => setCookieConsent(true);
     document.getElementById('rejectCookies').onclick = () => setCookieConsent(false);
 
-    // ======================== INICJALIZACJA ========================
+    // ======================== INICJALIZACJA GŁÓWNA ========================
     fetchRates();
     currentCategory = 'length';
     currentDataMode = '1000';
@@ -2719,6 +3197,8 @@
     rebuildUpgrades();
     gameLoop();
     scheduleGoldenCookie();
+
+    // Inicjalizacja nowych modułów nie jest tutaj potrzebna, bo zostaną zainicjowane przy pierwszym otwarciu zakładki (w switchTab).
 </script>
 </body>
 </html>
