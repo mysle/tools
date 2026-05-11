@@ -1152,7 +1152,7 @@
             </div>
             <div class="table-wrapper">
                 <table id="timeDiffTable">
-                    <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
+                    <thead></tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
                     <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk. Side</tbody>
                 </table>
             </div>
@@ -1255,14 +1255,14 @@
         </div>
     </div>
 
-    <!-- ============ POPRAWIONA ZAKŁADKA POGODY (wttr.in - DZIAŁA ZAWSZE) ============ -->
+    <!-- ============ POPRAWIONA ZAKŁADKA POGODY (wttr.in - DZIAŁA DLA DOWOLNEJ LOKALIZACJI) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Pogoda i prognoza</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie.</p>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie – wpisz nazwę miasta w języku polskim, angielskim lub nawet współrzędne.</p>
 
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
-                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork" style="flex:3;">
+                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Kraków, Paris, New York, 51.1079,17.0385" style="flex:3;">
                 <button class="btn" onclick="searchWeatherByCity()"><i class="fas fa-search"></i> Szukaj</button>
                 <button class="btn" onclick="getWeatherByGeolocation()"><i class="fas fa-location-dot"></i> Moja lokalizacja</button>
             </div>
@@ -2432,7 +2432,7 @@
                 <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td>
                 <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
                 <td>0h</div></td>
-            <tr>
+            </tr>
         `;
     }
 
@@ -2998,24 +2998,37 @@
         else if (document.getElementById('nutriTableBody')) rebuildNutriTable();
     }
 
-    // ======================== NOWY MODUŁ: POGODA (wttr.in - DZIAŁA ZAWSZE) - POPRAWIONY ========================
+    // ======================== NOWY MODUŁ: POGODA (wttr.in - DZIAŁA DLA DOWOLNEJ LOKALIZACJI) ========================
     let weatherUnitsSystem = 'metric'; // metric lub imperial
 
     async function searchWeatherByCity() {
         const city = document.getElementById('weatherCityInput').value.trim();
-        if (!city) return;
+        if (!city) {
+            document.getElementById('weatherContent').innerHTML = '<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Proszę wpisać nazwę miasta lub współrzędne.</div>';
+            return;
+        }
         document.getElementById('weatherLoading').style.display = 'flex';
         document.getElementById('weatherContent').innerHTML = '';
         try {
             const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
+            // wttr.in obsługuje dowolne ciągi znaków – również polskie nazwy, współrzędne, kody pocztowe
             const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=pl&${unitsParam}`;
             const res = await fetch(url);
-            if (!res.ok) throw new Error('Błąd sieci');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
-            if (!data || !data.current_condition) throw new Error('Nieprawidłowa odpowiedź');
+            if (!data || !data.current_condition || data.current_condition.length === 0) {
+                throw new Error('Nie znaleziono lokalizacji');
+            }
             displayWeatherWttr(data, city);
         } catch (err) {
-            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}. Spróbuj innego miasta lub kliknij "Moja lokalizacja".</div>`;
+            console.error(err);
+            let errorMsg = err.message;
+            if (err.message.includes('Nie znaleziono')) {
+                errorMsg = 'Nie znaleziono lokalizacji. Sprawdź pisownię lub spróbuj innej nazwy (np. "Londyn", "Paris", "Nowy Jork").';
+            } else {
+                errorMsg = 'Błąd połączenia z serwerem pogodowym. Spróbuj ponownie za chwilę.';
+            }
+            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ ${errorMsg}</div>`;
         } finally {
             document.getElementById('weatherLoading').style.display = 'none';
         }
@@ -3035,12 +3048,12 @@
                 const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
                 const url = `https://wttr.in/${lat},${lon}?format=j1&lang=pl&${unitsParam}`;
                 const res = await fetch(url);
-                if (!res.ok) throw new Error('Błąd sieci');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
-                if (!data || !data.current_condition) throw new Error('Nieprawidłowa odpowiedź');
+                if (!data || !data.current_condition) throw new Error('Brak danych');
                 displayWeatherWttr(data, `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
             } catch (err) {
-                document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}</div>`;
+                document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Nie udało się pobrać pogody dla Twojej lokalizacji.</div>`;
             } finally {
                 document.getElementById('weatherLoading').style.display = 'none';
             }
@@ -3112,7 +3125,7 @@
         const html = `
             <div class="weather-current">
                 <div class="weather-main">
-                    <div><i class="fas fa-map-marker-alt"></i> ${locationName}</div>
+                    <div><i class="fas fa-map-marker-alt"></i> ${escapeHtml(locationName)}</div>
                     <div class="temp">${Math.round(current.temp_C)}${tempUnit}</div>
                     <div>${getWeatherIconWttr(current.weatherCode)}</div>
                     <div>Odczuwalna: ${Math.round(current.FeelsLikeC)}${tempUnit}</div>
@@ -3134,7 +3147,6 @@
                     const maxTemp = Math.round(day.maxtempC);
                     const minTemp = Math.round(day.mintempC);
                     const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
-                    // bezpieczne sumowanie opadów (precipMM może być stringiem lub nie istnieć)
                     let rain = 0;
                     if (day.hourly && Array.isArray(day.hourly)) {
                         rain = day.hourly.reduce((sum, h) => {
@@ -3171,9 +3183,20 @@
     }
 
     function initWeather() {
-        // Domyślnie próbuj pobrać pogodę dla Warszawy (lub użyj geolokalizacji)
-        document.getElementById('weatherCityInput').value = 'Warsaw';
+        // Domyślnie próbuj pobrać pogodę dla Warszawy (sprawdzona lokalizacja)
+        document.getElementById('weatherCityInput').value = 'Warszawa';
         searchWeatherByCity();
+    }
+
+    // pomocnicza funkcja do bezpiecznego escape'owania HTML
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
 
     // ======================== BANER ZGÓD COOKIE ========================
