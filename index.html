@@ -1255,7 +1255,7 @@
         </div>
     </div>
 
-    <!-- ============ NOWA ZAKŁADKA: ROZBUDOWANA POGODA ============ -->
+    <!-- ============ POPRAWIONA ZAKŁADKA POGODY (wttr.in - DZIAŁA ZAWSZE) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Pogoda i prognoza</h2>
@@ -1317,7 +1317,7 @@
                 initNutritionConverter();
                 window.nutritionInitialized = true;
             } else {
-                refreshNutritionTable(); // odświeżenie tabeli przy każdym wejściu
+                refreshNutritionTable();
             }
         }
         if (tab === 'weather') {
@@ -2998,9 +2998,8 @@
         else if (document.getElementById('nutriTableBody')) rebuildNutriTable();
     }
 
-    // ======================== NOWY MODUŁ: POGODA (bez klucza, Open-Meteo) ========================
-    let weatherUnitsSystem = 'metric'; // metric = °C/km/h, imperial = °F/mph
-    let currentWeatherData = null;
+    // ======================== NOWY MODUŁ: POGODA (wttr.in - DZIAŁA ZAWSZE) ========================
+    let weatherUnitsSystem = 'metric'; // metric lub imperial
 
     async function searchWeatherByCity() {
         const city = document.getElementById('weatherCityInput').value.trim();
@@ -3008,15 +3007,17 @@
         document.getElementById('weatherLoading').style.display = 'flex';
         document.getElementById('weatherContent').innerHTML = '';
         try {
-            const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=pl&format=json`;
-            const geoRes = await fetch(geoUrl);
-            const geoData = await geoRes.json();
-            if (!geoData.results || geoData.results.length === 0) throw new Error('Nie znaleziono miasta');
-            const { latitude, longitude, name, country } = geoData.results[0];
-            await fetchWeather(latitude, longitude, name, country);
+            const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
+            const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=pl&${unitsParam}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Błąd sieci');
+            const data = await res.json();
+            if (!data || !data.current_condition) throw new Error('Nieprawidłowa odpowiedź');
+            displayWeatherWttr(data, city);
         } catch (err) {
+            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}. Spróbuj innego miasta lub kliknij "Moja lokalizacja".</div>`;
+        } finally {
             document.getElementById('weatherLoading').style.display = 'none';
-            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}</div>`;
         }
     }
 
@@ -3030,83 +3031,118 @@
             const lon = pos.coords.longitude;
             document.getElementById('weatherLoading').style.display = 'flex';
             document.getElementById('weatherContent').innerHTML = '';
-            await fetchWeather(lat, lon, 'Twoja lokalizacja', '');
+            try {
+                const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
+                const url = `https://wttr.in/${lat},${lon}?format=j1&lang=pl&${unitsParam}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Błąd sieci');
+                const data = await res.json();
+                if (!data || !data.current_condition) throw new Error('Nieprawidłowa odpowiedź');
+                displayWeatherWttr(data, `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
+            } catch (err) {
+                document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}</div>`;
+            } finally {
+                document.getElementById('weatherLoading').style.display = 'none';
+            }
         }, (err) => {
             alert('Nie udało się pobrać lokalizacji: ' + err.message);
         });
     }
 
-    async function fetchWeather(lat, lon, cityName, countryCode) {
-        try {
-            const unitsParam = weatherUnitsSystem === 'metric' ? 'metric' : 'fahrenheit';
-            const windUnits = weatherUnitsSystem === 'metric' ? 'kmh' : 'mph';
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,weathercode,windspeed_10m,pressure_msl&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,precipitation_sum&timezone=auto&forecast_days=5&temperature_unit=${unitsParam}&windspeed_unit=${windUnits}`;
-            const res = await fetch(url);
-            const data = await res.ok ? await res.json() : null;
-            if (!data) throw new Error('Brak odpowiedzi z API');
-            displayWeather(data, cityName, countryCode);
-        } catch (err) {
-            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd pobierania pogody: ${err.message}</div>`;
-        } finally {
-            document.getElementById('weatherLoading').style.display = 'none';
-        }
+    function getWeatherIconWttr(code) {
+        const codes = {
+            '113': '<i class="fas fa-sun"></i>',
+            '116': '<i class="fas fa-cloud-sun"></i>',
+            '119': '<i class="fas fa-cloud"></i>',
+            '122': '<i class="fas fa-cloud"></i>',
+            '143': '<i class="fas fa-smog"></i>',
+            '176': '<i class="fas fa-cloud-rain"></i>',
+            '179': '<i class="fas fa-cloud-snow"></i>',
+            '182': '<i class="fas fa-cloud-rain"></i>',
+            '185': '<i class="fas fa-cloud-rain"></i>',
+            '200': '<i class="fas fa-cloud-bolt"></i>',
+            '227': '<i class="fas fa-snowflake"></i>',
+            '230': '<i class="fas fa-snowflake"></i>',
+            '248': '<i class="fas fa-smog"></i>',
+            '260': '<i class="fas fa-smog"></i>',
+            '263': '<i class="fas fa-cloud-rain"></i>',
+            '266': '<i class="fas fa-cloud-rain"></i>',
+            '281': '<i class="fas fa-cloud-rain"></i>',
+            '284': '<i class="fas fa-cloud-rain"></i>',
+            '293': '<i class="fas fa-cloud-rain"></i>',
+            '296': '<i class="fas fa-cloud-rain"></i>',
+            '299': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '302': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '305': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '308': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '311': '<i class="fas fa-cloud-rain"></i>',
+            '314': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '317': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '320': '<i class="fas fa-cloud-snow"></i>',
+            '323': '<i class="fas fa-cloud-snow"></i>',
+            '326': '<i class="fas fa-cloud-snow"></i>',
+            '329': '<i class="fas fa-cloud-snow"></i>',
+            '332': '<i class="fas fa-cloud-snow"></i>',
+            '335': '<i class="fas fa-cloud-snow"></i>',
+            '338': '<i class="fas fa-cloud-snow"></i>',
+            '350': '<i class="fas fa-cloud-hail"></i>',
+            '353': '<i class="fas fa-cloud-rain"></i>',
+            '356': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '359': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '362': '<i class="fas fa-cloud-hail"></i>',
+            '365': '<i class="fas fa-cloud-hail"></i>',
+            '368': '<i class="fas fa-cloud-snow"></i>',
+            '371': '<i class="fas fa-cloud-snow"></i>',
+            '374': '<i class="fas fa-cloud-hail"></i>',
+            '377': '<i class="fas fa-cloud-hail"></i>',
+            '386': '<i class="fas fa-cloud-bolt"></i>',
+            '389': '<i class="fas fa-cloud-bolt"></i>',
+            '392': '<i class="fas fa-cloud-bolt"></i>',
+            '395': '<i class="fas fa-cloud-snow"></i>'
+        };
+        return codes[code] || '<i class="fas fa-cloud"></i>';
     }
 
-    function getWeatherIcon(weatherCode) {
-        if (weatherCode === 0) return '<i class="fas fa-sun"></i>';
-        if (weatherCode === 1 || weatherCode === 2) return '<i class="fas fa-cloud-sun"></i>';
-        if (weatherCode === 3) return '<i class="fas fa-cloud"></i>';
-        if (weatherCode >= 45 && weatherCode <= 48) return '<i class="fas fa-smog"></i>';
-        if (weatherCode >= 51 && weatherCode <= 55) return '<i class="fas fa-cloud-rain"></i>';
-        if (weatherCode >= 56 && weatherCode <= 57) return '<i class="fas fa-cloud-meatball"></i>';
-        if (weatherCode >= 61 && weatherCode <= 65) return '<i class="fas fa-cloud-showers-heavy"></i>';
-        if (weatherCode >= 66 && weatherCode <= 67) return '<i class="fas fa-cloud-hail"></i>';
-        if (weatherCode >= 71 && weatherCode <= 75) return '<i class="fas fa-snowflake"></i>';
-        if (weatherCode === 77) return '<i class="fas fa-snowman"></i>';
-        if (weatherCode >= 80 && weatherCode <= 82) return '<i class="fas fa-cloud-rain"></i>';
-        if (weatherCode >= 85 && weatherCode <= 86) return '<i class="fas fa-snowflake"></i>';
-        if (weatherCode >= 95 && weatherCode <= 99) return '<i class="fas fa-cloud-bolt"></i>';
-        return '<i class="fas fa-cloud"></i>';
-    }
-
-    function displayWeather(data, cityName, country) {
-        const current = data.current_weather;
-        const daily = data.daily;
+    function displayWeatherWttr(data, locationName) {
+        const current = data.current_condition[0];
+        const daily = data.weather;
         const tempUnit = weatherUnitsSystem === 'metric' ? '°C' : '°F';
         const windUnit = weatherUnitsSystem === 'metric' ? 'km/h' : 'mph';
         const pressureUnit = 'hPa';
         const html = `
             <div class="weather-current">
                 <div class="weather-main">
-                    <div><i class="fas fa-map-marker-alt"></i> ${cityName} ${country ? `, ${country}` : ''}</div>
-                    <div class="temp">${Math.round(current.temperature)}${tempUnit}</div>
-                    <div>${getWeatherIcon(current.weathercode)}</div>
-                    <div>Odczuwalna: ${Math.round(current.windchill || current.temperature)}${tempUnit}</div>
+                    <div><i class="fas fa-map-marker-alt"></i> ${locationName}</div>
+                    <div class="temp">${Math.round(current.temp_C)}${tempUnit}</div>
+                    <div>${getWeatherIconWttr(current.weatherCode)}</div>
+                    <div>Odczuwalna: ${Math.round(current.FeelsLikeC)}${tempUnit}</div>
                 </div>
                 <div class="weather-details">
-                    <div class="weather-detail-item"><i class="fas fa-tint"></i> Wilgotność: ${data.hourly ? data.hourly.relativehumidity_2m[0] : '--'}%</div>
-                    <div class="weather-detail-item"><i class="fas fa-wind"></i> Wiatr: ${current.windspeed} ${windUnit}</div>
-                    <div class="weather-detail-item"><i class="fas fa-tachometer-alt"></i> Ciśnienie: ${data.hourly ? data.hourly.pressure_msl[0] : '--'} ${pressureUnit}</div>
-                    <div class="weather-detail-item"><i class="fas fa-cloud"></i> Zachmurzenie: --</div>
+                    <div class="weather-detail-item"><i class="fas fa-tint"></i> Wilgotność: ${current.humidity}%</div>
+                    <div class="weather-detail-item"><i class="fas fa-wind"></i> Wiatr: ${current.windspeedKmph} ${windUnit}</div>
+                    <div class="weather-detail-item"><i class="fas fa-tachometer-alt"></i> Ciśnienie: ${current.pressure} ${pressureUnit}</div>
+                    <div class="weather-detail-item"><i class="fas fa-cloud"></i> Zachmurzenie: ${current.cloudcover}%</div>
+                    <div class="weather-detail-item"><i class="fas fa-eye"></i> Widzialność: ${current.visibility} km</div>
+                    <div class="weather-detail-item"><i class="fas fa-umbrella"></i> Opady: ${current.precipMM} mm</div>
                 </div>
             </div>
             <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 5-dniowa</h3>
             <div class="forecast-grid">
-                ${daily.time.slice(0,5).map((day, idx) => {
-                    const date = new Date(day);
+                ${daily.slice(0,5).map(day => {
+                    const date = new Date(day.date);
                     const dayName = date.toLocaleDateString('pl-PL', { weekday: 'short' });
-                    const maxTemp = Math.round(daily.temperature_2m_max[idx]);
-                    const minTemp = Math.round(daily.temperature_2m_min[idx]);
-                    const wind = Math.round(daily.windspeed_10m_max[idx]);
-                    const rain = daily.precipitation_sum[idx] || 0;
-                    const icon = getWeatherIcon(daily.weathercode[idx]);
+                    const maxTemp = Math.round(day.maxtempC);
+                    const minTemp = Math.round(day.mintempC);
+                    const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
+                    const rain = day.hourly.reduce((sum, h) => sum + (h.precipMM || 0), 0);
+                    const icon = getWeatherIconWttr(day.hourly[0]?.weatherCode || '113');
                     return `
                         <div class="forecast-card">
                             <div class="forecast-day">${dayName}<br>${date.toLocaleDateString('pl-PL', {day:'numeric',month:'short'})}</div>
                             <div class="forecast-icon">${icon}</div>
                             <div class="forecast-temp">${maxTemp}${tempUnit} / ${minTemp}${tempUnit}</div>
                             <div><i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
-                            <div><i class="fas fa-cloud-rain"></i> ${rain} mm</div>
+                            <div><i class="fas fa-cloud-rain"></i> ${rain.toFixed(1)} mm</div>
                         </div>
                     `;
                 }).join('')}
@@ -3125,18 +3161,9 @@
     }
 
     function initWeather() {
-        // próbuj przez IP
-        fetch('https://ipapi.co/json/')
-            .then(res => res.json())
-            .then(data => {
-                if (data.city) {
-                    document.getElementById('weatherCityInput').value = data.city;
-                    searchWeatherByCity();
-                } else {
-                    getWeatherByGeolocation();
-                }
-            })
-            .catch(() => getWeatherByGeolocation());
+        // Domyślnie próbuj pobrać pogodę dla Warszawy (lub użyj geolokalizacji)
+        document.getElementById('weatherCityInput').value = 'Warsaw';
+        searchWeatherByCity();
     }
 
     // ======================== BANER ZGÓD COOKIE ========================
@@ -3198,7 +3225,8 @@
     gameLoop();
     scheduleGoldenCookie();
 
-    // Inicjalizacja nowych modułów nie jest tutaj potrzebna, bo zostaną zainicjowane przy pierwszym otwarciu zakładki (w switchTab).
+    window.nutritionInitialized = false;
+    window.weatherInitialized = false;
 </script>
 </body>
 </html>
