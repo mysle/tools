@@ -1152,7 +1152,7 @@
             </div>
             <div class="table-wrapper">
                 <table id="timeDiffTable">
-                    <thead></tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
+                    <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
                     <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk. Side</tbody>
                 </table>
             </div>
@@ -3011,7 +3011,6 @@
         document.getElementById('weatherContent').innerHTML = '';
         try {
             const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
-            // wttr.in obsługuje dowolne ciągi znaków – również polskie nazwy, współrzędne, kody pocztowe
             const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=pl&${unitsParam}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -3183,12 +3182,10 @@
     }
 
     function initWeather() {
-        // Domyślnie próbuj pobrać pogodę dla Warszawy (sprawdzona lokalizacja)
         document.getElementById('weatherCityInput').value = 'Warszawa';
         searchWeatherByCity();
     }
 
-    // pomocnicza funkcja do bezpiecznego escape'owania HTML
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
