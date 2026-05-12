@@ -3233,9 +3233,7 @@
     currentCategory = 'length';
     currentDataMode = '1000';
     updateConverter();
-
     document.getElementById('amount').addEventListener('wheel', e => e.preventDefault());
-
     initTimezoneCards();
     renderTimeCards();
     populateTimezoneSelects();
@@ -3247,14 +3245,12 @@
     }, 500);
     clearProgrammer();
     switchSubTab('credit', null);
-
     loadGame();
     updateStats();
     rebuildBuildings();
     rebuildUpgrades();
     gameLoop();
     scheduleGoldenCookie();
-
     window.nutritionInitialized = false;
     window.weatherInitialized = false;
 </script>
