@@ -1255,14 +1255,14 @@
         </div>
     </div>
 
-    <!-- ============ POPRAWIONA ZAKŁADKA POGODY (wttr.in - DZIAŁA DLA DOWOLNEJ LOKALIZACJI) ============ -->
+    <!-- ============ POPRAWIONA ZAKŁADKA POGODY (wttr.in - DZIAŁA ZAWSZE) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Pogoda i prognoza</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie – wpisz nazwę miasta w języku polskim, angielskim lub nawet współrzędne.</p>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie.</p>
 
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
-                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Kraków, Paris, New York, 51.1079,17.0385" style="flex:3;">
+                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;">
                 <button class="btn" onclick="searchWeatherByCity()"><i class="fas fa-search"></i> Szukaj</button>
                 <button class="btn" onclick="getWeatherByGeolocation()"><i class="fas fa-location-dot"></i> Moja lokalizacja</button>
             </div>
@@ -2423,7 +2423,7 @@
                 <tr>
                     <td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td>
                     <td>${time}<br><span style="font-size:0.7rem;">${date}</span></td>
-                    <td>${diffStr}</td>
+                    <td>${diffStr}</div></td>
                 </tr>
             `;
         });
@@ -2998,37 +2998,35 @@
         else if (document.getElementById('nutriTableBody')) rebuildNutriTable();
     }
 
-    // ======================== NOWY MODUŁ: POGODA (wttr.in - DZIAŁA DLA DOWOLNEJ LOKALIZACJI) ========================
+    // ======================== POPRAWIONY MODUŁ: POGODA (dowolna lokalizacja) ========================
     let weatherUnitsSystem = 'metric'; // metric lub imperial
 
     async function searchWeatherByCity() {
         const city = document.getElementById('weatherCityInput').value.trim();
         if (!city) {
-            document.getElementById('weatherContent').innerHTML = '<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Proszę wpisać nazwę miasta lub współrzędne.</div>';
+            alert('Wpisz nazwę miejscowości, kod pocztowy lub współrzędne.');
             return;
         }
         document.getElementById('weatherLoading').style.display = 'flex';
         document.getElementById('weatherContent').innerHTML = '';
         try {
             const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
-            // wttr.in obsługuje dowolne ciągi znaków – również polskie nazwy, współrzędne, kody pocztowe
+            // Poprawne kodowanie URL – wspiera polskie znaki i spacje
             const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=pl&${unitsParam}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (!data || !data.current_condition || data.current_condition.length === 0) {
-                throw new Error('Nie znaleziono lokalizacji');
+                throw new Error('Lokalizacja nie rozpoznana przez serwer pogodowy.');
+            }
+            // Sprawdź czy wttr.in zwrócił błąd (np. "Unknown location")
+            if (data.current_condition[0] && data.current_condition[0].weatherCode === undefined) {
+                throw new Error('Nieprawidłowa odpowiedź – sprawdź pisownię miejscowości.');
             }
             displayWeatherWttr(data, city);
         } catch (err) {
-            console.error(err);
-            let errorMsg = err.message;
-            if (err.message.includes('Nie znaleziono')) {
-                errorMsg = 'Nie znaleziono lokalizacji. Sprawdź pisownię lub spróbuj innej nazwy (np. "Londyn", "Paris", "Nowy Jork").';
-            } else {
-                errorMsg = 'Błąd połączenia z serwerem pogodowym. Spróbuj ponownie za chwilę.';
-            }
-            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ ${errorMsg}</div>`;
+            console.error('Pogoda błąd:', err);
+            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Nie udało się pobrać pogody dla „${city}”.<br>Sprawdź pisownię lub spróbuj innej nazwy (np. „Londyn, UK”).</div>`;
         } finally {
             document.getElementById('weatherLoading').style.display = 'none';
         }
@@ -3048,12 +3046,12 @@
                 const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
                 const url = `https://wttr.in/${lat},${lon}?format=j1&lang=pl&${unitsParam}`;
                 const res = await fetch(url);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                if (!res.ok) throw new Error('Błąd sieci');
                 const data = await res.json();
-                if (!data || !data.current_condition) throw new Error('Brak danych');
+                if (!data || !data.current_condition) throw new Error('Nieprawidłowa odpowiedź');
                 displayWeatherWttr(data, `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
             } catch (err) {
-                document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Nie udało się pobrać pogody dla Twojej lokalizacji.</div>`;
+                document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}</div>`;
             } finally {
                 document.getElementById('weatherLoading').style.display = 'none';
             }
@@ -3064,54 +3062,30 @@
 
     function getWeatherIconWttr(code) {
         const codes = {
-            '113': '<i class="fas fa-sun"></i>',
-            '116': '<i class="fas fa-cloud-sun"></i>',
-            '119': '<i class="fas fa-cloud"></i>',
-            '122': '<i class="fas fa-cloud"></i>',
-            '143': '<i class="fas fa-smog"></i>',
-            '176': '<i class="fas fa-cloud-rain"></i>',
-            '179': '<i class="fas fa-cloud-snow"></i>',
-            '182': '<i class="fas fa-cloud-rain"></i>',
-            '185': '<i class="fas fa-cloud-rain"></i>',
-            '200': '<i class="fas fa-cloud-bolt"></i>',
-            '227': '<i class="fas fa-snowflake"></i>',
-            '230': '<i class="fas fa-snowflake"></i>',
-            '248': '<i class="fas fa-smog"></i>',
-            '260': '<i class="fas fa-smog"></i>',
-            '263': '<i class="fas fa-cloud-rain"></i>',
-            '266': '<i class="fas fa-cloud-rain"></i>',
-            '281': '<i class="fas fa-cloud-rain"></i>',
-            '284': '<i class="fas fa-cloud-rain"></i>',
-            '293': '<i class="fas fa-cloud-rain"></i>',
-            '296': '<i class="fas fa-cloud-rain"></i>',
-            '299': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '302': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '305': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '308': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '311': '<i class="fas fa-cloud-rain"></i>',
-            '314': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '317': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '320': '<i class="fas fa-cloud-snow"></i>',
-            '323': '<i class="fas fa-cloud-snow"></i>',
-            '326': '<i class="fas fa-cloud-snow"></i>',
-            '329': '<i class="fas fa-cloud-snow"></i>',
-            '332': '<i class="fas fa-cloud-snow"></i>',
-            '335': '<i class="fas fa-cloud-snow"></i>',
-            '338': '<i class="fas fa-cloud-snow"></i>',
-            '350': '<i class="fas fa-cloud-hail"></i>',
-            '353': '<i class="fas fa-cloud-rain"></i>',
-            '356': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '359': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '362': '<i class="fas fa-cloud-hail"></i>',
-            '365': '<i class="fas fa-cloud-hail"></i>',
-            '368': '<i class="fas fa-cloud-snow"></i>',
-            '371': '<i class="fas fa-cloud-snow"></i>',
-            '374': '<i class="fas fa-cloud-hail"></i>',
-            '377': '<i class="fas fa-cloud-hail"></i>',
-            '386': '<i class="fas fa-cloud-bolt"></i>',
-            '389': '<i class="fas fa-cloud-bolt"></i>',
-            '392': '<i class="fas fa-cloud-bolt"></i>',
-            '395': '<i class="fas fa-cloud-snow"></i>'
+            '113': '<i class="fas fa-sun"></i>', '116': '<i class="fas fa-cloud-sun"></i>',
+            '119': '<i class="fas fa-cloud"></i>', '122': '<i class="fas fa-cloud"></i>',
+            '143': '<i class="fas fa-smog"></i>', '176': '<i class="fas fa-cloud-rain"></i>',
+            '179': '<i class="fas fa-cloud-snow"></i>', '182': '<i class="fas fa-cloud-rain"></i>',
+            '185': '<i class="fas fa-cloud-rain"></i>', '200': '<i class="fas fa-cloud-bolt"></i>',
+            '227': '<i class="fas fa-snowflake"></i>', '230': '<i class="fas fa-snowflake"></i>',
+            '248': '<i class="fas fa-smog"></i>', '260': '<i class="fas fa-smog"></i>',
+            '263': '<i class="fas fa-cloud-rain"></i>', '266': '<i class="fas fa-cloud-rain"></i>',
+            '281': '<i class="fas fa-cloud-rain"></i>', '284': '<i class="fas fa-cloud-rain"></i>',
+            '293': '<i class="fas fa-cloud-rain"></i>', '296': '<i class="fas fa-cloud-rain"></i>',
+            '299': '<i class="fas fa-cloud-showers-heavy"></i>', '302': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '305': '<i class="fas fa-cloud-showers-heavy"></i>', '308': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '311': '<i class="fas fa-cloud-rain"></i>', '314': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '317': '<i class="fas fa-cloud-showers-heavy"></i>', '320': '<i class="fas fa-cloud-snow"></i>',
+            '323': '<i class="fas fa-cloud-snow"></i>', '326': '<i class="fas fa-cloud-snow"></i>',
+            '329': '<i class="fas fa-cloud-snow"></i>', '332': '<i class="fas fa-cloud-snow"></i>',
+            '335': '<i class="fas fa-cloud-snow"></i>', '338': '<i class="fas fa-cloud-snow"></i>',
+            '350': '<i class="fas fa-cloud-hail"></i>', '353': '<i class="fas fa-cloud-rain"></i>',
+            '356': '<i class="fas fa-cloud-showers-heavy"></i>', '359': '<i class="fas fa-cloud-showers-heavy"></i>',
+            '362': '<i class="fas fa-cloud-hail"></i>', '365': '<i class="fas fa-cloud-hail"></i>',
+            '368': '<i class="fas fa-cloud-snow"></i>', '371': '<i class="fas fa-cloud-snow"></i>',
+            '374': '<i class="fas fa-cloud-hail"></i>', '377': '<i class="fas fa-cloud-hail"></i>',
+            '386': '<i class="fas fa-cloud-bolt"></i>', '389': '<i class="fas fa-cloud-bolt"></i>',
+            '392': '<i class="fas fa-cloud-bolt"></i>', '395': '<i class="fas fa-cloud-snow"></i>'
         };
         return codes[code] || '<i class="fas fa-cloud"></i>';
     }
@@ -3122,6 +3096,21 @@
         const tempUnit = weatherUnitsSystem === 'metric' ? '°C' : '°F';
         const windUnit = weatherUnitsSystem === 'metric' ? 'km/h' : 'mph';
         const pressureUnit = 'hPa';
+        // Oblicz sumę opadów dla każdego dnia
+        const dailyWithRain = daily.slice(0,5).map(day => {
+            let totalRain = 0;
+            if (day.hourly && Array.isArray(day.hourly)) {
+                totalRain = day.hourly.reduce((sum, h) => {
+                    let val = h.precipMM;
+                    if (val === undefined || val === null) return sum;
+                    if (typeof val === 'string') val = parseFloat(val);
+                    if (isNaN(val)) return sum;
+                    return sum + val;
+                }, 0);
+            }
+            return { ...day, totalRain };
+        });
+
         const html = `
             <div class="weather-current">
                 <div class="weather-main">
@@ -3141,22 +3130,13 @@
             </div>
             <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 5-dniowa</h3>
             <div class="forecast-grid">
-                ${daily.slice(0,5).map(day => {
+                ${dailyWithRain.map(day => {
                     const date = new Date(day.date);
                     const dayName = date.toLocaleDateString('pl-PL', { weekday: 'short' });
                     const maxTemp = Math.round(day.maxtempC);
                     const minTemp = Math.round(day.mintempC);
                     const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
-                    let rain = 0;
-                    if (day.hourly && Array.isArray(day.hourly)) {
-                        rain = day.hourly.reduce((sum, h) => {
-                            let val = h.precipMM;
-                            if (val === undefined || val === null) return sum;
-                            if (typeof val === 'string') val = parseFloat(val);
-                            if (isNaN(val)) return sum;
-                            return sum + val;
-                        }, 0);
-                    }
+                    const rain = day.totalRain;
                     const icon = getWeatherIconWttr(day.hourly[0]?.weatherCode || '113');
                     return `
                         <div class="forecast-card">
@@ -3173,6 +3153,16 @@
         document.getElementById('weatherContent').innerHTML = html;
     }
 
+    // prosty escape, aby uniknąć XSS (choć dane z wttr.in są bezpieczne)
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
     function toggleWeatherUnits() {
         weatherUnitsSystem = weatherUnitsSystem === 'metric' ? 'imperial' : 'metric';
         const btn = document.getElementById('weatherUnitsBtn');
@@ -3183,20 +3173,23 @@
     }
 
     function initWeather() {
-        // Domyślnie próbuj pobrać pogodę dla Warszawy (sprawdzona lokalizacja)
-        document.getElementById('weatherCityInput').value = 'Warszawa';
-        searchWeatherByCity();
-    }
-
-    // pomocnicza funkcja do bezpiecznego escape'owania HTML
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        // Dodajemy nasłuchiwanie klawisza Enter w polu tekstowym
+        const input = document.getElementById('weatherCityInput');
+        if (input) {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchWeatherByCity();
+            });
+        }
+        // Domyślnie pokaż pogodę dla Warszawy (lub geolokalizacja)
+        if (navigator.geolocation) {
+            // opcjonalnie – możesz od razu pytać o lokalizację, ale lepiej dać użytkownikowi wybór
+            // Uruchom z domyślnym miastem
+            document.getElementById('weatherCityInput').value = 'Warszawa';
+            searchWeatherByCity();
+        } else {
+            document.getElementById('weatherCityInput').value = 'Warszawa';
+            searchWeatherByCity();
+        }
     }
 
     // ======================== BANER ZGÓD COOKIE ========================
