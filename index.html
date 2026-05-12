@@ -162,7 +162,7 @@
         .metric-card:hover { transform: translateY(-5px); border-color: var(--primary); }
         .chart-container { margin-top: 2rem; height: 300px; position: relative; }
 
-        /* ===== STATUS BAR - NAPRAWIONY: NIGDY NIE DRŻY ANI NIE MIGOCZE ===== */
+        /* ===== STATUS BAR ===== */
         .status-bar {
             position: fixed;
             bottom: 2rem;
@@ -257,7 +257,7 @@
         .time-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
         .utc-offset { font-size: 0.75rem; background: rgba(0,0,0,0.4); display: inline-block; padding: 0.2rem 0.5rem; border-radius: 1rem; }
 
-        /* Cookie Clicker styles */
+        /* Cookie Clicker styles - rozszerzone */
         .cookie-game {
             text-align: center;
         }
@@ -619,7 +619,7 @@
             }
         }
 
-        /* --- Nowe style dla pogody --- */
+        /* --- Poprawione style dla pogody (bardziej kolorowe) --- */
         .weather-current {
             display: flex;
             flex-wrap: wrap;
@@ -628,6 +628,17 @@
             background: rgba(15,23,42,0.4);
             border-radius: 1.5rem;
             padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        /* Dodatkowy efekt w zależności od temperatury – będzie dodawany dynamicznie przez JS */
+        .weather-current.hot {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.3), rgba(249, 115, 22, 0.2));
+        }
+        .weather-current.cold {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.2));
+        }
+        .weather-current.mild {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(99, 102, 241, 0.2));
         }
         .weather-main {
             flex: 2;
@@ -639,6 +650,7 @@
             background: linear-gradient(135deg, #fff, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
         .weather-details {
             flex: 3;
@@ -651,6 +663,11 @@
             border-radius: 1rem;
             padding: 0.8rem;
             text-align: center;
+            transition: transform 0.2s;
+        }
+        .weather-detail-item:hover {
+            transform: translateY(-3px);
+            background: rgba(0,0,0,0.5);
         }
         .forecast-grid {
             display: grid;
@@ -669,6 +686,7 @@
         .forecast-card:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
+            background: rgba(99,102,241,0.2);
         }
         .forecast-day {
             font-weight: 700;
@@ -689,6 +707,13 @@
             padding: 1rem;
             margin-top: 1rem;
         }
+        /* Ikony w zakładkach */
+        .tab-icon {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 3rem;
+            filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));
+        }
     </style>
 </head>
 <body>
@@ -701,13 +726,12 @@
             <button class="tab-btn active" onclick="switchTab('currency', event)"><i class="fas fa-coins"></i> Waluty</button>
             <button class="tab-btn" onclick="switchTab('converter', event)"><i class="fas fa-exchange-alt"></i> Konwerter</button>
             <button class="tab-btn" onclick="switchTab('finance', event)"><i class="fas fa-calculator"></i> Kalkulatory</button>
-            <button class="tab-btn" onclick="switchTab('ip', event)"><i class="fas fa-globe"></i> IP Info</button>
             <button class="tab-btn" onclick="switchTab('speed', event)"><i class="fas fa-tachometer-alt"></i> Test szybkości</button>
             <button class="tab-btn" onclick="switchTab('time', event)"><i class="fas fa-clock"></i> 📅 Czas i strefy</button>
-            <button class="tab-btn" onclick="switchTab('cookie', event)"><i class="fas fa-cookie-bite"></i> 🍪 Cookie Clicker</button>
-            <!-- NOWE ZAKŁADKI -->
+            <button class="tab-btn" onclick="switchTab('ip', event)"><i class="fas fa-globe"></i> IP Info</button>
             <button class="tab-btn" onclick="switchTab('nutrition', event)"><i class="fas fa-apple-alt"></i> 🥗 Żywność</button>
             <button class="tab-btn" onclick="switchTab('weather', event)"><i class="fas fa-cloud-sun"></i> 🌤️ Pogoda</button>
+            <button class="tab-btn" onclick="switchTab('cookie', event)"><i class="fas fa-cookie-bite"></i> 🍪 Cookie Clicker</button>
         </div>
     </div>
 </nav>
@@ -716,6 +740,7 @@
     <!-- ============ ZAKŁADKA WALUTY ============ -->
     <div id="currency-tab" class="tab-content active">
         <div class="glass-card">
+            <div class="tab-icon"><i class="fas fa-coins"></i></div>
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 style="font-size: 2.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">💰 Przeliczanie walut</h1>
                 <p style="color: var(--text-muted);">Kursy pobierane są raz, przy ładowaniu strony – zawsze aktualne na ten moment.</p>
@@ -780,6 +805,7 @@
     <!-- ============ ZAKŁADKA KONWERTER ============ -->
     <div id="converter-tab" class="tab-content">
         <div class="glass-card">
+            <div class="tab-icon"><i class="fas fa-exchange-alt"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📏 Konwerter Pro</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Wpisz wartość – wszystkie przeliczenia w jednym miejscu.</p>
 
@@ -807,11 +833,7 @@
             <div class="table-wrapper">
                 <table id="convTable">
                     <thead>
-                        <tr>
-                            <th>Jednostka</th>
-                            <th>Wynik</th>
-                        </tr>
-                    </thead>
+                        <tr><th>Jednostka</th><th>Wynik</th></tr></thead>
                     <tbody id="convTableBody"></tbody>
                 </table>
             </div>
@@ -821,6 +843,7 @@
     <!-- ============ ZAKŁADKA KALKULATORY ============ -->
     <div id="finance-tab" class="tab-content">
         <div class="glass-card">
+            <div class="tab-icon"><i class="fas fa-calculator"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">💸 Kalkulatory Pro</h2>
             <div class="sub-tabs">
                 <button class="sub-tab-btn active" onclick="switchSubTab('credit', event)">🏦 Kredyt</button>
@@ -924,22 +947,18 @@
                     <div class="calc-btn" data-calc="⌫">⌫</div>
                     <div class="calc-btn op" data-calc="%">%</div>
                     <div class="calc-btn op" data-calc="/">÷</div>
-                    
                     <div class="calc-btn" data-calc="7">7</div>
                     <div class="calc-btn" data-calc="8">8</div>
                     <div class="calc-btn" data-calc="9">9</div>
                     <div class="calc-btn op" data-calc="*">×</div>
-                    
                     <div class="calc-btn" data-calc="4">4</div>
                     <div class="calc-btn" data-calc="5">5</div>
                     <div class="calc-btn" data-calc="6">6</div>
                     <div class="calc-btn op" data-calc="-">-</div>
-                    
                     <div class="calc-btn" data-calc="1">1</div>
                     <div class="calc-btn" data-calc="2">2</div>
                     <div class="calc-btn" data-calc="3">3</div>
                     <div class="calc-btn op" data-calc="+">+</div>
-                    
                     <div class="calc-btn zero" data-calc="0">0</div>
                     <div class="calc-btn" data-calc=".">.</div>
                     <div class="calc-btn equal" data-calc="=">=</div>
@@ -990,9 +1009,113 @@
         </div>
     </div>
 
+    <!-- ============ ZAKŁADKA SPEED TEST ============ -->
+    <div id="speed-tab" class="tab-content">
+        <div class="glass-card">
+            <div class="tab-icon"><i class="fas fa-tachometer-alt"></i></div>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 style="font-size: 2.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">⚡ Sprawdź prędkość internetu</h1>
+                <p style="color: var(--text-muted);">Dowiedz się, jak szybko ładują się strony, filmiki i gry online!</p>
+            </div>
+            <div style="display: flex; justify-content: center; margin: 2rem 0;">
+                <div style="position: relative; width: 300px; height: 300px;">
+                    <svg style="transform: rotate(-90deg);" viewBox="0 0 300 300">
+                        <defs><linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                        </linearGradient></defs>
+                        <circle cx="150" cy="150" r="120" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="20"></circle>
+                        <circle id="gaugeProgress" cx="150" cy="150" r="120" fill="none" stroke="url(#gaugeGradient)" stroke-width="20" stroke-linecap="round" stroke-dasharray="754" stroke-dashoffset="754"></circle>
+                    </svg>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center;">
+                        <div id="gaugeValue" style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0.0</div>
+                        <div style="font-size: 1.25rem; color: var(--text-muted);">Mb/s</div>
+                        <div id="gaugeLabel" style="color: var(--text-muted); font-size: 1rem;">Kliknij „Rozpocznij test”</div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin: 2rem 0;">
+                <button class="btn" id="startBtn" onclick="startSpeedTest()"><i class="fas fa-play"></i> Rozpocznij test</button>
+            </div>
+            <div id="progressSection" style="display: none; margin: 2rem 0;">
+                <div style="margin-bottom: 1rem;"><span>📥 Pobieranie</span> <span id="dlProgressText">0%</span><div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;"><div id="dlProgress" style="width:0%; height:100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 4px;"></div></div></div>
+                <div style="margin-bottom: 1rem;"><span>📤 Wysyłanie</span> <span id="ulProgressText">0%</span><div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;"><div id="ulProgress" style="width:0%; height:100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 4px;"></div></div></div>
+                <div style="margin-bottom: 1rem;"><span>⏱️ Ping</span> <span id="pingText">-- ms</span><div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;"><div id="pingProgress" style="width:0%; height:100%; background: #10b981; border-radius: 4px;"></div></div></div>
+            </div>
+            <div id="resultsGrid" style="display: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="metric-card"><i class="fas fa-download" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Pobieranie</div><div class="result-big" id="dlResult">--</div></div>
+                <div class="metric-card"><i class="fas fa-upload" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Wysyłanie</div><div class="result-big" id="ulResult">--</div></div>
+                <div class="metric-card"><i class="fas fa-stopwatch" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Ping</div><div class="result-big" id="pingResult">--</div></div>
+                <div class="metric-card"><i class="fas fa-network-wired" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Stabilność</div><div class="result-big" id="jitterResult">--</div></div>
+            </div>
+            <div class="chart-container" id="chartContainer" style="display: none;"><canvas id="speedChart"></canvas></div>
+        </div>
+    </div>
+
+    <!-- ============ ZAKŁADKA CZAS I STREFY ============ -->
+    <div id="time-tab" class="tab-content">
+        <div class="glass-card">
+            <div class="tab-icon"><i class="fas fa-clock"></i></div>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📅 Czas i strefy czasowe</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Aktualny czas na świecie, konwerter czasu i różnice między strefami.</p>
+
+            <h3 class="section-title"><i class="fas fa-globe-americas"></i> Aktualny czas na świecie <span style="font-size:0.8rem;">(kliknij ✕ aby usunąć)</span></h3>
+            <div class="time-cards" id="worldClocksContainer"></div>
+
+            <div style="margin: 1rem 0 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex:1; min-width: 200px;">
+                    <label style="font-size: 0.8rem; color:var(--text-muted)">Wybierz inną strefę czasową</label>
+                    <select id="customTimezoneSelect" class="modern-select"></select>
+                </div>
+                <div>
+                    <button class="btn btn-sm" id="addCustomClockBtn" onclick="addCustomTimezoneCard()"><i class="fas fa-plus-circle"></i> Dodaj zegar</button>
+                </div>
+            </div>
+
+            <h3 class="section-title"><i class="fas fa-exchange-alt"></i> Konwerter czasu</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; background: rgba(15,23,42,0.4); border-radius: 1rem; padding: 1.5rem; margin: 1rem 0;">
+                <div style="flex:1; min-width: 180px;">
+                    <label>Godzina w strefie źródłowej</label>
+                    <input type="time" id="convertTimeInput" class="modern-input" value="12:00">
+                </div>
+                <div style="flex:1; min-width: 200px;">
+                    <label>Strefa źródłowa</label>
+                    <select id="convertFromTZ" class="modern-select"></select>
+                </div>
+                <div style="flex:1; min-width: 200px;">
+                    <label>Strefa docelowa</label>
+                    <select id="convertToTZ" class="modern-select"></select>
+                </div>
+                <div style="flex:0 0 auto; display: flex; align-items: flex-end;">
+                    <button class="btn" onclick="convertTimeBetweenZones()"><i class="fas fa-sync-alt"></i> Konwertuj</button>
+                </div>
+            </div>
+            <div id="conversionResult" class="result-box" style="margin-top: 0; text-align: center;">
+                <div class="label">Wynik konwersji (dzisiejsza data)</div>
+                <div class="value" id="convertedTimeDisplay">--:--</div>
+                <div style="color: var(--text-muted); font-size: 0.85rem;" id="convertedDateHint"></div>
+            </div>
+
+            <h3 class="section-title" style="margin-top: 2rem;"><i class="fas fa-clock"></i> Różnice czasu względem</h3>
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                <select id="differenceBaseTZ" class="modern-select" style="width: auto; min-width: 200px;"></select>
+                <button class="btn btn-sm" onclick="updateTimeDifferences()"><i class="fas fa-chart-line"></i> Pokaż różnice</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="timeDiffTable">
+                    <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
+                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk. Side</tbody>
+                </table>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
+        </div>
+    </div>
+
     <!-- ============ ZAKŁADKA IP INFO ============ -->
     <div id="ip-tab" class="tab-content">
         <div class="glass-card">
+            <div class="tab-icon"><i class="fas fa-globe"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌐 Twój adres IP i dane sieci</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Automatycznie wykrywamy informacje o Twoim połączeniu – wszystko w jednym miejscu.</p>
 
@@ -1059,112 +1182,72 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA SPEED TEST ============ -->
-    <div id="speed-tab" class="tab-content">
+    <!-- ============ ZAKŁADKA ŻYWNOŚĆ ============ -->
+    <div id="nutrition-tab" class="tab-content">
         <div class="glass-card">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h1 style="font-size: 2.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">⚡ Sprawdź prędkość internetu</h1>
-                <p style="color: var(--text-muted);">Dowiedz się, jak szybko ładują się strony, filmiki i gry online!</p>
-            </div>
-            <div style="display: flex; justify-content: center; margin: 2rem 0;">
-                <div style="position: relative; width: 300px; height: 300px;">
-                    <svg style="transform: rotate(-90deg);" viewBox="0 0 300 300">
-                        <defs><linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
-                        </linearGradient></defs>
-                        <circle cx="150" cy="150" r="120" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="20"></circle>
-                        <circle id="gaugeProgress" cx="150" cy="150" r="120" fill="none" stroke="url(#gaugeGradient)" stroke-width="20" stroke-linecap="round" stroke-dasharray="754" stroke-dashoffset="754"></circle>
-                    </svg>
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center;">
-                        <div id="gaugeValue" style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0.0</div>
-                        <div style="font-size: 1.25rem; color: var(--text-muted);">Mb/s</div>
-                        <div id="gaugeLabel" style="color: var(--text-muted); font-size: 1rem;">Kliknij „Rozpocznij test”</div>
-                    </div>
-                </div>
-            </div>
-            <div style="text-align: center; margin: 2rem 0;">
-                <button class="btn" id="startBtn" onclick="startSpeedTest()"><i class="fas fa-play"></i> Rozpocznij test</button>
-            </div>
-            <div id="progressSection" style="display: none; margin: 2rem 0;">
-                <div style="margin-bottom: 1rem;"><span>📥 Pobieranie</span> <span id="dlProgressText">0%</span><div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;"><div id="dlProgress" style="width:0%; height:100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 4px;"></div></div></div>
-                <div style="margin-bottom: 1rem;"><span>📤 Wysyłanie</span> <span id="ulProgressText">0%</span><div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;"><div id="ulProgress" style="width:0%; height:100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 4px;"></div></div></div>
-                <div style="margin-bottom: 1rem;"><span>⏱️ Ping</span> <span id="pingText">-- ms</span><div style="height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;"><div id="pingProgress" style="width:0%; height:100%; background: #10b981; border-radius: 4px;"></div></div></div>
-            </div>
-            <div id="resultsGrid" style="display: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                <div class="metric-card"><i class="fas fa-download" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Pobieranie</div><div class="result-big" id="dlResult">--</div></div>
-                <div class="metric-card"><i class="fas fa-upload" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Wysyłanie</div><div class="result-big" id="ulResult">--</div></div>
-                <div class="metric-card"><i class="fas fa-stopwatch" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Ping</div><div class="result-big" id="pingResult">--</div></div>
-                <div class="metric-card"><i class="fas fa-network-wired" style="font-size: 2rem; color: var(--primary);"></i><div style="color: var(--text-muted); text-transform: uppercase; font-size: 0.875rem;">Stabilność</div><div class="result-big" id="jitterResult">--</div></div>
-            </div>
-            <div class="chart-container" id="chartContainer" style="display: none;"><canvas id="speedChart"></canvas></div>
-        </div>
-    </div>
+            <div class="tab-icon"><i class="fas fa-apple-alt"></i></div>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🥗 Konwerter wartości odżywczych</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Przeliczaj kalorie, makroskładniki i porcje – wszystko w jednym miejscu.</p>
 
-    <!-- ============ ZAKŁADKA CZAS I STREFY ============ -->
-    <div id="time-tab" class="tab-content">
-        <div class="glass-card">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📅 Czas i strefy czasowe</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Aktualny czas na świecie, konwerter czasu i różnice między strefami.</p>
-
-            <h3 class="section-title"><i class="fas fa-globe-americas"></i> Aktualny czas na świecie <span style="font-size:0.8rem;">(kliknij ✕ aby usunąć)</span></h3>
-            <div class="time-cards" id="worldClocksContainer"></div>
-
-            <div style="margin: 1rem 0 2rem 0; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-                <div style="flex:1; min-width: 200px;">
-                    <label style="font-size: 0.8rem; color:var(--text-muted)">Wybierz inną strefę czasową</label>
-                    <select id="customTimezoneSelect" class="modern-select"></select>
-                </div>
-                <div>
-                    <button class="btn btn-sm" id="addCustomClockBtn" onclick="addCustomTimezoneCard()"><i class="fas fa-plus-circle"></i> Dodaj zegar</button>
-                </div>
-            </div>
-
-            <h3 class="section-title"><i class="fas fa-exchange-alt"></i> Konwerter czasu</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; background: rgba(15,23,42,0.4); border-radius: 1rem; padding: 1.5rem; margin: 1rem 0;">
-                <div style="flex:1; min-width: 180px;">
-                    <label>Godzina w strefie źródłowej</label>
-                    <input type="time" id="convertTimeInput" class="modern-input" value="12:00">
-                </div>
-                <div style="flex:1; min-width: 200px;">
-                    <label>Strefa źródłowa</label>
-                    <select id="convertFromTZ" class="modern-select"></select>
-                </div>
-                <div style="flex:1; min-width: 200px;">
-                    <label>Strefa docelowa</label>
-                    <select id="convertToTZ" class="modern-select"></select>
-                </div>
-                <div style="flex:0 0 auto; display: flex; align-items: flex-end;">
-                    <button class="btn" onclick="convertTimeBetweenZones()"><i class="fas fa-sync-alt"></i> Konwertuj</button>
-                </div>
-            </div>
-            <div id="conversionResult" class="result-box" style="margin-top: 0; text-align: center;">
-                <div class="label">Wynik konwersji (dzisiejsza data)</div>
-                <div class="value" id="convertedTimeDisplay">--:--</div>
-                <div style="color: var(--text-muted); font-size: 0.85rem;" id="convertedDateHint"></div>
-            </div>
-
-            <h3 class="section-title" style="margin-top: 2rem;"><i class="fas fa-clock"></i> Różnice czasu względem</h3>
-            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
-                <select id="differenceBaseTZ" class="modern-select" style="width: auto; min-width: 200px;"></select>
-                <button class="btn btn-sm" onclick="updateTimeDifferences()"><i class="fas fa-chart-line"></i> Pokaż różnice</button>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                <select id="nutriCategory" class="modern-select" style="flex:1;" onchange="onNutriCategoryChange()">
+                    <option value="energy">🔥 Energia (kcal, kJ, J, Wh)</option>
+                    <option value="fat">🧈 Tłuszcz (g, kcal z tłuszczu)</option>
+                    <option value="protein">🍗 Białko (g, kcal z białka)</option>
+                    <option value="carbs">🍚 Węglowodany (g, kcal)</option>
+                    <option value="sugar">🍬 Cukier (g, łyżeczki, kostki)</option>
+                    <option value="portions">🍽️ Porcje (gramy, sztuki - własne)</option>
+                </select>
+                <input type="number" id="nutriValue" class="modern-input" style="flex:2;" value="1" step="any" oninput="convertNutrition()">
+                <select id="nutriFromUnit" class="modern-select" style="flex:1;" onchange="onNutriFromUnitChange()"></select>
             </div>
             <div class="table-wrapper">
-                <table id="timeDiffTable">
-                    <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
-                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk. Side</tbody>
+                <table id="nutriTable">
+                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
+                    <tbody id="nutriTableBody"></tbody>
                 </table>
             </div>
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
+
+            <!-- Panel własnych porcji -->
+            <div class="portion-panel">
+                <h4><i class="fas fa-utensils"></i> Moje własne porcje</h4>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                    <input type="text" id="newPortionName" class="modern-input" placeholder="Nazwa (np. plaster chleba)" style="flex:2;">
+                    <input type="number" id="newPortionGrams" class="modern-input" placeholder="Gramy (g)" style="flex:1;">
+                    <button class="btn btn-sm" onclick="addCustomPortion()"><i class="fas fa-plus"></i> Dodaj</button>
+                </div>
+                <div id="customPortionsList" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+                <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Własne porcje są zapisywane w przeglądarce i widoczne w kategorii "Porcje".</p>
+            </div>
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER ============ -->
+    <!-- ============ ZAKŁADKA POGODA (ULEPSZONA) ============ -->
+    <div id="weather-tab" class="tab-content">
+        <div class="glass-card">
+            <div class="tab-icon"><i class="fas fa-cloud-sun"></i></div>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Pogoda i prognoza</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie.</p>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
+                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;">
+                <button class="btn" onclick="searchWeatherByCity()"><i class="fas fa-search"></i> Szukaj</button>
+                <button class="btn" onclick="getWeatherByGeolocation()"><i class="fas fa-location-dot"></i> Moja lokalizacja</button>
+            </div>
+            <div id="weatherLoading" class="loading-spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Ładowanie pogody...</div>
+            <div id="weatherContent"></div>
+            <div style="margin-top: 1rem; text-align: center;">
+                <button class="btn btn-sm" onclick="toggleWeatherUnits()" id="weatherUnitsBtn">Jednostki: °C / km/h</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (ROZBUDOWANA) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cookie Clicker</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj w mistyczne ciastko, rozwijaj cukierkowe imperium i zaskakuj znajomych!</p>
+            <div class="tab-icon"><i class="fas fa-cookie-bite"></i></div>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker – Rozszerzona Edycja</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj, zbieraj złote ciasteczka, odblokowuj potężne ulepszenia i rozwijaj swoje słodkie imperium!</p>
             
             <div class="cookie-stats">
                 <div class="cookie-count" id="cookieDisplay">0</div>
@@ -1212,64 +1295,6 @@
             <div style="margin-top: 2rem; text-align: center;">
                 <button class="btn prestige-btn" onclick="resetGame()"><i class="fas fa-sync-alt"></i> Zresetuj wszechświat ciastek</button>
                 <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">Reset usuwa cały postęp – zaczynasz od nowa, bez zapisanych danych.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============ NOWA ZAKŁADKA: KONWERTER WARTOŚCI ODŻYWCZYCH ============ -->
-    <div id="nutrition-tab" class="tab-content">
-        <div class="glass-card">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🥗 Konwerter wartości odżywczych</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Przeliczaj kalorie, makroskładniki i porcje – wszystko w jednym miejscu.</p>
-
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                <select id="nutriCategory" class="modern-select" style="flex:1;" onchange="onNutriCategoryChange()">
-                    <option value="energy">🔥 Energia (kcal, kJ, J, Wh)</option>
-                    <option value="fat">🧈 Tłuszcz (g, kcal z tłuszczu)</option>
-                    <option value="protein">🍗 Białko (g, kcal z białka)</option>
-                    <option value="carbs">🍚 Węglowodany (g, kcal)</option>
-                    <option value="sugar">🍬 Cukier (g, łyżeczki, kostki)</option>
-                    <option value="portions">🍽️ Porcje (gramy, sztuki - własne)</option>
-                </select>
-                <input type="number" id="nutriValue" class="modern-input" style="flex:2;" value="1" step="any" oninput="convertNutrition()">
-                <select id="nutriFromUnit" class="modern-select" style="flex:1;" onchange="onNutriFromUnitChange()"></select>
-            </div>
-            <div class="table-wrapper">
-                <table id="nutriTable">
-                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
-                    <tbody id="nutriTableBody"></tbody>
-                </table>
-            </div>
-
-            <!-- Panel własnych porcji -->
-            <div class="portion-panel">
-                <h4><i class="fas fa-utensils"></i> Moje własne porcje</h4>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                    <input type="text" id="newPortionName" class="modern-input" placeholder="Nazwa (np. plaster chleba)" style="flex:2;">
-                    <input type="number" id="newPortionGrams" class="modern-input" placeholder="Gramy (g)" style="flex:1;">
-                    <button class="btn btn-sm" onclick="addCustomPortion()"><i class="fas fa-plus"></i> Dodaj</button>
-                </div>
-                <div id="customPortionsList" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
-                <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Własne porcje są zapisywane w przeglądarce i widoczne w kategorii "Porcje".</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============ POPRAWIONA ZAKŁADKA POGODY (wttr.in - DZIAŁA ZAWSZE) ============ -->
-    <div id="weather-tab" class="tab-content">
-        <div class="glass-card">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Pogoda i prognoza</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie.</p>
-
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
-                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;">
-                <button class="btn" onclick="searchWeatherByCity()"><i class="fas fa-search"></i> Szukaj</button>
-                <button class="btn" onclick="getWeatherByGeolocation()"><i class="fas fa-location-dot"></i> Moja lokalizacja</button>
-            </div>
-            <div id="weatherLoading" class="loading-spinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Ładowanie pogody...</div>
-            <div id="weatherContent"></div>
-            <div style="margin-top: 1rem; text-align: center;">
-                <button class="btn btn-sm" onclick="toggleWeatherUnits()" id="weatherUnitsBtn">Jednostki: °C / km/h</button>
             </div>
         </div>
     </div>
@@ -2454,19 +2479,20 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER ========================
+    // ======================== COOKIE CLICKER - ROZBUDOWANY ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
-    let activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false };
+    let activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false };
     let bonusTimer = null;
     let goldenCookieTimeout = null;
     let stormInterval = null;
+    let chocolateShowerInterval = null;
 
     let globalCPSMultiplier = 1;
     let extraClickBonusPercent = 0;
     let doubleClickChance = 0;
-    let goldenCookieFrequencyMultiplier = 1;
+    let goldenCookieFrequencyMultiplier = 1; // im mniejsza wartość, tym częściej
 
     const buildings = [
         { name: "✨ Mistyczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
@@ -2485,6 +2511,7 @@
         { name: "🌌 Czarodziejska Piekarnia", baseCps: 2.8e9, basePrice: 2.1e15, count: 0 }
     ];
 
+    // ROZBUDOWANE ULEPSZENIA
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Kliknięcia dają 2x ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "+0,2 CPS za kursor", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
@@ -2500,8 +2527,50 @@
         { id: "rainbow_sprinkles", name: "🌈 Tęczowa Posypka", desc: "Kliknięcia dają dodatkowe 10% posiadanych ciastek", price: 200000000, purchased: false, apply: () => { extraClickBonusPercent = 0.1; } },
         { id: "hourglass_of_time", name: "⏳ Klepsydra Czasu", desc: "Zwiększa CPS o 50%", price: 500000000, purchased: false, apply: () => { globalCPSMultiplier *= 1.5; recalcCPS(); } },
         { id: "stardust", name: "✨ Gwiazdkowy Pył", desc: "Złote ciasteczka pojawiają się 2x częściej", price: 1000000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.5; scheduleGoldenCookie(); } },
-        { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } }
+        { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } },
+        // NOWE ULEPSZENIA
+        { id: "golden_dust", name: "🌠 Złoty Pył", desc: "Złote ciasteczka pojawiają się jeszcze częściej (kolejne -40% czasu)", price: 250000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.6; scheduleGoldenCookie(); } },
+        { id: "double_tap", name: "👊 Podwójny Cios", desc: "15% szansy na potrójne ciasteczko przy kliknięciu", price: 750000000, purchased: false, apply: () => { window.doubleTapChance = 0.15; } },
+        { id: "sugar_rush", name: "🍬 Cukierkowa Burza", desc: "Co jakiś czas deszcz ciastek (+50% CPS przez 15s)", price: 1500000000, purchased: false, apply: () => { window.sugarRush = true; startSugarRushInterval(); } },
+        { id: "friendship_power", name: "🤝 Moc Przyjaźni", desc: "Zwiększa efekt bonusów o 50%", price: 2000000000, purchased: false, apply: () => { window.bonusPower = 1.5; } },
+        { id: "lucky_stream", name: "🍀 Szczęśliwy Strumień", desc: "Złote ciasteczka mogą dać podwójny bonus", price: 3000000000, purchased: false, apply: () => { window.luckyStream = true; } },
+        { id: "golden_rain", name: "☀️ Złoty Deszcz", desc: "Złote ciasteczka przywołują dodatkowe efektowne bonusy", price: 5000000000, purchased: false, apply: () => { window.goldenRainUpgrade = true; } }
     ];
+
+    function startSugarRushInterval() {
+        if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
+        window.sugarRushInterval = setInterval(() => {
+            if (window.sugarRush && Math.random() < 0.05) {
+                if (!activeBonuses.frenzy && !activeBonuses.superFrenzy) {
+                    activeBonuses.frenzy = true;
+                    let duration = (window.quantumAccelerator ? 20000 : 15000);
+                    if (bonusTimer) clearTimeout(bonusTimer);
+                    bonusTimer = setTimeout(() => { activeBonuses.frenzy = false; updateStats(); }, duration);
+                    updateStats();
+                    showFloatingMessage("🍬 Cukierkowa Burza! +50% CPS przez 15s!", "#fbbf24");
+                }
+            }
+        }, 10000);
+    }
+
+    function showFloatingMessage(msg, color) {
+        const div = document.createElement('div');
+        div.textContent = msg;
+        div.style.position = 'fixed';
+        div.style.bottom = '30%';
+        div.style.left = '50%';
+        div.style.transform = 'translateX(-50%)';
+        div.style.backgroundColor = color;
+        div.style.color = '#000';
+        div.style.padding = '0.5rem 1rem';
+        div.style.borderRadius = '2rem';
+        div.style.fontWeight = 'bold';
+        div.style.zIndex = '10001';
+        div.style.whiteSpace = 'nowrap';
+        div.style.animation = 'fadeOutUp 1s forwards';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 1000);
+    }
 
     function recalcCPS() {
         let total = 0;
@@ -2521,6 +2590,12 @@
         window.luckyCharm = false;
         window.divineIntervention = false;
         window.quantumAccelerator = false;
+        window.doubleTapChance = 0;
+        window.bonusPower = 1;
+        window.luckyStream = false;
+        window.goldenRainUpgrade = false;
+        if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
+        window.sugarRush = false;
         const defaultBaseCps = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
         for (let i = 0; i < buildings.length; i++) {
             buildings[i].baseCps = defaultBaseCps[i];
@@ -2575,9 +2650,13 @@
         document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
         recalcCPS();
         let bonusText = "";
-        if (activeBonuses.frenzy) bonusText += "⚡ Frenzy (x7 CPS)! ";
-        if (activeBonuses.clickFrenzy) bonusText += "🔥 Click Frenzy (x777 kliknięcie)! ";
-        if (activeBonuses.cookieStorm) bonusText += "🌪️ Słodka Ulewa! ";
+        if (activeBonuses.superFrenzy) bonusText += "💥 Super Frenzy (x50 CPS)! ";
+        else if (activeBonuses.frenzy) bonusText += "⚡ Frenzy (x7 CPS)! ";
+        if (activeBonuses.megaClick) bonusText += "💢 Mega Click (x1000 kliknięcie)! ";
+        else if (activeBonuses.clickFrenzy) bonusText += "🔥 Click Frenzy (x777 kliknięcie)! ";
+        if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (co sekundę ciasteczka)! ";
+        if (activeBonuses.luckyStream) bonusText += "🍀 Szczęśliwy Strumień (podwojone bonusy)! ";
+        if (activeBonuses.chocolateShower) bonusText += "🍫 Ulewa Czekoladowa (kliknięcia dają +25% ciastek)! ";
         document.getElementById('bonusInfo').innerText = bonusText;
     }
 
@@ -2613,13 +2692,19 @@
 
     function clickCookie() {
         let gain = clickMultiplier;
-        if (activeBonuses.clickFrenzy) gain *= 777;
+        if (activeBonuses.megaClick) gain *= 1000;
+        else if (activeBonuses.clickFrenzy) gain *= 777;
         if (activeBonuses.frenzy) gain *= 7;
+        if (activeBonuses.superFrenzy) gain *= 50;
+        if (activeBonuses.chocolateShower) gain *= 1.25;
         if (extraClickBonusPercent > 0) {
             gain += cookies * extraClickBonusPercent;
         }
         if (doubleClickChance > 0 && Math.random() < doubleClickChance) {
             gain *= 2;
+        }
+        if (window.doubleTapChance && Math.random() < window.doubleTapChance) {
+            gain *= 3;
         }
         cookies += gain;
         updateStats();
@@ -2661,51 +2746,73 @@
         golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
         golden.onclick = () => {
             golden.remove();
-            const bonus = Math.random();
-            if (bonus < 0.2 && window.luckyCharm) {
-                activeBonuses.frenzy = true;
+            let bonus = Math.random();
+            let multiplier = (window.bonusPower || 1);
+            if (window.luckyStream && Math.random() < 0.3) bonus *= 2; // podwójny bonus
+            if (bonus < 0.15 && window.luckyCharm) {
+                activeBonuses.superFrenzy = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = window.quantumAccelerator ? 45000 : 30000;
-                bonusTimer = setTimeout(() => { activeBonuses.frenzy = false; updateStats(); }, duration);
+                let duration = (window.quantumAccelerator ? 25000 : 15000) * multiplier;
+                bonusTimer = setTimeout(() => { activeBonuses.superFrenzy = false; updateStats(); }, duration);
                 updateStats();
+                showFloatingMessage("✨ SUPER FRENZY! x50 CPS!", "#f97316");
             } else if (bonus < 0.35) {
                 activeBonuses.frenzy = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = window.quantumAccelerator ? 40000 : 30000;
+                let duration = (window.quantumAccelerator ? 40000 : 30000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.frenzy = false; updateStats(); }, duration);
                 updateStats();
+                showFloatingMessage("⚡ Frenzy! x7 CPS!", "#fbbf24");
             } else if (bonus < 0.55) {
-                activeBonuses.clickFrenzy = true;
+                activeBonuses.megaClick = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = window.quantumAccelerator ? 30000 : 20000;
-                bonusTimer = setTimeout(() => { activeBonuses.clickFrenzy = false; updateStats(); }, duration);
+                let duration = (window.quantumAccelerator ? 20000 : 10000) * multiplier;
+                bonusTimer = setTimeout(() => { activeBonuses.megaClick = false; updateStats(); }, duration);
                 updateStats();
+                showFloatingMessage("💥 MEGA CLICK! x1000 klik!", "#ef4444");
             } else if (bonus < 0.7) {
-                const bonusCookies = cookiesPerSecond * 10;
+                let bonusCookies = cookiesPerSecond * 10 * multiplier;
                 cookies += bonusCookies;
-                updateStats();
                 if (window.luckyCharm) cookies += bonusCookies * 0.5;
-                alert(`✨ Otrzymałeś ${Math.floor(bonusCookies).toLocaleString()} bonusowych ciastek!`);
-            } else if (bonus < 0.85) {
-                const bonusCookies = cookiesPerSecond * 60;
-                cookies += bonusCookies;
                 updateStats();
-                alert(`⏰ Dostałeś ${Math.floor(bonusCookies).toLocaleString()} ciastek z przyszłości!`);
-            } else {
+                showFloatingMessage(`✨ +${Math.floor(bonusCookies).toLocaleString()} ciastek!`, "#10b981");
+            } else if (bonus < 0.85 && window.goldenRainUpgrade) {
                 if (stormInterval) clearInterval(stormInterval);
-                activeBonuses.cookieStorm = true;
+                activeBonuses.goldenRain = true;
                 stormInterval = setInterval(() => {
-                    if (!activeBonuses.cookieStorm) {
+                    if (!activeBonuses.goldenRain) {
                         clearInterval(stormInterval);
                         return;
                     }
-                    cookies += clickMultiplier * (activeBonuses.frenzy ? 7 : 1);
+                    cookies += clickMultiplier * 10;
                     updateStats();
-                }, 100);
+                }, 500);
                 setTimeout(() => {
-                    activeBonuses.cookieStorm = false;
+                    activeBonuses.goldenRain = false;
                     clearInterval(stormInterval);
                 }, 10000);
+                showFloatingMessage("🌧️ Złoty Deszcz! +10 ciastek co 0,5s!", "#fbbf24");
+            } else if (bonus < 0.9 && window.goldenRainUpgrade) {
+                activeBonuses.chocolateShower = true;
+                if (chocolateShowerInterval) clearInterval(chocolateShowerInterval);
+                chocolateShowerInterval = setInterval(() => {
+                    if (!activeBonuses.chocolateShower) {
+                        clearInterval(chocolateShowerInterval);
+                        return;
+                    }
+                    cookies += clickMultiplier * 5;
+                    updateStats();
+                }, 200);
+                setTimeout(() => {
+                    activeBonuses.chocolateShower = false;
+                    clearInterval(chocolateShowerInterval);
+                }, 10000);
+                showFloatingMessage("🍫 Ulewa Czekoladowa! +25% z kliknięcia!", "#a0522d");
+            } else {
+                const bonusCookies = cookiesPerSecond * 30 * multiplier;
+                cookies += bonusCookies;
+                updateStats();
+                showFloatingMessage(`⏰ Ciasteczka z przyszłości! +${Math.floor(bonusCookies).toLocaleString()}`, "#8b5cf6");
             }
             saveGame();
             scheduleGoldenCookie();
@@ -2717,8 +2824,8 @@
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 30000 * goldenCookieFrequencyMultiplier;
-        const delay = baseDelay + Math.random() * 40000;
+        let baseDelay = 15000 * goldenCookieFrequencyMultiplier; // zwiększona częstotliwość (było 30000)
+        const delay = baseDelay + Math.random() * 30000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
 
@@ -2733,7 +2840,9 @@
             if (bonusTimer) clearTimeout(bonusTimer);
             if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
             if (stormInterval) clearInterval(stormInterval);
-            activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false };
+            if (chocolateShowerInterval) clearInterval(chocolateShowerInterval);
+            if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
+            activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false };
             globalCPSMultiplier = 1;
             extraClickBonusPercent = 0;
             doubleClickChance = 0;
@@ -2741,6 +2850,11 @@
             window.luckyCharm = false;
             window.divineIntervention = false;
             window.quantumAccelerator = false;
+            window.doubleTapChance = 0;
+            window.bonusPower = 1;
+            window.luckyStream = false;
+            window.goldenRainUpgrade = false;
+            window.sugarRush = false;
             updateStats();
             rebuildBuildings();
             rebuildUpgrades();
@@ -2760,7 +2874,12 @@
             globalCPSMultiplier: globalCPSMultiplier,
             extraClickBonusPercent: extraClickBonusPercent,
             doubleClickChance: doubleClickChance,
-            goldenCookieFrequencyMultiplier: goldenCookieFrequencyMultiplier
+            goldenCookieFrequencyMultiplier: goldenCookieFrequencyMultiplier,
+            doubleTapChance: window.doubleTapChance || 0,
+            bonusPower: window.bonusPower || 1,
+            luckyStream: window.luckyStream || false,
+            goldenRainUpgrade: window.goldenRainUpgrade || false,
+            sugarRush: window.sugarRush || false
         };
         localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
     }
@@ -2790,6 +2909,11 @@
                 if (state.extraClickBonusPercent) extraClickBonusPercent = state.extraClickBonusPercent;
                 if (state.doubleClickChance) doubleClickChance = state.doubleClickChance;
                 if (state.goldenCookieFrequencyMultiplier) goldenCookieFrequencyMultiplier = state.goldenCookieFrequencyMultiplier;
+                if (state.doubleTapChance) window.doubleTapChance = state.doubleTapChance;
+                if (state.bonusPower) window.bonusPower = state.bonusPower;
+                if (state.luckyStream) window.luckyStream = state.luckyStream;
+                if (state.goldenRainUpgrade) window.goldenRainUpgrade = state.goldenRainUpgrade;
+                if (state.sugarRush) { window.sugarRush = state.sugarRush; startSugarRushInterval(); }
                 applyAllUpgrades();
                 updateStats();
                 rebuildBuildings();
@@ -2801,6 +2925,7 @@
     function gameLoop() {
         let currentCPS = cookiesPerSecond;
         if (activeBonuses.frenzy) currentCPS *= 7;
+        if (activeBonuses.superFrenzy) currentCPS *= 50;
         if (window.divineIntervention && Math.random() < 0.01) {
             currentCPS *= 2;
         }
@@ -2812,7 +2937,7 @@
         setTimeout(gameLoop, 200);
     }
 
-    // ======================== NOWY MODUŁ: KONWERTER WARTOŚCI ODŻYWCZYCH ========================
+    // ======================== MODUŁ: KONWERTER WARTOŚCI ODŻYWCZYCH ========================
     const nutritionCategories = {
         energy: { base: 'kcal', units: { kcal: 1, kJ: 4.184, J: 4184, Wh: 1.16222 } },
         fat: { base: 'g', units: { 'g tłuszczu': 1, 'kcal z tłuszczu': 9 } },
@@ -2998,8 +3123,8 @@
         else if (document.getElementById('nutriTableBody')) rebuildNutriTable();
     }
 
-    // ======================== POPRAWIONY MODUŁ: POGODA (dowolna lokalizacja) ========================
-    let weatherUnitsSystem = 'metric'; // metric lub imperial
+    // ======================== MODUŁ POGODA (ulepszony wizualnie) ========================
+    let weatherUnitsSystem = 'metric';
 
     async function searchWeatherByCity() {
         const city = document.getElementById('weatherCityInput').value.trim();
@@ -3011,17 +3136,12 @@
         document.getElementById('weatherContent').innerHTML = '';
         try {
             const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
-            // Poprawne kodowanie URL – wspiera polskie znaki i spacje
             const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=pl&${unitsParam}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (!data || !data.current_condition || data.current_condition.length === 0) {
                 throw new Error('Lokalizacja nie rozpoznana przez serwer pogodowy.');
-            }
-            // Sprawdź czy wttr.in zwrócił błąd (np. "Unknown location")
-            if (data.current_condition[0] && data.current_condition[0].weatherCode === undefined) {
-                throw new Error('Nieprawidłowa odpowiedź – sprawdź pisownię miejscowości.');
             }
             displayWeatherWttr(data, city);
         } catch (err) {
@@ -3062,32 +3182,32 @@
 
     function getWeatherIconWttr(code) {
         const codes = {
-            '113': '<i class="fas fa-sun"></i>', '116': '<i class="fas fa-cloud-sun"></i>',
-            '119': '<i class="fas fa-cloud"></i>', '122': '<i class="fas fa-cloud"></i>',
-            '143': '<i class="fas fa-smog"></i>', '176': '<i class="fas fa-cloud-rain"></i>',
-            '179': '<i class="fas fa-cloud-snow"></i>', '182': '<i class="fas fa-cloud-rain"></i>',
-            '185': '<i class="fas fa-cloud-rain"></i>', '200': '<i class="fas fa-cloud-bolt"></i>',
-            '227': '<i class="fas fa-snowflake"></i>', '230': '<i class="fas fa-snowflake"></i>',
-            '248': '<i class="fas fa-smog"></i>', '260': '<i class="fas fa-smog"></i>',
-            '263': '<i class="fas fa-cloud-rain"></i>', '266': '<i class="fas fa-cloud-rain"></i>',
-            '281': '<i class="fas fa-cloud-rain"></i>', '284': '<i class="fas fa-cloud-rain"></i>',
-            '293': '<i class="fas fa-cloud-rain"></i>', '296': '<i class="fas fa-cloud-rain"></i>',
-            '299': '<i class="fas fa-cloud-showers-heavy"></i>', '302': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '305': '<i class="fas fa-cloud-showers-heavy"></i>', '308': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '311': '<i class="fas fa-cloud-rain"></i>', '314': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '317': '<i class="fas fa-cloud-showers-heavy"></i>', '320': '<i class="fas fa-cloud-snow"></i>',
-            '323': '<i class="fas fa-cloud-snow"></i>', '326': '<i class="fas fa-cloud-snow"></i>',
-            '329': '<i class="fas fa-cloud-snow"></i>', '332': '<i class="fas fa-cloud-snow"></i>',
-            '335': '<i class="fas fa-cloud-snow"></i>', '338': '<i class="fas fa-cloud-snow"></i>',
-            '350': '<i class="fas fa-cloud-hail"></i>', '353': '<i class="fas fa-cloud-rain"></i>',
-            '356': '<i class="fas fa-cloud-showers-heavy"></i>', '359': '<i class="fas fa-cloud-showers-heavy"></i>',
-            '362': '<i class="fas fa-cloud-hail"></i>', '365': '<i class="fas fa-cloud-hail"></i>',
-            '368': '<i class="fas fa-cloud-snow"></i>', '371': '<i class="fas fa-cloud-snow"></i>',
-            '374': '<i class="fas fa-cloud-hail"></i>', '377': '<i class="fas fa-cloud-hail"></i>',
-            '386': '<i class="fas fa-cloud-bolt"></i>', '389': '<i class="fas fa-cloud-bolt"></i>',
-            '392': '<i class="fas fa-cloud-bolt"></i>', '395': '<i class="fas fa-cloud-snow"></i>'
+            '113': '<i class="fas fa-sun fa-3x"></i>', '116': '<i class="fas fa-cloud-sun fa-3x"></i>',
+            '119': '<i class="fas fa-cloud fa-3x"></i>', '122': '<i class="fas fa-cloud fa-3x"></i>',
+            '143': '<i class="fas fa-smog fa-3x"></i>', '176': '<i class="fas fa-cloud-rain fa-3x"></i>',
+            '179': '<i class="fas fa-cloud-snow fa-3x"></i>', '182': '<i class="fas fa-cloud-rain fa-3x"></i>',
+            '185': '<i class="fas fa-cloud-rain fa-3x"></i>', '200': '<i class="fas fa-cloud-bolt fa-3x"></i>',
+            '227': '<i class="fas fa-snowflake fa-3x"></i>', '230': '<i class="fas fa-snowflake fa-3x"></i>',
+            '248': '<i class="fas fa-smog fa-3x"></i>', '260': '<i class="fas fa-smog fa-3x"></i>',
+            '263': '<i class="fas fa-cloud-rain fa-3x"></i>', '266': '<i class="fas fa-cloud-rain fa-3x"></i>',
+            '281': '<i class="fas fa-cloud-rain fa-3x"></i>', '284': '<i class="fas fa-cloud-rain fa-3x"></i>',
+            '293': '<i class="fas fa-cloud-rain fa-3x"></i>', '296': '<i class="fas fa-cloud-rain fa-3x"></i>',
+            '299': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>', '302': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>',
+            '305': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>', '308': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>',
+            '311': '<i class="fas fa-cloud-rain fa-3x"></i>', '314': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>',
+            '317': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>', '320': '<i class="fas fa-cloud-snow fa-3x"></i>',
+            '323': '<i class="fas fa-cloud-snow fa-3x"></i>', '326': '<i class="fas fa-cloud-snow fa-3x"></i>',
+            '329': '<i class="fas fa-cloud-snow fa-3x"></i>', '332': '<i class="fas fa-cloud-snow fa-3x"></i>',
+            '335': '<i class="fas fa-cloud-snow fa-3x"></i>', '338': '<i class="fas fa-cloud-snow fa-3x"></i>',
+            '350': '<i class="fas fa-cloud-hail fa-3x"></i>', '353': '<i class="fas fa-cloud-rain fa-3x"></i>',
+            '356': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>', '359': '<i class="fas fa-cloud-showers-heavy fa-3x"></i>',
+            '362': '<i class="fas fa-cloud-hail fa-3x"></i>', '365': '<i class="fas fa-cloud-hail fa-3x"></i>',
+            '368': '<i class="fas fa-cloud-snow fa-3x"></i>', '371': '<i class="fas fa-cloud-snow fa-3x"></i>',
+            '374': '<i class="fas fa-cloud-hail fa-3x"></i>', '377': '<i class="fas fa-cloud-hail fa-3x"></i>',
+            '386': '<i class="fas fa-cloud-bolt fa-3x"></i>', '389': '<i class="fas fa-cloud-bolt fa-3x"></i>',
+            '392': '<i class="fas fa-cloud-bolt fa-3x"></i>', '395': '<i class="fas fa-cloud-snow fa-3x"></i>'
         };
-        return codes[code] || '<i class="fas fa-cloud"></i>';
+        return codes[code] || '<i class="fas fa-cloud fa-3x"></i>';
     }
 
     function displayWeatherWttr(data, locationName) {
@@ -3096,7 +3216,14 @@
         const tempUnit = weatherUnitsSystem === 'metric' ? '°C' : '°F';
         const windUnit = weatherUnitsSystem === 'metric' ? 'km/h' : 'mph';
         const pressureUnit = 'hPa';
-        // Oblicz sumę opadów dla każdego dnia
+        const tempC = parseFloat(current.temp_C);
+        // Dodanie klasy kolorowej w zależności od temperatury
+        let tempClass = 'mild';
+        if (tempC > 25) tempClass = 'hot';
+        else if (tempC < 10) tempClass = 'cold';
+        const weatherDiv = document.querySelector('.weather-current');
+        if (weatherDiv) weatherDiv.className = `weather-current ${tempClass}`;
+        
         const dailyWithRain = daily.slice(0,5).map(day => {
             let totalRain = 0;
             if (day.hourly && Array.isArray(day.hourly)) {
@@ -3112,7 +3239,7 @@
         });
 
         const html = `
-            <div class="weather-current">
+            <div class="weather-current ${tempClass}">
                 <div class="weather-main">
                     <div><i class="fas fa-map-marker-alt"></i> ${escapeHtml(locationName)}</div>
                     <div class="temp">${Math.round(current.temp_C)}${tempUnit}</div>
@@ -3153,7 +3280,6 @@
         document.getElementById('weatherContent').innerHTML = html;
     }
 
-    // prosty escape, aby uniknąć XSS (choć dane z wttr.in są bezpieczne)
     function escapeHtml(str) {
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
@@ -3173,23 +3299,14 @@
     }
 
     function initWeather() {
-        // Dodajemy nasłuchiwanie klawisza Enter w polu tekstowym
         const input = document.getElementById('weatherCityInput');
         if (input) {
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') searchWeatherByCity();
             });
         }
-        // Domyślnie pokaż pogodę dla Warszawy (lub geolokalizacja)
-        if (navigator.geolocation) {
-            // opcjonalnie – możesz od razu pytać o lokalizację, ale lepiej dać użytkownikowi wybór
-            // Uruchom z domyślnym miastem
-            document.getElementById('weatherCityInput').value = 'Warszawa';
-            searchWeatherByCity();
-        } else {
-            document.getElementById('weatherCityInput').value = 'Warszawa';
-            searchWeatherByCity();
-        }
+        document.getElementById('weatherCityInput').value = 'Warszawa';
+        searchWeatherByCity();
     }
 
     // ======================== BANER ZGÓD COOKIE ========================
