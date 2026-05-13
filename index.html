@@ -700,12 +700,30 @@
             font-size: 1.2rem;
             font-weight: 600;
         }
-        /* --- Style dla konwertera żywności --- */
+        /* --- Style dla konwertera żywności (rozszerzone) --- */
         .portion-panel {
             background: rgba(0,0,0,0.3);
             border-radius: 1rem;
             padding: 1rem;
             margin-top: 1rem;
+        }
+        .custom-food-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .custom-food-item {
+            background: rgba(99,102,241,0.2);
+            border-radius: 2rem;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .custom-food-item:hover {
+            background: var(--primary);
+            transform: scale(1.02);
         }
         /* Ikony w zakładkach */
         .tab-icon {
@@ -969,7 +987,7 @@
                 </div>
             </div>
 
-            <!-- Kalkulator programisty -->
+            <!-- Kalkulator programisty (ROZBUDOWANY) -->
             <div id="sub-programmer" class="sub-content" style="display: none;">
                 <div class="prog-panel">
                     <div class="prog-converter">
@@ -1182,7 +1200,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA ŻYWNOŚĆ ============ -->
+    <!-- ============ ZAKŁADKA ŻYWNOŚĆ (ROZBUDOWANA) ============ -->
     <div id="nutrition-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-apple-alt"></i></div>
@@ -1195,7 +1213,7 @@
                     <option value="fat">🧈 Tłuszcz (g, kcal z tłuszczu)</option>
                     <option value="protein">🍗 Białko (g, kcal z białka)</option>
                     <option value="carbs">🍚 Węglowodany (g, kcal)</option>
-                    <option value="sugar">🍬 Cukier (g, łyżeczki, kostki)</option>
+                    <option value="sugar">🍬 Cukier (g, łyżeczki, kostki, szklanki, łyżki)</option>
                     <option value="portions">🍽️ Porcje (gramy, sztuki - własne)</option>
                 </select>
                 <input type="number" id="nutriValue" class="modern-input" style="flex:2;" value="1" step="any" oninput="convertNutrition()">
@@ -1208,16 +1226,24 @@
                 </table>
             </div>
 
-            <!-- Panel własnych porcji -->
+            <!-- Panel własnych porcji i produktów -->
             <div class="portion-panel">
-                <h4><i class="fas fa-utensils"></i> Moje własne porcje</h4>
+                <h4><i class="fas fa-utensils"></i> Moje własne porcje / produkty</h4>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
                     <input type="text" id="newPortionName" class="modern-input" placeholder="Nazwa (np. plaster chleba)" style="flex:2;">
                     <input type="number" id="newPortionGrams" class="modern-input" placeholder="Gramy (g)" style="flex:1;">
-                    <button class="btn btn-sm" onclick="addCustomPortion()"><i class="fas fa-plus"></i> Dodaj</button>
+                    <button class="btn btn-sm" onclick="addCustomPortion()"><i class="fas fa-plus"></i> Dodaj porcję</button>
                 </div>
-                <div id="customPortionsList" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
-                <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Własne porcje są zapisywane w przeglądarce i widoczne w kategorii "Porcje".</p>
+                <div id="customPortionsList" class="custom-food-list"></div>
+                <div style="margin-top: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <input type="text" id="newFoodName" class="modern-input" placeholder="Nazwa produktu" style="flex:2;">
+                        <input type="number" id="newFoodCalories" class="modern-input" placeholder="kcal / 100g" style="flex:1;">
+                        <button class="btn btn-sm" onclick="addCustomFood()"><i class="fas fa-plus"></i> Dodaj produkt</button>
+                    </div>
+                    <div id="customFoodsList" class="custom-food-list" style="margin-top: 0.5rem;"></div>
+                    <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Własne porcje i produkty są zapisywane w przeglądarce.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -2479,7 +2505,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER - ROZBUDOWANY ========================
+    // ======================== COOKIE CLICKER - ROZBUDOWANY (nowe ulepszenia, częstsze bonusy) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2492,7 +2518,7 @@
     let globalCPSMultiplier = 1;
     let extraClickBonusPercent = 0;
     let doubleClickChance = 0;
-    let goldenCookieFrequencyMultiplier = 1; // im mniejsza wartość, tym częściej
+    let goldenCookieFrequencyMultiplier = 0.7; // częściej (domyślnie co ~15-45s)
 
     const buildings = [
         { name: "✨ Mistyczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
@@ -2511,7 +2537,7 @@
         { name: "🌌 Czarodziejska Piekarnia", baseCps: 2.8e9, basePrice: 2.1e15, count: 0 }
     ];
 
-    // ROZBUDOWANE ULEPSZENIA
+    // ROZBUDOWANE ULEPSZENIA - dodane nowe, fajniejsze nazwy
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Kliknięcia dają 2x ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "+0,2 CPS za kursor", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
@@ -2528,14 +2554,29 @@
         { id: "hourglass_of_time", name: "⏳ Klepsydra Czasu", desc: "Zwiększa CPS o 50%", price: 500000000, purchased: false, apply: () => { globalCPSMultiplier *= 1.5; recalcCPS(); } },
         { id: "stardust", name: "✨ Gwiazdkowy Pył", desc: "Złote ciasteczka pojawiają się 2x częściej", price: 1000000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.5; scheduleGoldenCookie(); } },
         { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } },
-        // NOWE ULEPSZENIA
+        // NOWE ULEPSZENIA (bardziej ekscytujące)
         { id: "golden_dust", name: "🌠 Złoty Pył", desc: "Złote ciasteczka pojawiają się jeszcze częściej (kolejne -40% czasu)", price: 250000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.6; scheduleGoldenCookie(); } },
         { id: "double_tap", name: "👊 Podwójny Cios", desc: "15% szansy na potrójne ciasteczko przy kliknięciu", price: 750000000, purchased: false, apply: () => { window.doubleTapChance = 0.15; } },
         { id: "sugar_rush", name: "🍬 Cukierkowa Burza", desc: "Co jakiś czas deszcz ciastek (+50% CPS przez 15s)", price: 1500000000, purchased: false, apply: () => { window.sugarRush = true; startSugarRushInterval(); } },
         { id: "friendship_power", name: "🤝 Moc Przyjaźni", desc: "Zwiększa efekt bonusów o 50%", price: 2000000000, purchased: false, apply: () => { window.bonusPower = 1.5; } },
         { id: "lucky_stream", name: "🍀 Szczęśliwy Strumień", desc: "Złote ciasteczka mogą dać podwójny bonus", price: 3000000000, purchased: false, apply: () => { window.luckyStream = true; } },
-        { id: "golden_rain", name: "☀️ Złoty Deszcz", desc: "Złote ciasteczka przywołują dodatkowe efektowne bonusy", price: 5000000000, purchased: false, apply: () => { window.goldenRainUpgrade = true; } }
+        { id: "golden_rain", name: "☀️ Złoty Deszcz", desc: "Złote ciasteczka przywołują dodatkowe efektowne bonusy", price: 5000000000, purchased: false, apply: () => { window.goldenRainUpgrade = true; } },
+        { id: "treasure_chest", name: "💰 Złoty Skarbiec", desc: "Złote ciasteczka dają 3x więcej ciastek", price: 8000000000, purchased: false, apply: () => { window.treasureChest = true; } },
+        { id: "double_joy", name: "🎉 Podwójna Radość", desc: "Każde kliknięcie ma 10% szansy na podwojenie wszystkich ciastek z sekundy", price: 12000000000, purchased: false, apply: () => { window.doubleJoy = true; } },
+        { id: "future_click", name: "⏩ Kliknięcie przyszłości", desc: "Od czasu do czasu dostajesz ciasteczka z przyszłości (50x CPS)", price: 20000000000, purchased: false, apply: () => { window.futureClick = true; startFutureClickInterval(); } }
     ];
+
+    function startFutureClickInterval() {
+        if (window.futureClickInterval) clearInterval(window.futureClickInterval);
+        window.futureClickInterval = setInterval(() => {
+            if (window.futureClick && Math.random() < 0.1) {
+                let bonus = cookiesPerSecond * 50;
+                cookies += bonus;
+                updateStats();
+                showFloatingMessage(`🚀 Kliknięcie przyszłości! +${Math.floor(bonus).toLocaleString()} ciastek!`, "#8b5cf6");
+            }
+        }, 30000);
+    }
 
     function startSugarRushInterval() {
         if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
@@ -2586,7 +2627,7 @@
         globalCPSMultiplier = 1;
         extraClickBonusPercent = 0;
         doubleClickChance = 0;
-        goldenCookieFrequencyMultiplier = 1;
+        goldenCookieFrequencyMultiplier = 0.7;
         window.luckyCharm = false;
         window.divineIntervention = false;
         window.quantumAccelerator = false;
@@ -2594,7 +2635,11 @@
         window.bonusPower = 1;
         window.luckyStream = false;
         window.goldenRainUpgrade = false;
+        window.treasureChest = false;
+        window.doubleJoy = false;
+        window.futureClick = false;
         if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
+        if (window.futureClickInterval) clearInterval(window.futureClickInterval);
         window.sugarRush = false;
         const defaultBaseCps = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
         for (let i = 0; i < buildings.length; i++) {
@@ -2714,6 +2759,13 @@
             cookieImg.classList.add('cookie-animation');
             setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200);
         }
+        // Podwójna radość
+        if (window.doubleJoy && Math.random() < 0.1) {
+            let extra = cookiesPerSecond;
+            cookies += extra;
+            updateStats();
+            showFloatingMessage(`🎉 Podwójna Radość! +${Math.floor(extra).toLocaleString()} ciastek!`, "#f59e0b");
+        }
     }
 
     function spawnGoldenCookie() {
@@ -2748,7 +2800,7 @@
             golden.remove();
             let bonus = Math.random();
             let multiplier = (window.bonusPower || 1);
-            if (window.luckyStream && Math.random() < 0.3) bonus *= 2; // podwójny bonus
+            if (window.luckyStream && Math.random() < 0.3) bonus *= 2;
             if (bonus < 0.15 && window.luckyCharm) {
                 activeBonuses.superFrenzy = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
@@ -2772,6 +2824,7 @@
                 showFloatingMessage("💥 MEGA CLICK! x1000 klik!", "#ef4444");
             } else if (bonus < 0.7) {
                 let bonusCookies = cookiesPerSecond * 10 * multiplier;
+                if (window.treasureChest) bonusCookies *= 3;
                 cookies += bonusCookies;
                 if (window.luckyCharm) cookies += bonusCookies * 0.5;
                 updateStats();
@@ -2824,7 +2877,7 @@
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 15000 * goldenCookieFrequencyMultiplier; // zwiększona częstotliwość (było 30000)
+        let baseDelay = 15000 * goldenCookieFrequencyMultiplier;
         const delay = baseDelay + Math.random() * 30000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
@@ -2842,11 +2895,12 @@
             if (stormInterval) clearInterval(stormInterval);
             if (chocolateShowerInterval) clearInterval(chocolateShowerInterval);
             if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
+            if (window.futureClickInterval) clearInterval(window.futureClickInterval);
             activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false };
             globalCPSMultiplier = 1;
             extraClickBonusPercent = 0;
             doubleClickChance = 0;
-            goldenCookieFrequencyMultiplier = 1;
+            goldenCookieFrequencyMultiplier = 0.7;
             window.luckyCharm = false;
             window.divineIntervention = false;
             window.quantumAccelerator = false;
@@ -2854,6 +2908,9 @@
             window.bonusPower = 1;
             window.luckyStream = false;
             window.goldenRainUpgrade = false;
+            window.treasureChest = false;
+            window.doubleJoy = false;
+            window.futureClick = false;
             window.sugarRush = false;
             updateStats();
             rebuildBuildings();
@@ -2879,6 +2936,9 @@
             bonusPower: window.bonusPower || 1,
             luckyStream: window.luckyStream || false,
             goldenRainUpgrade: window.goldenRainUpgrade || false,
+            treasureChest: window.treasureChest || false,
+            doubleJoy: window.doubleJoy || false,
+            futureClick: window.futureClick || false,
             sugarRush: window.sugarRush || false
         };
         localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
@@ -2913,6 +2973,9 @@
                 if (state.bonusPower) window.bonusPower = state.bonusPower;
                 if (state.luckyStream) window.luckyStream = state.luckyStream;
                 if (state.goldenRainUpgrade) window.goldenRainUpgrade = state.goldenRainUpgrade;
+                if (state.treasureChest) window.treasureChest = state.treasureChest;
+                if (state.doubleJoy) window.doubleJoy = state.doubleJoy;
+                if (state.futureClick) window.futureClick = state.futureClick;
                 if (state.sugarRush) { window.sugarRush = state.sugarRush; startSugarRushInterval(); }
                 applyAllUpgrades();
                 updateStats();
@@ -2937,13 +3000,13 @@
         setTimeout(gameLoop, 200);
     }
 
-    // ======================== MODUŁ: KONWERTER WARTOŚCI ODŻYWCZYCH ========================
+    // ======================== MODUŁ: KONWERTER WARTOŚCI ODŻYWCZYCH (ROZBUDOWANY) ========================
     const nutritionCategories = {
         energy: { base: 'kcal', units: { kcal: 1, kJ: 4.184, J: 4184, Wh: 1.16222 } },
         fat: { base: 'g', units: { 'g tłuszczu': 1, 'kcal z tłuszczu': 9 } },
         protein: { base: 'g', units: { 'g białka': 1, 'kcal z białka': 4 } },
         carbs: { base: 'g', units: { 'g węglowodanów': 1, 'kcal z węglowodanów': 4 } },
-        sugar: { base: 'g', units: { 'g cukru': 1, 'łyżeczki (5g)': 5, 'kostki (5g)': 5 } },
+        sugar: { base: 'g', units: { 'g cukru': 1, 'łyżeczki (5g)': 5, 'kostki (5g)': 5, 'łyżki (15g)': 15, 'szklanki (200g)': 200 } },
         portions: { base: 'g', units: { 'gramy': 1 } }
     };
 
@@ -2951,6 +3014,7 @@
     let nutriCurrentFromUnit = 'kcal';
     let nutriResultElements = [];
     let customPortions = [];
+    let customFoods = []; // { name, caloriesPer100g }
 
     function loadCustomPortions() {
         const saved = localStorage.getItem('customPortions');
@@ -2965,19 +3029,48 @@
         localStorage.setItem('customPortions', JSON.stringify(customPortions));
     }
 
+    function loadCustomFoods() {
+        const saved = localStorage.getItem('customFoods');
+        if (saved) {
+            try { customFoods = JSON.parse(saved); } catch(e) { customFoods = []; }
+        } else { customFoods = []; }
+        renderCustomFoodsList();
+    }
+
+    function saveCustomFoods() {
+        localStorage.setItem('customFoods', JSON.stringify(customFoods));
+    }
+
     function renderCustomPortionsList() {
         const container = document.getElementById('customPortionsList');
         if (!container) return;
         container.innerHTML = '';
         customPortions.forEach((p, idx) => {
             const tag = document.createElement('span');
-            tag.className = 'quick-btn';
+            tag.className = 'custom-food-item';
             tag.innerHTML = `${p.name} (${p.grams}g) <i class="fas fa-times" style="margin-left: 0.3rem;"></i>`;
             tag.onclick = () => {
                 customPortions.splice(idx, 1);
                 saveCustomPortions();
                 renderCustomPortionsList();
                 if (nutriCurrentCategory === 'portions') rebuildNutriTable();
+            };
+            container.appendChild(tag);
+        });
+    }
+
+    function renderCustomFoodsList() {
+        const container = document.getElementById('customFoodsList');
+        if (!container) return;
+        container.innerHTML = '';
+        customFoods.forEach((f, idx) => {
+            const tag = document.createElement('span');
+            tag.className = 'custom-food-item';
+            tag.innerHTML = `${f.name} (${f.caloriesPer100g} kcal/100g) <i class="fas fa-times" style="margin-left: 0.3rem;"></i>`;
+            tag.onclick = () => {
+                customFoods.splice(idx, 1);
+                saveCustomFoods();
+                renderCustomFoodsList();
             };
             container.appendChild(tag);
         });
@@ -2996,6 +3089,20 @@
         document.getElementById('newPortionName').value = '';
         document.getElementById('newPortionGrams').value = '';
         if (nutriCurrentCategory === 'portions') rebuildNutriTable();
+    }
+
+    function addCustomFood() {
+        const name = document.getElementById('newFoodName').value.trim();
+        const cal = parseFloat(document.getElementById('newFoodCalories').value);
+        if (!name || isNaN(cal) || cal <= 0) {
+            alert('Podaj nazwę i kalorie na 100g.');
+            return;
+        }
+        customFoods.push({ name, caloriesPer100g: cal });
+        saveCustomFoods();
+        renderCustomFoodsList();
+        document.getElementById('newFoodName').value = '';
+        document.getElementById('newFoodCalories').value = '';
     }
 
     function getActiveNutriUnits() {
@@ -3050,6 +3157,8 @@
             if (fromUnit === 'g cukru') baseValue = val;
             else if (fromUnit === 'łyżeczki (5g)') baseValue = val * 5;
             else if (fromUnit === 'kostki (5g)') baseValue = val * 5;
+            else if (fromUnit === 'łyżki (15g)') baseValue = val * 15;
+            else if (fromUnit === 'szklanki (200g)') baseValue = val * 200;
             else return;
         } else if (nutriCurrentCategory === 'portions') {
             if (fromUnit === 'gramy') baseValue = val;
@@ -3079,6 +3188,8 @@
                 if (targetUnit === 'g cukru') result = baseValue;
                 else if (targetUnit === 'łyżeczki (5g)') result = baseValue / 5;
                 else if (targetUnit === 'kostki (5g)') result = baseValue / 5;
+                else if (targetUnit === 'łyżki (15g)') result = baseValue / 15;
+                else if (targetUnit === 'szklanki (200g)') result = baseValue / 200;
                 else result = baseValue;
             } else if (nutriCurrentCategory === 'portions') {
                 if (targetUnit === 'gramy') result = baseValue;
@@ -3116,6 +3227,7 @@
     function initNutritionConverter() {
         onNutriCategoryChange();
         loadCustomPortions();
+        loadCustomFoods();
     }
 
     function refreshNutritionTable() {
@@ -3217,12 +3329,9 @@
         const windUnit = weatherUnitsSystem === 'metric' ? 'km/h' : 'mph';
         const pressureUnit = 'hPa';
         const tempC = parseFloat(current.temp_C);
-        // Dodanie klasy kolorowej w zależności od temperatury
         let tempClass = 'mild';
         if (tempC > 25) tempClass = 'hot';
         else if (tempC < 10) tempClass = 'cold';
-        const weatherDiv = document.querySelector('.weather-current');
-        if (weatherDiv) weatherDiv.className = `weather-current ${tempClass}`;
         
         const dailyWithRain = daily.slice(0,5).map(day => {
             let totalRain = 0;
