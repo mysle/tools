@@ -85,21 +85,23 @@
             font-weight: 600; cursor: pointer; border-radius: 0.75rem; transition: all 0.3s;
             display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; white-space: nowrap;
         }
-        /* Kolorowe ikony w zakładkach - każda ma swój unikalny kolor */
-        .tab-btn i { font-size: 1.1rem; }
-        .tab-btn:nth-child(1) i { color: #fbbf24; } /* Waluty - złoty */
-        .tab-btn:nth-child(2) i { color: #60a5fa; } /* Konwerter - niebieski */
-        .tab-btn:nth-child(3) i { color: #34d399; } /* Kalkulatory - zielony */
-        .tab-btn:nth-child(4) i { color: #f472b6; } /* Test szybkości - różowy */
-        .tab-btn:nth-child(5) i { color: #c084fc; } /* Czas i strefy - fioletowy */
-        .tab-btn:nth-child(6) i { color: #f97316; } /* IP Info - pomarańczowy */
-        .tab-btn:nth-child(7) i { color: #a3e635; } /* Żywność - jasnozielony */
-        .tab-btn:nth-child(8) i { color: #38bdf8; } /* Pogoda - jasnoniebieski */
-        .tab-btn:nth-child(9) i { color: #fb7185; } /* Cookie Clicker - różowo-czerwony */
-
+        /* Wszystkie ikony zakładek - bezbarwne (srebrzyste) z delikatną animacją */
+        .tab-btn i {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover i {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        .tab-btn.active i {
+            color: white;
+            transform: scale(1.05);
+            text-shadow: 0 0 5px rgba(99,102,241,0.5);
+        }
         .tab-btn:hover { color: var(--text); background: rgba(99, 102, 241, 0.1); }
         .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
-        .tab-btn.active i { color: white !important; } /* Aktywne ikony stają się białe */
 
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .tab-content { display: none; animation: fadeIn 0.5s ease; }
@@ -596,7 +598,6 @@
             .buildings-grid {
                 grid-template-columns: 1fr;
             }
-            /* Nowe style dla pogody i żywności */
             .weather-current {
                 flex-direction: column;
             }
@@ -644,7 +645,6 @@
             transition: all 0.3s;
             backdrop-filter: blur(10px);
         }
-        /* Dodatkowy efekt w zależności od temperatury – będzie dodawany dynamicznie przez JS */
         .weather-current.hot {
             background: linear-gradient(135deg, rgba(220, 38, 38, 0.4), rgba(249, 115, 22, 0.3));
             border-left: 4px solid #f97316;
@@ -720,7 +720,7 @@
             font-weight: 600;
         }
         /* --- Style dla konwertera żywności (rozszerzone) --- */
-        .portion-panel {
+        .portion-panel, .meal-log-panel, .bmr-panel {
             background: rgba(0,0,0,0.3);
             border-radius: 1rem;
             padding: 1rem;
@@ -744,14 +744,12 @@
             background: var(--primary);
             transform: scale(1.02);
         }
-        /* Ikony w zakładkach (duże, na środku karty) */
         .tab-icon {
             text-align: center;
             margin-bottom: 1rem;
             font-size: 3rem;
             filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));
         }
-        /* Animacja trzęsienia ziemi dla super bonusu w Cookie Clicker */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -768,13 +766,43 @@
         .shake {
             animation: shake 0.5s ease-in-out;
         }
-        /* Płynne pojawianie się pogody */
         .weather-fade {
             animation: fadeInWeather 0.6s ease-out;
         }
         @keyframes fadeInWeather {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .achievement-badge {
+            background: rgba(255,215,0,0.2);
+            border: 1px solid gold;
+            border-radius: 2rem;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin: 0.2rem;
+        }
+        .hourly-forecast {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+        .hourly-card {
+            background: rgba(0,0,0,0.4);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            min-width: 80px;
+            text-align: center;
+        }
+        .meal-entry {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
@@ -799,7 +827,7 @@
 </nav>
 
 <div class="container">
-    <!-- ============ ZAKŁADKA WALUTY ============ -->
+    <!-- ============ ZAKŁADKA WALUTY (bez zmian) ============ -->
     <div id="currency-tab" class="tab-content active">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-coins"></i></div>
@@ -864,7 +892,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA KONWERTER ============ -->
+    <!-- ============ ZAKŁADKA KONWERTER (bez zmian) ============ -->
     <div id="converter-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-exchange-alt"></i></div>
@@ -902,7 +930,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA KALKULATORY ============ -->
+    <!-- ============ ZAKŁADKA KALKULATORY (bez zmian) ============ -->
     <div id="finance-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-calculator"></i></div>
@@ -1031,7 +1059,7 @@
                 </div>
             </div>
 
-            <!-- Kalkulator programisty (ROZBUDOWANY) -->
+            <!-- Kalkulator programisty -->
             <div id="sub-programmer" class="sub-content" style="display: none;">
                 <div class="prog-panel">
                     <div class="prog-converter">
@@ -1071,7 +1099,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA SPEED TEST ============ -->
+    <!-- ============ ZAKŁADKA SPEED TEST (bez zmian) ============ -->
     <div id="speed-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -1115,7 +1143,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA CZAS I STREFY ============ -->
+    <!-- ============ ZAKŁADKA CZAS I STREFY (bez zmian) ============ -->
     <div id="time-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-clock"></i></div>
@@ -1174,7 +1202,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA IP INFO ============ -->
+    <!-- ============ ZAKŁADKA IP INFO (bez zmian) ============ -->
     <div id="ip-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-globe"></i></div>
@@ -1248,9 +1276,10 @@
     <div id="nutrition-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-apple-alt"></i></div>
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🥗 Konwerter wartości odżywczych</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Przeliczaj kalorie, makroskładniki i porcje – wszystko w jednym miejscu.</p>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🥗 Inteligentny Asystent Żywieniowy</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Konwerter odżywczy, kalkulator zapotrzebowania i dziennik posiłków.</p>
 
+            <!-- Konwerter -->
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
                 <select id="nutriCategory" class="modern-select" style="flex:1;" onchange="onNutriCategoryChange()">
                     <option value="energy">🔥 Energia (kcal, kJ, J, Wh)</option>
@@ -1258,9 +1287,9 @@
                     <option value="protein">🍗 Białko (g, kcal z białka)</option>
                     <option value="carbs">🍚 Węglowodany (g, kcal)</option>
                     <option value="sugar">🍬 Cukier (g, łyżeczki, kostki, szklanki, łyżki)</option>
-                    <option value="portions">🍽️ Porcje (gramy, sztuki - własne)</option>
+                    <option value="portions">🍽️ Porcje (gramy, własne)</option>
                 </select>
-                <input type="number" id="nutriValue" class="modern-input" style="flex:2;" value="1" step="any" oninput="convertNutrition()">
+                <input type="number" id="nutriValue" class="modern-input" style="flex:2;" value="100" step="any" oninput="convertNutrition()">
                 <select id="nutriFromUnit" class="modern-select" style="flex:1;" onchange="onNutriFromUnitChange()"></select>
             </div>
             <div class="table-wrapper">
@@ -1270,9 +1299,61 @@
                 </table>
             </div>
 
-            <!-- Panel własnych porcji i produktów -->
+            <!-- Kalkulator BMR/TDEE -->
+            <div class="bmr-panel">
+                <h4><i class="fas fa-calculator"></i> Kalkulator zapotrzebowania kalorycznego (BMR / TDEE)</h4>
+                <div class="input-group"><label>Płeć</label><select id="bmrGender" class="modern-select" onchange="calculateBMR()"><option value="male">Mężczyzna</option><option value="female">Kobieta</option></select></div>
+                <div class="input-group"><label>Wiek (lata)</label><input type="number" id="bmrAge" class="modern-input" value="30" oninput="calculateBMR()"></div>
+                <div class="input-group"><label>Waga (kg)</label><input type="number" id="bmrWeight" class="modern-input" value="70" oninput="calculateBMR()"></div>
+                <div class="input-group"><label>Wzrost (cm)</label><input type="number" id="bmrHeight" class="modern-input" value="170" oninput="calculateBMR()"></div>
+                <div class="input-group"><label>Aktywność fizyczna</label><select id="bmrActivity" class="modern-select" onchange="calculateBMR()">
+                    <option value="1.2">Brak aktywności</option>
+                    <option value="1.375">Lekka (1-3 dni/tydz)</option>
+                    <option value="1.55">Umiarkowana (3-5 dni)</option>
+                    <option value="1.725">Aktywna (6-7 dni)</option>
+                    <option value="1.9">Bardzo aktywna (fizyczna praca)</option>
+                </select></div>
+                <div class="result-box" style="margin-top: 0.5rem;">
+                    <div class="result-row">
+                        <div class="result-item"><div class="label">BMR (podstawa)</div><div class="value" id="bmrResult">0</div><div style="color: var(--text-muted);">kcal/dzień</div></div>
+                        <div class="result-item"><div class="label">TDEE (dzienne zapotrzebowanie)</div><div class="value" id="tdeeResult">0</div><div style="color: var(--text-muted);">kcal/dzień</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dziennik posiłków -->
+            <div class="meal-log-panel">
+                <h4><i class="fas fa-utensils"></i> Dziennik żywności (dzisiejszy)</h4>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                    <select id="mealFoodSelect" class="modern-select" style="flex:2;">
+                        <option value="">Wybierz produkt lub dodaj własny</option>
+                        <optgroup label="Popularne produkty">
+                            <option value="apple">🍎 Jabłko (52 kcal/100g)</option>
+                            <option value="banana">🍌 Banan (89 kcal/100g)</option>
+                            <option value="chicken">🍗 Pierś z kurczaka (165 kcal/100g)</option>
+                            <option value="rice">🍚 Ryż biały (130 kcal/100g)</option>
+                            <option value="bread">🍞 Chleb pszenny (265 kcal/100g)</option>
+                            <option value="egg">🥚 Jajko (155 kcal/sztuka)</option>
+                        </optgroup>
+                    </select>
+                    <input type="number" id="mealAmount" class="modern-input" placeholder="Ilość (g lub szt)" style="flex:1;" value="100">
+                    <button class="btn btn-sm" onclick="addMeal()"><i class="fas fa-plus"></i> Dodaj</button>
+                </div>
+                <div id="mealListContainer"></div>
+                <div class="result-box" style="margin-top: 0.5rem;">
+                    <div class="result-row">
+                        <div class="result-item"><div class="label">Łącznie kalorie</div><div class="value" id="totalCalories">0</div><div style="color: var(--text-muted);">kcal</div></div>
+                        <div class="result-item"><div class="label">Białko</div><div class="value" id="totalProtein">0</div><div style="color: var(--text-muted);">g</div></div>
+                        <div class="result-item"><div class="label">Tłuszcze</div><div class="value" id="totalFat">0</div><div style="color: var(--text-muted);">g</div></div>
+                        <div class="result-item"><div class="label">Węglowodany</div><div class="value" id="totalCarbs">0</div><div style="color: var(--text-muted);">g</div></div>
+                    </div>
+                </div>
+                <button class="btn btn-sm" onclick="clearMeals()"><i class="fas fa-trash"></i> Wyczyść dziennik</button>
+            </div>
+
+            <!-- Własne porcje i produkty (zachowane) -->
             <div class="portion-panel">
-                <h4><i class="fas fa-utensils"></i> Moje własne porcje / produkty</h4>
+                <h4><i class="fas fa-edit"></i> Moje własne porcje / produkty</h4>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
                     <input type="text" id="newPortionName" class="modern-input" placeholder="Nazwa (np. plaster chleba)" style="flex:2;">
                     <input type="number" id="newPortionGrams" class="modern-input" placeholder="Gramy (g)" style="flex:1;">
@@ -1286,18 +1367,17 @@
                         <button class="btn btn-sm" onclick="addCustomFood()"><i class="fas fa-plus"></i> Dodaj produkt</button>
                     </div>
                     <div id="customFoodsList" class="custom-food-list" style="margin-top: 0.5rem;"></div>
-                    <p class="text-muted" style="font-size: 0.75rem; margin-top: 0.5rem;">Własne porcje i produkty są zapisywane w przeglądarce.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (ULEPSZONA, PROFESJONALNA) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (ULEPSZONA) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-cloud-sun"></i></div>
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Pogoda i prognoza</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda i 5-dniowa prognoza dla dowolnego miejsca na świecie.</p>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda, 5-dniowa prognoza, wschód/zachód słońca, faza księżyca i wykres temperatury.</p>
 
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
                 <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;">
@@ -1312,18 +1392,19 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (ROZBUDOWANA) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (ROZBUDOWANY) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <div class="tab-icon"><i class="fas fa-cookie-bite"></i></div>
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker – Rozszerzona Edycja</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj, zbieraj złote ciasteczka, odblokowuj potężne ulepszenia i rozwijaj swoje słodkie imperium!</p>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🍪 Cookie Clicker – Królestwo Słodkości</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj, zbieraj złote ciasteczka, odblokowuj potężne ulepszenia i osiągnięcia!</p>
             
             <div class="cookie-stats">
                 <div class="cookie-count" id="cookieDisplay">0</div>
                 <div>✨ magicznych ciasteczek ✨</div>
                 <div style="font-size: 0.9rem; margin-top: 0.5rem;">🍪 na sekundę: <strong id="cpsDisplay">0.0</strong></div>
                 <div id="bonusInfo" class="bonus-info"></div>
+                <div id="achievementsList" style="margin-top: 0.5rem;"></div>
             </div>
             
             <div class="cookie" id="cookieImage" onclick="clickCookie()">
@@ -1363,8 +1444,9 @@
             <div class="buildings-grid" id="buildingsContainer"></div>
             
             <div style="margin-top: 2rem; text-align: center;">
-                <button class="btn prestige-btn" onclick="resetGame()"><i class="fas fa-sync-alt"></i> Zresetuj wszechświat ciastek</button>
-                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">Reset usuwa cały postęp – zaczynasz od nowa, bez zapisanych danych.</p>
+                <button class="btn prestige-btn" onclick="prestigeReset()"><i class="fas fa-crown"></i> Prestiż +10% bonusu</button>
+                <button class="btn prestige-btn" onclick="resetGame()" style="margin-left: 1rem;"><i class="fas fa-sync-alt"></i> Zresetuj grę</button>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">Reset usuwa postęp, ale Prestiż daje stały +10% CPS za każdy poziom (maks. 10).</p>
             </div>
         </div>
     </div>
@@ -1377,7 +1459,6 @@
     <p><a href="kontakt.html" style="color: var(--primary); font-size: 1.2rem;">✉️ Przejdź do formularza kontaktowego</a></p>
 </div>
 
-<!-- STOPKA -->
 <footer style="text-align: center; padding: 1.5rem; border-top: 1px solid var(--glass-border); margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem;">
     <p>© 2026 MultiTool Pro | <a href="polityka.html" style="color: var(--primary);">Polityka prywatności</a> | <a href="kontakt.html" style="color: var(--primary);">Kontakt</a></p>
 </footer>
@@ -1423,7 +1504,7 @@
         }
     }
 
-    // ======================== MODUŁ IP INFO ========================
+    // ======================== MODUŁ IP INFO (bez zmian) ========================
     let ipData = null;
     window.ipDataLoaded = false;
     let ipMap = null;
@@ -1431,7 +1512,6 @@
     async function fetchIPInfo(ip = '') {
         document.getElementById('ipLoading').style.display = 'flex';
         document.getElementById('ipContent').style.display = 'none';
-
         try {
             const url = ip ? `https://ipapi.co/${ip}/json/` : 'https://ipapi.co/json/';
             const res = await fetch(url);
@@ -1451,7 +1531,6 @@
     function renderIPData(data) {
         document.getElementById('ipLoading').style.display = 'none';
         document.getElementById('ipContent').style.display = 'block';
-
         document.getElementById('ipAddress').textContent = data.ip || '—';
         document.getElementById('ipType').textContent = data.ip?.includes(':') ? 'IPv6' : 'IPv4';
         document.getElementById('ipIsp').textContent = data.org || data.isp || '—';
@@ -1462,7 +1541,6 @@
         document.getElementById('ipAsn').textContent = data.asn || '—';
         document.getElementById('ipOrg').textContent = data.org || '—';
         document.getElementById('ipHost').textContent = data.ip || '—';
-
         const countryCode = data.country_code ? data.country_code.toLowerCase() : '';
         const flagEmoji = countryCode ? String.fromCodePoint(...[...countryCode.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : '🏳️';
         document.getElementById('extraFlag').innerHTML = `${flagEmoji} ${data.country_name || '—'}`;
@@ -1472,7 +1550,6 @@
         document.getElementById('extraCurrency').textContent = currencyText;
         document.getElementById('extraLang').textContent = data.languages ? data.languages.replace(/;/g, ', ') : '—';
         document.getElementById('extraCallingCode').textContent = data.country_calling_code || '—';
-
         if (data.latitude && data.longitude) {
             if (ipMap) ipMap.remove();
             ipMap = L.map('ipMap').setView([data.latitude, data.longitude], 15);
@@ -1482,7 +1559,6 @@
             L.marker([data.latitude, data.longitude]).addTo(ipMap)
                 .bindPopup(`${data.city || ''}, ${data.country_name || ''}<br>Współrzędne: ${data.latitude}, ${data.longitude}`).openPopup();
         }
-
         const ua = navigator.userAgent;
         document.getElementById('devBrowser').textContent = getBrowser(ua);
         document.getElementById('devOs').textContent = getOS(ua);
@@ -1523,7 +1599,7 @@
         if (customIP && customIP.trim()) fetchIPInfo(customIP.trim());
     }
 
-    // ======================== MODUŁ WALUTY ========================
+    // ======================== MODUŁ WALUTY (bez zmian) ========================
     let exchangeRates = {};
     let previousRates = {};
     let lastSuccessfulRates = null;
@@ -1792,7 +1868,7 @@
         convert();
     }
 
-    // ======================== MODUŁ KONWERTERA ========================
+    // ======================== MODUŁ KONWERTERA (bez zmian) ========================
     const unitNames = {
         mm: 'milimetr', cm: 'centymetr', dm: 'decymetr', m: 'metr', km: 'kilometr',
         in: 'cal', ft: 'stopa', yd: 'jard', mi: 'mila', nmi: 'mila morska',
@@ -1960,7 +2036,7 @@
         }
     }
 
-    // ======================== MODUŁ KALKULATORÓW ========================
+    // ======================== MODUŁ KALKULATORÓW (bez zmian) ========================
     function switchSubTab(sub, event) {
         document.querySelectorAll('#finance-tab .sub-content').forEach(el => el.style.display = 'none');
         document.querySelectorAll('#finance-tab .sub-tab-btn').forEach(el => el.classList.remove('active'));
@@ -2165,7 +2241,7 @@
         updateFromDecimal();
     }
 
-    // ======================== MODUŁ SPEED TESTU ========================
+    // ======================== MODUŁ SPEED TESTU (bez zmian) ========================
     let speedChart = null;
     let isTesting = false;
 
@@ -2351,7 +2427,7 @@
         isTesting = false;
     }
 
-    // ======================== MODUŁ CZASU I STREF ========================
+    // ======================== MODUŁ CZASU I STREF (bez zmian) ========================
     let timezoneCards = [];
     const defaultCards = [
         { name: "Warszawa", tz: "Europe/Warsaw" },
@@ -2549,10 +2625,12 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER - ROZBUDOWANY (nowe ulepszenia, częstsze bonusy) ========================
+    // ======================== COOKIE CLICKER – ROZBUDOWANY (nowe ulepszenia, prestiż, osiągnięcia) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
+    let prestigeLevel = 0; // poziom prestiżu (maks. 10)
+    let prestigeMultiplier = 1.0; // 1 + prestigeLevel*0.1
     let activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false, cosmicClick: false };
     let bonusTimer = null;
     let goldenCookieTimeout = null;
@@ -2562,7 +2640,23 @@
     let globalCPSMultiplier = 1;
     let extraClickBonusPercent = 0;
     let doubleClickChance = 0;
-    let goldenCookieFrequencyMultiplier = 0.5; // częściej (domyślnie co ~10-30s)
+    let goldenCookieFrequencyMultiplier = 0.5;
+
+    // Lista osiągnięć
+    let achievements = {
+        "first_cookie": { name: "🍪 Pierwsze ciasteczko", desc: "Upiecz swoje pierwsze ciasteczko", achieved: false, check: () => cookies >= 1 },
+        "hundred": { name: "💯 Setka", desc: "100 ciasteczek", achieved: false, check: () => cookies >= 100 },
+        "thousand": { name: "🔥 Tysiąc", desc: "1 000 ciasteczek", achieved: false, check: () => cookies >= 1000 },
+        "millionaire": { name: "💎 Milioner", desc: "1 000 000 ciasteczek", achieved: false, check: () => cookies >= 1e6 },
+        "builder": { name: "🏗️ Budowniczy", desc: "Kup 5 budynków", achieved: false, check: () => buildings.reduce((sum,b)=>sum+b.count,0) >= 5 },
+        "magnate": { name: "👑 Magnat", desc: "Kup 20 budynków", achieved: false, check: () => buildings.reduce((sum,b)=>sum+b.count,0) >= 20 },
+        "clicker": { name: "🖱️ Kliker", desc: "Wykonaj 100 kliknięć", achieved: false, check: () => window.totalClicks >= 100 },
+        "golden_hunter": { name: "🌟 Łowca złotych", desc: "Zbierz 5 złotych ciasteczek", achieved: false, check: () => window.goldenCollected >= 5 },
+        "prestige": { name: "🏆 Prestiż", desc: "Osiągnij 1 poziom prestiżu", achieved: false, check: () => prestigeLevel >= 1 },
+        "god": { name: "✨ Boski piekarz", desc: "Przekrocz 10 mld ciastek", achieved: false, check: () => cookies >= 1e10 }
+    };
+    window.totalClicks = 0;
+    window.goldenCollected = 0;
 
     const buildings = [
         { name: "✨ Mistyczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
@@ -2581,11 +2675,11 @@
         { name: "🌌 Czarodziejska Piekarnia", baseCps: 2.8e9, basePrice: 2.1e15, count: 0 }
     ];
 
-    // ROZBUDOWANE ULEPSZENIA - dodane nowe, fajniejsze nazwy
+    // Ulepszenia – dodane nowe i ulepszone nazwy
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Kliknięcia dają 2x ciastek", price: 250, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "+0,2 CPS za kursor", price: 500, purchased: false, apply: () => { buildings[0].baseCps += 0.2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
-        { id: "grandma_boost", name: "👵 Armia Babć", desc: "+2 CPS za babcię", price: 2000, purchased: false, apply: () => { buildings[1].baseCps += 2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
+        { id: "grandma_boost", name: "👵 Armia Babć II", desc: "+2 CPS za babcię", price: 2000, purchased: false, apply: () => { buildings[1].baseCps += 2; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
         { id: "factory_boost", name: "🏭 Przemysł 4.0", desc: "+20 CPS za fabrykę", price: 15000, purchased: false, apply: () => { buildings[3].baseCps += 20; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
         { id: "magic_mill", name: "🔮 Młyn Cudów", desc: "+100 CPS za wieżę", price: 100000, purchased: false, apply: () => { buildings[6].baseCps += 100; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
         { id: "chrono_boost", name: "⏳ Kroniki Czasu", desc: "Podwaja CPS wszystkich budynków", price: 1000000, purchased: false, apply: () => { buildings.forEach(b => { b.baseCps *= 2; }); recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
@@ -2598,8 +2692,7 @@
         { id: "hourglass_of_time", name: "⏳ Klepsydra Czasu", desc: "Zwiększa CPS o 50%", price: 500000000, purchased: false, apply: () => { globalCPSMultiplier *= 1.5; recalcCPS(); } },
         { id: "stardust", name: "✨ Gwiazdkowy Pył", desc: "Złote ciasteczka pojawiają się 2x częściej", price: 1000000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.5; scheduleGoldenCookie(); } },
         { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } },
-        // NOWE ULEPSZENIA (bardziej ekscytujące)
-        { id: "golden_dust", name: "🌠 Złoty Pył II", desc: "Złote ciasteczka pojawiają się jeszcze częściej (kolejne -40% czasu)", price: 250000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.6; scheduleGoldenCookie(); } },
+        { id: "golden_dust", name: "🌠 Złoty Pył II", desc: "Złote ciasteczka pojawiają się jeszcze częściej (-40% czasu)", price: 250000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.6; scheduleGoldenCookie(); } },
         { id: "double_tap", name: "👊 Podwójny Cios", desc: "15% szansy na potrójne ciasteczko przy kliknięciu", price: 750000000, purchased: false, apply: () => { window.doubleTapChance = 0.15; } },
         { id: "sugar_rush", name: "🍬 Cukierkowa Burza", desc: "Co jakiś czas deszcz ciastek (+50% CPS przez 15s)", price: 1500000000, purchased: false, apply: () => { window.sugarRush = true; startSugarRushInterval(); } },
         { id: "friendship_power", name: "🤝 Moc Przyjaźni", desc: "Zwiększa efekt bonusów o 50%", price: 2000000000, purchased: false, apply: () => { window.bonusPower = 1.5; } },
@@ -2608,7 +2701,6 @@
         { id: "treasure_chest", name: "💰 Złoty Skarbiec", desc: "Złote ciasteczka dają 3x więcej ciastek", price: 8000000000, purchased: false, apply: () => { window.treasureChest = true; } },
         { id: "double_joy", name: "🎉 Podwójna Radość", desc: "Każde kliknięcie ma 10% szansy na podwojenie wszystkich ciastek z sekundy", price: 12000000000, purchased: false, apply: () => { window.doubleJoy = true; } },
         { id: "future_click", name: "⏩ Kliknięcie przyszłości", desc: "Od czasu do czasu dostajesz ciasteczka z przyszłości (50x CPS)", price: 20000000000, purchased: false, apply: () => { window.futureClick = true; startFutureClickInterval(); } },
-        // KOLEJNE NOWE ULEPSZENIA (JESZCZE WIĘCEJ EKSCYTACJI)
         { id: "cosmic_click", name: "🌌 Kliknięcie Kosmiczne", desc: "Co 10 kliknięć dostajesz 1000x CPS", price: 50000000000, purchased: false, apply: () => { window.cosmicClick = true; window.clickCountCosmic = 0; } },
         { id: "infinite_oven", name: "♾️ Nieskończona Piekarnia", desc: "Podwaja moc wszystkich budynków", price: 1e12, purchased: false, apply: () => { buildings.forEach(b => { b.baseCps *= 2; }); recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
         { id: "golden_hour", name: "⏰ Złota Godzina", desc: "Co 5 minut otrzymujesz 5000x CPS", price: 5e12, purchased: false, apply: () => { window.goldenHour = true; startGoldenHour(); } }
@@ -2678,7 +2770,7 @@
         for (let i = 0; i < buildings.length; i++) {
             total += buildings[i].baseCps * buildings[i].count;
         }
-        cookiesPerSecond = total * globalCPSMultiplier;
+        cookiesPerSecond = total * globalCPSMultiplier * prestigeMultiplier;
         document.getElementById('cpsDisplay').innerText = cookiesPerSecond.toFixed(2);
     }
 
@@ -2717,6 +2809,7 @@
         recalcCPS();
         rebuildBuildings();
         rebuildUpgrades();
+        updateAchievements();
     }
 
     function rebuildBuildings() {
@@ -2768,6 +2861,25 @@
         if (activeBonuses.chocolateShower) bonusText += "🍫 Ulewa Czekoladowa (kliknięcia dają +25% ciastek)! ";
         if (activeBonuses.cosmicClick) bonusText += "🌌 Kosmiczny Klik (co 10 kliknięć bonus)! ";
         document.getElementById('bonusInfo').innerText = bonusText;
+        updateAchievements();
+    }
+
+    function updateAchievements() {
+        let changed = false;
+        for (let key in achievements) {
+            if (!achievements[key].achieved && achievements[key].check()) {
+                achievements[key].achieved = true;
+                changed = true;
+                showFloatingMessage(`🏆 Osiągnięcie: ${achievements[key].name}`, "#facc15");
+            }
+        }
+        if (changed) {
+            const achContainer = document.getElementById('achievementsList');
+            if (achContainer) {
+                achContainer.innerHTML = Object.values(achievements).filter(a => a.achieved).map(a => `<span class="achievement-badge">${a.name}</span>`).join('');
+            }
+            saveGame();
+        }
     }
 
     function buyBuilding(index) {
@@ -2801,7 +2913,7 @@
     }
 
     function clickCookie() {
-        let gain = clickMultiplier;
+        let gain = clickMultiplier * prestigeMultiplier;
         if (activeBonuses.megaClick) gain *= 1000;
         else if (activeBonuses.clickFrenzy) gain *= 777;
         if (activeBonuses.frenzy) gain *= 7;
@@ -2817,6 +2929,7 @@
             gain *= 3;
         }
         cookies += gain;
+        window.totalClicks = (window.totalClicks || 0) + 1;
         updateStats();
         saveGame();
         const cookieImg = document.querySelector('#cookieImage svg');
@@ -2824,14 +2937,12 @@
             cookieImg.classList.add('cookie-animation');
             setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200);
         }
-        // Podwójna radość
         if (window.doubleJoy && Math.random() < 0.1) {
             let extra = cookiesPerSecond;
             cookies += extra;
             updateStats();
             showFloatingMessage(`🎉 Podwójna Radość! +${Math.floor(extra).toLocaleString()} ciastek!`, "#f59e0b");
         }
-        // Kosmiczny klik
         if (window.cosmicClick) {
             window.clickCountCosmic = (window.clickCountCosmic || 0) + 1;
             if (window.clickCountCosmic >= 10) {
@@ -2876,6 +2987,7 @@
         golden.style.top = Math.random() * (window.innerHeight - 100) + 'px';
         golden.onclick = () => {
             golden.remove();
+            window.goldenCollected = (window.goldenCollected || 0) + 1;
             let bonus = Math.random();
             let multiplier = (window.bonusPower || 1);
             if (window.luckyStream && Math.random() < 0.3) bonus *= 2;
@@ -2957,13 +3069,20 @@
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 10000 * goldenCookieFrequencyMultiplier; // zmniejszone dla większej częstotliwości
+        let baseDelay = 10000 * goldenCookieFrequencyMultiplier;
         const delay = baseDelay + Math.random() * 20000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
 
-    function resetGame() {
-        if (confirm("Czy na pewno chcesz rozpocząć nową grę? Wszystkie zapisane postępy zostaną utracone.")) {
+    function prestigeReset() {
+        if (prestigeLevel >= 10) {
+            alert("Osiągnąłeś już maksymalny poziom prestiżu!");
+            return;
+        }
+        if (confirm(`Czy chcesz dokonać prestiżu? Stracisz wszystkie ciasteczka, budynki i ulepszenia, ale otrzymasz +10% do CPS na zawsze (aktualny poziom: ${prestigeLevel}).`)) {
+            prestigeLevel++;
+            prestigeMultiplier = 1 + prestigeLevel * 0.1;
+            // Reset gry
             cookies = 0;
             clickMultiplier = 1;
             for (let b of buildings) { b.count = 0; }
@@ -2996,6 +3115,58 @@
             window.clickCountCosmic = 0;
             window.goldenHour = false;
             window.sugarRush = false;
+            window.totalClicks = 0;
+            window.goldenCollected = 0;
+            // Reset osiągnięć (z wyjątkiem prestiżu)
+            for (let key in achievements) {
+                if (key !== 'prestige') achievements[key].achieved = false;
+            }
+            achievements.prestige.achieved = (prestigeLevel >= 1);
+            updateStats();
+            rebuildBuildings();
+            rebuildUpgrades();
+            saveGame();
+            showFloatingMessage(`🏆 Prestiż poziom ${prestigeLevel}! Stały bonus +${prestigeLevel*10}% CPS!`, "#facc15");
+        }
+    }
+
+    function resetGame() {
+        if (confirm("Czy na pewno chcesz rozpocząć nową grę? Wszystkie zapisane postępy zostaną utracone (prestiż pozostanie).")) {
+            cookies = 0;
+            clickMultiplier = 1;
+            for (let b of buildings) { b.count = 0; }
+            const defaults = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
+            for (let i = 0; i < buildings.length; i++) buildings[i].baseCps = defaults[i];
+            for (let u of upgrades) { u.purchased = false; }
+            if (bonusTimer) clearTimeout(bonusTimer);
+            if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
+            if (stormInterval) clearInterval(stormInterval);
+            if (chocolateShowerInterval) clearInterval(chocolateShowerInterval);
+            if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
+            if (window.futureClickInterval) clearInterval(window.futureClickInterval);
+            if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
+            activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false, cosmicClick: false };
+            globalCPSMultiplier = 1;
+            extraClickBonusPercent = 0;
+            doubleClickChance = 0;
+            goldenCookieFrequencyMultiplier = 0.5;
+            window.luckyCharm = false;
+            window.divineIntervention = false;
+            window.quantumAccelerator = false;
+            window.doubleTapChance = 0;
+            window.bonusPower = 1;
+            window.luckyStream = false;
+            window.goldenRainUpgrade = false;
+            window.treasureChest = false;
+            window.doubleJoy = false;
+            window.futureClick = false;
+            window.cosmicClick = false;
+            window.clickCountCosmic = 0;
+            window.goldenHour = false;
+            window.sugarRush = false;
+            window.totalClicks = 0;
+            window.goldenCollected = 0;
+            // Nie resetuj prestiżu
             updateStats();
             rebuildBuildings();
             rebuildUpgrades();
@@ -3007,6 +3178,7 @@
         const gameState = {
             cookies: cookies,
             clickMultiplier: clickMultiplier,
+            prestigeLevel: prestigeLevel,
             buildings: buildings.map(b => ({ count: b.count, baseCps: b.baseCps })),
             upgrades: upgrades.map(u => ({ purchased: u.purchased })),
             luckyCharm: window.luckyCharm || false,
@@ -3025,7 +3197,10 @@
             futureClick: window.futureClick || false,
             cosmicClick: window.cosmicClick || false,
             goldenHour: window.goldenHour || false,
-            sugarRush: window.sugarRush || false
+            sugarRush: window.sugarRush || false,
+            totalClicks: window.totalClicks || 0,
+            goldenCollected: window.goldenCollected || 0,
+            achievements: achievements
         };
         localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
     }
@@ -3037,6 +3212,8 @@
                 const state = JSON.parse(saved);
                 cookies = typeof state.cookies === 'number' && !isNaN(state.cookies) ? state.cookies : 0;
                 clickMultiplier = typeof state.clickMultiplier === 'number' ? state.clickMultiplier : 1;
+                prestigeLevel = typeof state.prestigeLevel === 'number' ? state.prestigeLevel : 0;
+                prestigeMultiplier = 1 + prestigeLevel * 0.1;
                 if (state.buildings) {
                     for (let i = 0; i < buildings.length && i < state.buildings.length; i++) {
                         if (typeof state.buildings[i].count === 'number') buildings[i].count = state.buildings[i].count;
@@ -3065,10 +3242,18 @@
                 if (state.cosmicClick) window.cosmicClick = state.cosmicClick;
                 if (state.goldenHour) window.goldenHour = state.goldenHour;
                 if (state.sugarRush) { window.sugarRush = state.sugarRush; startSugarRushInterval(); }
+                if (state.totalClicks) window.totalClicks = state.totalClicks;
+                if (state.goldenCollected) window.goldenCollected = state.goldenCollected;
+                if (state.achievements) {
+                    for (let key in state.achievements) {
+                        if (achievements[key]) achievements[key].achieved = state.achievements[key].achieved;
+                    }
+                }
                 applyAllUpgrades();
                 updateStats();
                 rebuildBuildings();
                 rebuildUpgrades();
+                updateAchievements();
             } catch(e) { console.error("Błąd wczytywania gry", e); }
         }
     }
@@ -3102,7 +3287,10 @@
     let nutriCurrentFromUnit = 'kcal';
     let nutriResultElements = [];
     let customPortions = [];
-    let customFoods = []; // { name, caloriesPer100g }
+    let customFoods = [];
+
+    // Dziennik posiłków
+    let meals = [];
 
     function loadCustomPortions() {
         const saved = localStorage.getItem('customPortions');
@@ -3316,6 +3504,9 @@
         onNutriCategoryChange();
         loadCustomPortions();
         loadCustomFoods();
+        loadMeals();
+        renderMeals();
+        calculateBMR();
     }
 
     function refreshNutritionTable() {
@@ -3323,8 +3514,126 @@
         else if (document.getElementById('nutriTableBody')) rebuildNutriTable();
     }
 
-    // ======================== MODUŁ POGODA (ulepszony wizualnie) ========================
+    // BMR/TDEE
+    function calculateBMR() {
+        const gender = document.getElementById('bmrGender').value;
+        const age = parseFloat(document.getElementById('bmrAge').value) || 0;
+        const weight = parseFloat(document.getElementById('bmrWeight').value) || 0;
+        const height = parseFloat(document.getElementById('bmrHeight').value) || 0;
+        let bmr = 0;
+        if (gender === 'male') {
+            bmr = 66.47 + (13.75 * weight) + (5.003 * height) - (6.755 * age);
+        } else {
+            bmr = 655.1 + (9.563 * weight) + (1.85 * height) - (4.676 * age);
+        }
+        const activity = parseFloat(document.getElementById('bmrActivity').value);
+        const tdee = bmr * activity;
+        document.getElementById('bmrResult').textContent = Math.round(bmr);
+        document.getElementById('tdeeResult').textContent = Math.round(tdee);
+    }
+
+    // Dziennik posiłków
+    function loadMeals() {
+        const saved = localStorage.getItem('meals');
+        if (saved) {
+            try { meals = JSON.parse(saved); } catch(e) { meals = []; }
+        } else { meals = []; }
+        renderMeals();
+    }
+
+    function saveMeals() {
+        localStorage.setItem('meals', JSON.stringify(meals));
+    }
+
+    function addMeal() {
+        const select = document.getElementById('mealFoodSelect');
+        const amount = parseFloat(document.getElementById('mealAmount').value);
+        if (isNaN(amount) || amount <= 0) {
+            alert('Podaj prawidłową ilość.');
+            return;
+        }
+        let product = null;
+        const val = select.value;
+        if (val === "") return;
+        // Popularne produkty
+        const productMap = {
+            apple: { name: "Jabłko", kcalPer100g: 52, protein: 0.3, fat: 0.2, carbs: 14 },
+            banana: { name: "Banan", kcalPer100g: 89, protein: 1.1, fat: 0.3, carbs: 23 },
+            chicken: { name: "Pierś z kurczaka", kcalPer100g: 165, protein: 31, fat: 3.6, carbs: 0 },
+            rice: { name: "Ryż biały", kcalPer100g: 130, protein: 2.7, fat: 0.3, carbs: 28 },
+            bread: { name: "Chleb pszenny", kcalPer100g: 265, protein: 9, fat: 3.2, carbs: 49 },
+            egg: { name: "Jajko", kcalPer100g: 155, protein: 13, fat: 11, carbs: 1.1 }
+        };
+        if (productMap[val]) {
+            product = productMap[val];
+        } else {
+            // Custom product?
+            const custom = customFoods.find(f => f.name === val);
+            if (custom) {
+                product = { name: custom.name, kcalPer100g: custom.caloriesPer100g, protein: 0, fat: 0, carbs: 0 };
+            } else {
+                alert("Wybierz produkt z listy.");
+                return;
+            }
+        }
+        const factor = amount / 100;
+        const calories = product.kcalPer100g * factor;
+        const protein = (product.protein || 0) * factor;
+        const fat = (product.fat || 0) * factor;
+        const carbs = (product.carbs || 0) * factor;
+        meals.push({
+            name: product.name,
+            amount: amount,
+            calories: calories,
+            protein: protein,
+            fat: fat,
+            carbs: carbs,
+            timestamp: new Date().toLocaleTimeString()
+        });
+        saveMeals();
+        renderMeals();
+    }
+
+    function renderMeals() {
+        const container = document.getElementById('mealListContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        let totalCal = 0, totalProt = 0, totalFat = 0, totalCarb = 0;
+        meals.forEach((meal, idx) => {
+            totalCal += meal.calories;
+            totalProt += meal.protein;
+            totalFat += meal.fat;
+            totalCarb += meal.carbs;
+            const div = document.createElement('div');
+            div.className = 'meal-entry';
+            div.innerHTML = `
+                <span><strong>${meal.name}</strong> ${meal.amount}g (${meal.timestamp})</span>
+                <span>${meal.calories.toFixed(1)} kcal | B:${meal.protein.toFixed(1)}g | T:${meal.fat.toFixed(1)}g | W:${meal.carbs.toFixed(1)}g</span>
+                <button class="quick-btn" onclick="removeMeal(${idx})"><i class="fas fa-trash"></i></button>
+            `;
+            container.appendChild(div);
+        });
+        document.getElementById('totalCalories').textContent = totalCal.toFixed(1);
+        document.getElementById('totalProtein').textContent = totalProt.toFixed(1);
+        document.getElementById('totalFat').textContent = totalFat.toFixed(1);
+        document.getElementById('totalCarbs').textContent = totalCarb.toFixed(1);
+    }
+
+    function removeMeal(idx) {
+        meals.splice(idx, 1);
+        saveMeals();
+        renderMeals();
+    }
+
+    function clearMeals() {
+        meals = [];
+        saveMeals();
+        renderMeals();
+    }
+
+    // ======================== MODUŁ POGODA (ULEPSZONY) ========================
     let weatherUnitsSystem = 'metric';
+    let weatherChart = null;
 
     async function searchWeatherByCity() {
         const city = document.getElementById('weatherCityInput').value.trim();
@@ -3421,6 +3730,13 @@
         if (tempC > 25) tempClass = 'hot';
         else if (tempC < 10) tempClass = 'cold';
         
+        // Dodatkowe dane: wschód/zachód słońca
+        const astronomy = daily[0]?.astronomy?.[0] || {};
+        const sunrise = astronomy.sunrise || '--';
+        const sunset = astronomy.sunset || '--';
+        // Faza księżyca (przybliżona)
+        const moonPhase = daily[0]?.hourly?.[0]?.weatherDesc?.[0]?.value || '---';
+        
         const dailyWithRain = daily.slice(0,5).map(day => {
             let totalRain = 0;
             if (day.hourly && Array.isArray(day.hourly)) {
@@ -3435,6 +3751,9 @@
             return { ...day, totalRain };
         });
 
+        // Prognoza godzinowa (najbliższe 6h)
+        const hourlyForecast = daily[0]?.hourly?.slice(0,6) || [];
+        
         const html = `
             <div class="weather-current ${tempClass} weather-fade">
                 <div class="weather-main">
@@ -3450,7 +3769,20 @@
                     <div class="weather-detail-item"><i class="fas fa-cloud"></i> Zachmurzenie: ${current.cloudcover}%</div>
                     <div class="weather-detail-item"><i class="fas fa-eye"></i> Widzialność: ${current.visibility} km</div>
                     <div class="weather-detail-item"><i class="fas fa-umbrella"></i> Opady: ${current.precipMM} mm</div>
+                    <div class="weather-detail-item"><i class="fas fa-sun"></i> Wschód: ${sunrise} / Zachód: ${sunset}</div>
+                    <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhase}</div>
                 </div>
+            </div>
+            <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury (5 dni)</h3>
+            <div class="chart-container" style="height: 250px;"><canvas id="tempChart"></canvas></div>
+            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (najbliższe 6h)</h3>
+            <div class="hourly-forecast">
+                ${hourlyForecast.map(h => {
+                    const hour = new Date(h.time).getHours();
+                    const temp = h.tempC;
+                    const icon = getWeatherIconWttr(h.weatherCode);
+                    return `<div class="hourly-card">${hour}:00<br>${icon}<br>${Math.round(temp)}${tempUnit}</div>`;
+                }).join('')}
             </div>
             <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 5-dniowa</h3>
             <div class="forecast-grid">
@@ -3469,12 +3801,31 @@
                             <div class="forecast-temp">${maxTemp}${tempUnit} / ${minTemp}${tempUnit}</div>
                             <div><i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
                             <div><i class="fas fa-cloud-rain"></i> ${rain.toFixed(1)} mm</div>
+                            ${day.astronomy?.[0] ? `<div><i class="fas fa-sun"></i> ${day.astronomy[0].sunrise}/${day.astronomy[0].sunset}</div>` : ''}
                         </div>
                     `;
                 }).join('')}
             </div>
         `;
         document.getElementById('weatherContent').innerHTML = html;
+        
+        // Rysowanie wykresu temperatury
+        const labels = dailyWithRain.map(d => new Date(d.date).toLocaleDateString('pl-PL', { weekday: 'short' }));
+        const maxTemps = dailyWithRain.map(d => d.maxtempC);
+        const minTemps = dailyWithRain.map(d => d.mintempC);
+        const ctx = document.getElementById('tempChart').getContext('2d');
+        if (weatherChart) weatherChart.destroy();
+        weatherChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Max temp.', data: maxTemps, borderColor: '#ef4444', tension: 0.3, fill: false },
+                    { label: 'Min temp.', data: minTemps, borderColor: '#3b82f6', tension: 0.3, fill: false }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: 'white' } } } }
+        });
     }
 
     function escapeHtml(str) {
@@ -3567,6 +3918,13 @@
 
     window.nutritionInitialized = false;
     window.weatherInitialized = false;
+    // Inicjalizacja BMR listenerów
+    document.getElementById('bmrGender').addEventListener('change', calculateBMR);
+    document.getElementById('bmrAge').addEventListener('input', calculateBMR);
+    document.getElementById('bmrWeight').addEventListener('input', calculateBMR);
+    document.getElementById('bmrHeight').addEventListener('input', calculateBMR);
+    document.getElementById('bmrActivity').addEventListener('change', calculateBMR);
+    calculateBMR();
 </script>
 </body>
 </html>
