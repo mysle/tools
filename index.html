@@ -83,10 +83,23 @@
         .tab-btn {
             padding: 0.5rem 1rem; border: none; background: transparent; color: var(--text-muted);
             font-weight: 600; cursor: pointer; border-radius: 0.75rem; transition: all 0.3s;
-            display: flex; align-items: center; gap: 0.3rem; font-size: 0.85rem; white-space: nowrap;
+            display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; white-space: nowrap;
         }
+        /* Kolorowe ikony w zakładkach - każda ma swój unikalny kolor */
+        .tab-btn i { font-size: 1.1rem; }
+        .tab-btn:nth-child(1) i { color: #fbbf24; } /* Waluty - złoty */
+        .tab-btn:nth-child(2) i { color: #60a5fa; } /* Konwerter - niebieski */
+        .tab-btn:nth-child(3) i { color: #34d399; } /* Kalkulatory - zielony */
+        .tab-btn:nth-child(4) i { color: #f472b6; } /* Test szybkości - różowy */
+        .tab-btn:nth-child(5) i { color: #c084fc; } /* Czas i strefy - fioletowy */
+        .tab-btn:nth-child(6) i { color: #f97316; } /* IP Info - pomarańczowy */
+        .tab-btn:nth-child(7) i { color: #a3e635; } /* Żywność - jasnozielony */
+        .tab-btn:nth-child(8) i { color: #38bdf8; } /* Pogoda - jasnoniebieski */
+        .tab-btn:nth-child(9) i { color: #fb7185; } /* Cookie Clicker - różowo-czerwony */
+
         .tab-btn:hover { color: var(--text); background: rgba(99, 102, 241, 0.1); }
         .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
+        .tab-btn.active i { color: white !important; } /* Aktywne ikony stają się białe */
 
         .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .tab-content { display: none; animation: fadeIn 0.5s ease; }
@@ -619,7 +632,7 @@
             }
         }
 
-        /* --- Poprawione style dla pogody (bardziej kolorowe) --- */
+        /* --- Poprawione style dla pogody (bardziej kolorowe i profesjonalne) --- */
         .weather-current {
             display: flex;
             flex-wrap: wrap;
@@ -629,16 +642,20 @@
             border-radius: 1.5rem;
             padding: 1.5rem;
             transition: all 0.3s;
+            backdrop-filter: blur(10px);
         }
         /* Dodatkowy efekt w zależności od temperatury – będzie dodawany dynamicznie przez JS */
         .weather-current.hot {
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.3), rgba(249, 115, 22, 0.2));
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.4), rgba(249, 115, 22, 0.3));
+            border-left: 4px solid #f97316;
         }
         .weather-current.cold {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.2));
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3));
+            border-left: 4px solid #3b82f6;
         }
         .weather-current.mild {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(99, 102, 241, 0.2));
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(99, 102, 241, 0.3));
+            border-left: 4px solid #22c55e;
         }
         .weather-main {
             flex: 2;
@@ -659,15 +676,15 @@
             gap: 1rem;
         }
         .weather-detail-item {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             border-radius: 1rem;
             padding: 0.8rem;
             text-align: center;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background 0.2s;
         }
         .weather-detail-item:hover {
             transform: translateY(-3px);
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
         }
         .forecast-grid {
             display: grid;
@@ -682,6 +699,7 @@
             padding: 1rem;
             text-align: center;
             transition: 0.2s;
+            backdrop-filter: blur(5px);
         }
         .forecast-card:hover {
             transform: translateY(-5px);
@@ -695,6 +713,7 @@
         .forecast-icon {
             font-size: 2rem;
             margin: 0.5rem 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
         .forecast-temp {
             font-size: 1.2rem;
@@ -725,12 +744,37 @@
             background: var(--primary);
             transform: scale(1.02);
         }
-        /* Ikony w zakładkach */
+        /* Ikony w zakładkach (duże, na środku karty) */
         .tab-icon {
             text-align: center;
             margin-bottom: 1rem;
             font-size: 3rem;
             filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));
+        }
+        /* Animacja trzęsienia ziemi dla super bonusu w Cookie Clicker */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        /* Płynne pojawianie się pogody */
+        .weather-fade {
+            animation: fadeInWeather 0.6s ease-out;
+        }
+        @keyframes fadeInWeather {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -745,11 +789,11 @@
             <button class="tab-btn" onclick="switchTab('converter', event)"><i class="fas fa-exchange-alt"></i> Konwerter</button>
             <button class="tab-btn" onclick="switchTab('finance', event)"><i class="fas fa-calculator"></i> Kalkulatory</button>
             <button class="tab-btn" onclick="switchTab('speed', event)"><i class="fas fa-tachometer-alt"></i> Test szybkości</button>
-            <button class="tab-btn" onclick="switchTab('time', event)"><i class="fas fa-clock"></i> 📅 Czas i strefy</button>
+            <button class="tab-btn" onclick="switchTab('time', event)"><i class="fas fa-clock"></i> Czas i strefy</button>
             <button class="tab-btn" onclick="switchTab('ip', event)"><i class="fas fa-globe"></i> IP Info</button>
-            <button class="tab-btn" onclick="switchTab('nutrition', event)"><i class="fas fa-apple-alt"></i> 🥗 Żywność</button>
-            <button class="tab-btn" onclick="switchTab('weather', event)"><i class="fas fa-cloud-sun"></i> 🌤️ Pogoda</button>
-            <button class="tab-btn" onclick="switchTab('cookie', event)"><i class="fas fa-cookie-bite"></i> 🍪 Cookie Clicker</button>
+            <button class="tab-btn" onclick="switchTab('nutrition', event)"><i class="fas fa-apple-alt"></i> Żywność</button>
+            <button class="tab-btn" onclick="switchTab('weather', event)"><i class="fas fa-cloud-sun"></i> Pogoda</button>
+            <button class="tab-btn" onclick="switchTab('cookie', event)"><i class="fas fa-cookie-bite"></i> Cookie Clicker</button>
         </div>
     </div>
 </nav>
@@ -1248,7 +1292,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (ULEPSZONA) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (ULEPSZONA, PROFESJONALNA) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-cloud-sun"></i></div>
@@ -2509,7 +2553,7 @@
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
-    let activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false };
+    let activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false, cosmicClick: false };
     let bonusTimer = null;
     let goldenCookieTimeout = null;
     let stormInterval = null;
@@ -2518,7 +2562,7 @@
     let globalCPSMultiplier = 1;
     let extraClickBonusPercent = 0;
     let doubleClickChance = 0;
-    let goldenCookieFrequencyMultiplier = 0.7; // częściej (domyślnie co ~15-45s)
+    let goldenCookieFrequencyMultiplier = 0.5; // częściej (domyślnie co ~10-30s)
 
     const buildings = [
         { name: "✨ Mistyczny Kursor", baseCps: 0.2, basePrice: 15, count: 0 },
@@ -2555,7 +2599,7 @@
         { id: "stardust", name: "✨ Gwiazdkowy Pył", desc: "Złote ciasteczka pojawiają się 2x częściej", price: 1000000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.5; scheduleGoldenCookie(); } },
         { id: "chocolate_stuntman", name: "🍫 Czekoladowy Kaskader", desc: "25% szansy na podwójne ciasteczko przy kliknięciu", price: 5000000000, purchased: false, apply: () => { doubleClickChance = 0.25; } },
         // NOWE ULEPSZENIA (bardziej ekscytujące)
-        { id: "golden_dust", name: "🌠 Złoty Pył", desc: "Złote ciasteczka pojawiają się jeszcze częściej (kolejne -40% czasu)", price: 250000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.6; scheduleGoldenCookie(); } },
+        { id: "golden_dust", name: "🌠 Złoty Pył II", desc: "Złote ciasteczka pojawiają się jeszcze częściej (kolejne -40% czasu)", price: 250000000, purchased: false, apply: () => { goldenCookieFrequencyMultiplier *= 0.6; scheduleGoldenCookie(); } },
         { id: "double_tap", name: "👊 Podwójny Cios", desc: "15% szansy na potrójne ciasteczko przy kliknięciu", price: 750000000, purchased: false, apply: () => { window.doubleTapChance = 0.15; } },
         { id: "sugar_rush", name: "🍬 Cukierkowa Burza", desc: "Co jakiś czas deszcz ciastek (+50% CPS przez 15s)", price: 1500000000, purchased: false, apply: () => { window.sugarRush = true; startSugarRushInterval(); } },
         { id: "friendship_power", name: "🤝 Moc Przyjaźni", desc: "Zwiększa efekt bonusów o 50%", price: 2000000000, purchased: false, apply: () => { window.bonusPower = 1.5; } },
@@ -2563,8 +2607,24 @@
         { id: "golden_rain", name: "☀️ Złoty Deszcz", desc: "Złote ciasteczka przywołują dodatkowe efektowne bonusy", price: 5000000000, purchased: false, apply: () => { window.goldenRainUpgrade = true; } },
         { id: "treasure_chest", name: "💰 Złoty Skarbiec", desc: "Złote ciasteczka dają 3x więcej ciastek", price: 8000000000, purchased: false, apply: () => { window.treasureChest = true; } },
         { id: "double_joy", name: "🎉 Podwójna Radość", desc: "Każde kliknięcie ma 10% szansy na podwojenie wszystkich ciastek z sekundy", price: 12000000000, purchased: false, apply: () => { window.doubleJoy = true; } },
-        { id: "future_click", name: "⏩ Kliknięcie przyszłości", desc: "Od czasu do czasu dostajesz ciasteczka z przyszłości (50x CPS)", price: 20000000000, purchased: false, apply: () => { window.futureClick = true; startFutureClickInterval(); } }
+        { id: "future_click", name: "⏩ Kliknięcie przyszłości", desc: "Od czasu do czasu dostajesz ciasteczka z przyszłości (50x CPS)", price: 20000000000, purchased: false, apply: () => { window.futureClick = true; startFutureClickInterval(); } },
+        // KOLEJNE NOWE ULEPSZENIA (JESZCZE WIĘCEJ EKSCYTACJI)
+        { id: "cosmic_click", name: "🌌 Kliknięcie Kosmiczne", desc: "Co 10 kliknięć dostajesz 1000x CPS", price: 50000000000, purchased: false, apply: () => { window.cosmicClick = true; window.clickCountCosmic = 0; } },
+        { id: "infinite_oven", name: "♾️ Nieskończona Piekarnia", desc: "Podwaja moc wszystkich budynków", price: 1e12, purchased: false, apply: () => { buildings.forEach(b => { b.baseCps *= 2; }); recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
+        { id: "golden_hour", name: "⏰ Złota Godzina", desc: "Co 5 minut otrzymujesz 5000x CPS", price: 5e12, purchased: false, apply: () => { window.goldenHour = true; startGoldenHour(); } }
     ];
+
+    function startGoldenHour() {
+        if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
+        window.goldenHourInterval = setInterval(() => {
+            if (window.goldenHour) {
+                let bonus = cookiesPerSecond * 5000;
+                cookies += bonus;
+                updateStats();
+                showFloatingMessage(`⭐ Złota Godzina! +${Math.floor(bonus).toLocaleString()} ciastek!`, "#facc15");
+            }
+        }, 300000); // co 5 minut
+    }
 
     function startFutureClickInterval() {
         if (window.futureClickInterval) clearInterval(window.futureClickInterval);
@@ -2627,7 +2687,7 @@
         globalCPSMultiplier = 1;
         extraClickBonusPercent = 0;
         doubleClickChance = 0;
-        goldenCookieFrequencyMultiplier = 0.7;
+        goldenCookieFrequencyMultiplier = 0.5;
         window.luckyCharm = false;
         window.divineIntervention = false;
         window.quantumAccelerator = false;
@@ -2638,8 +2698,12 @@
         window.treasureChest = false;
         window.doubleJoy = false;
         window.futureClick = false;
+        window.cosmicClick = false;
+        window.clickCountCosmic = 0;
+        window.goldenHour = false;
         if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
         if (window.futureClickInterval) clearInterval(window.futureClickInterval);
+        if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
         window.sugarRush = false;
         const defaultBaseCps = [0.2, 1, 8, 40, 260, 1400, 7800, 44000, 260000, 1600000, 10000000, 65000000, 430000000, 2.8e9];
         for (let i = 0; i < buildings.length; i++) {
@@ -2702,6 +2766,7 @@
         if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (co sekundę ciasteczka)! ";
         if (activeBonuses.luckyStream) bonusText += "🍀 Szczęśliwy Strumień (podwojone bonusy)! ";
         if (activeBonuses.chocolateShower) bonusText += "🍫 Ulewa Czekoladowa (kliknięcia dają +25% ciastek)! ";
+        if (activeBonuses.cosmicClick) bonusText += "🌌 Kosmiczny Klik (co 10 kliknięć bonus)! ";
         document.getElementById('bonusInfo').innerText = bonusText;
     }
 
@@ -2766,6 +2831,19 @@
             updateStats();
             showFloatingMessage(`🎉 Podwójna Radość! +${Math.floor(extra).toLocaleString()} ciastek!`, "#f59e0b");
         }
+        // Kosmiczny klik
+        if (window.cosmicClick) {
+            window.clickCountCosmic = (window.clickCountCosmic || 0) + 1;
+            if (window.clickCountCosmic >= 10) {
+                window.clickCountCosmic = 0;
+                let cosmicBonus = cookiesPerSecond * 1000;
+                cookies += cosmicBonus;
+                updateStats();
+                showFloatingMessage(`🌌 Kliknięcie Kosmiczne! +${Math.floor(cosmicBonus).toLocaleString()} ciastek!`, "#8b5cf6");
+                document.body.classList.add('shake');
+                setTimeout(() => document.body.classList.remove('shake'), 500);
+            }
+        }
     }
 
     function spawnGoldenCookie() {
@@ -2808,6 +2886,8 @@
                 bonusTimer = setTimeout(() => { activeBonuses.superFrenzy = false; updateStats(); }, duration);
                 updateStats();
                 showFloatingMessage("✨ SUPER FRENZY! x50 CPS!", "#f97316");
+                document.body.classList.add('shake');
+                setTimeout(() => document.body.classList.remove('shake'), 500);
             } else if (bonus < 0.35) {
                 activeBonuses.frenzy = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
@@ -2877,8 +2957,8 @@
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 15000 * goldenCookieFrequencyMultiplier;
-        const delay = baseDelay + Math.random() * 30000;
+        let baseDelay = 10000 * goldenCookieFrequencyMultiplier; // zmniejszone dla większej częstotliwości
+        const delay = baseDelay + Math.random() * 20000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
 
@@ -2896,11 +2976,12 @@
             if (chocolateShowerInterval) clearInterval(chocolateShowerInterval);
             if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
             if (window.futureClickInterval) clearInterval(window.futureClickInterval);
-            activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false };
+            if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
+            activeBonuses = { frenzy: false, clickFrenzy: false, cookieStorm: false, superFrenzy: false, megaClick: false, goldenRain: false, luckyStream: false, chocolateShower: false, cosmicClick: false };
             globalCPSMultiplier = 1;
             extraClickBonusPercent = 0;
             doubleClickChance = 0;
-            goldenCookieFrequencyMultiplier = 0.7;
+            goldenCookieFrequencyMultiplier = 0.5;
             window.luckyCharm = false;
             window.divineIntervention = false;
             window.quantumAccelerator = false;
@@ -2911,6 +2992,9 @@
             window.treasureChest = false;
             window.doubleJoy = false;
             window.futureClick = false;
+            window.cosmicClick = false;
+            window.clickCountCosmic = 0;
+            window.goldenHour = false;
             window.sugarRush = false;
             updateStats();
             rebuildBuildings();
@@ -2939,6 +3023,8 @@
             treasureChest: window.treasureChest || false,
             doubleJoy: window.doubleJoy || false,
             futureClick: window.futureClick || false,
+            cosmicClick: window.cosmicClick || false,
+            goldenHour: window.goldenHour || false,
             sugarRush: window.sugarRush || false
         };
         localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
@@ -2976,6 +3062,8 @@
                 if (state.treasureChest) window.treasureChest = state.treasureChest;
                 if (state.doubleJoy) window.doubleJoy = state.doubleJoy;
                 if (state.futureClick) window.futureClick = state.futureClick;
+                if (state.cosmicClick) window.cosmicClick = state.cosmicClick;
+                if (state.goldenHour) window.goldenHour = state.goldenHour;
                 if (state.sugarRush) { window.sugarRush = state.sugarRush; startSugarRushInterval(); }
                 applyAllUpgrades();
                 updateStats();
@@ -3348,7 +3436,7 @@
         });
 
         const html = `
-            <div class="weather-current ${tempClass}">
+            <div class="weather-current ${tempClass} weather-fade">
                 <div class="weather-main">
                     <div><i class="fas fa-map-marker-alt"></i> ${escapeHtml(locationName)}</div>
                     <div class="temp">${Math.round(current.temp_C)}${tempUnit}</div>
