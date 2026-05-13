@@ -71,11 +71,6 @@
             100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
         }
 
-        @keyframes fadeOutUp {
-            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
-        }
-
         .navbar {
             background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border); padding: 1rem 2rem;
@@ -837,7 +832,8 @@
             </div>
             <div class="table-wrapper">
                 <table id="convTable">
-                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
+                    <thead>
+                        <tr><th>Jednostka</th><th>Wynik</th></tr></thead>
                     <tbody id="convTableBody"></tbody>
                 </table>
             </div>
@@ -2453,7 +2449,7 @@
                     <td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td>
                     <td>${time}<br><span style="font-size:0.7rem;">${date}</span></td>
                     <td>${diffStr}</div></td>
-                <tr>
+                </tr>
             `;
         });
         tbody.innerHTML += `
