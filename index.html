@@ -217,7 +217,16 @@
         .result-item { flex: 1; min-width: 150px; }
 
         .ip-hero { text-align: center; margin-bottom: 2rem; }
-        .ip-display { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* POPRAWA: IP na mobilnych – pełne wyświetlanie, łamanie wierszy */
+        .ip-display {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
         .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
         .info-item { background: rgba(15,23,42,0.6); border: 1px solid var(--glass-border); border-radius: 1rem; padding: 1.25rem; }
         .info-item .label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem; }
@@ -621,6 +630,26 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+
+            /* POPRAWA: IP na mobilnych – mniejsza czcionka, zawijanie */
+            .ip-display {
+                font-size: 1.5rem;
+                word-break: break-all;
+                white-space: normal;
+                overflow-x: auto;
+            }
+
+            /* POPRAWA: żywność – układ pionowy dla konwertera na mobilnych */
+            .nutrition-converter-row {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+            .nutrition-converter-row > select,
+            .nutrition-converter-row > input,
+            .nutrition-converter-row > select:last-child {
+                width: 100% !important;
+                margin: 0 !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -647,6 +676,9 @@
             input[type="range"]::-webkit-slider-thumb {
                 height: 24px !important;
                 width: 24px !important;
+            }
+            .ip-display {
+                font-size: 1.2rem;
             }
         }
 
@@ -802,6 +834,7 @@
             overflow-x: auto;
             gap: 1rem;
             padding: 1rem 0;
+            scrollbar-width: thin;
         }
         .hourly-card {
             background: rgba(0,0,0,0.4);
@@ -809,6 +842,7 @@
             padding: 0.5rem;
             min-width: 80px;
             text-align: center;
+            flex-shrink: 0;
         }
         .meal-entry {
             background: rgba(0,0,0,0.3);
@@ -826,6 +860,13 @@
             grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
             gap: 0.5rem;
             align-items: end;
+        }
+        /* POPRAWA: układ konwertera żywności na mobilnych */
+        .nutrition-converter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -1218,7 +1259,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA IP INFO (bez zmian) ============ -->
+    <!-- ============ ZAKŁADKA IP INFO (z poprawką pełnego IP) ============ -->
     <div id="ip-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-globe"></i></div>
@@ -1281,15 +1322,15 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA ŻYWNOŚĆ (ROZBUDOWANA O WŁASNE PRODUKTY) ============ -->
+    <!-- ============ ZAKŁADKA ŻYWNOŚĆ (zmiana układu na mobilnych) ============ -->
     <div id="nutrition-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-apple-alt"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🥗 Inteligentny Asystent Żywieniowy</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Konwerter odżywczy, kalkulator zapotrzebowania i dziennik posiłków.</p>
 
-            <!-- Konwerter -->
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <!-- Konwerter – zmieniono klasę dla responsywności -->
+            <div class="nutrition-converter-row">
                 <select id="nutriCategory" class="modern-select" style="flex:1;" onchange="onNutriCategoryChange()">
                     <option value="energy">🔥 Energia (kcal, kJ, J, Wh)</option>
                     <option value="fat">🧈 Tłuszcz (g, kcal z tłuszczu)</option>
@@ -1330,7 +1371,7 @@
                 </div>
             </div>
 
-            <!-- Dziennik posiłków z dynamiczną listą produktów (własne + domyślne) -->
+            <!-- Dziennik posiłków -->
             <div class="meal-log-panel">
                 <h4><i class="fas fa-utensils"></i> Dziennik żywności (dzisiejszy)</h4>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
@@ -1350,7 +1391,7 @@
                 <button class="btn btn-sm" onclick="clearMeals()"><i class="fas fa-trash"></i> Wyczyść dziennik</button>
             </div>
 
-            <!-- Własne porcje i produkty (z rozszerzonym formularzem dodawania) -->
+            <!-- Własne porcje i produkty -->
             <div class="portion-panel">
                 <h4><i class="fas fa-edit"></i> Moje własne porcje / produkty</h4>
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
@@ -1360,7 +1401,6 @@
                 </div>
                 <div id="customPortionsList" class="custom-food-list"></div>
                 
-                <!-- Rozszerzony formularz dodawania własnego produktu (z makroskładnikami) -->
                 <div style="margin-top: 1rem;">
                     <div class="custom-food-form">
                         <input type="text" id="newFoodName" class="modern-input" placeholder="Nazwa produktu" style="min-width: 120px;">
@@ -1376,7 +1416,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (POPRAWIONA) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (ulepszony wykres, 7 dni, tłumaczenie faz księżyca) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-cloud-sun"></i></div>
@@ -1396,7 +1436,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (ULEPSZONY) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (bez zmian) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <div class="tab-icon"><i class="fas fa-cookie-bite"></i></div>
@@ -1477,7 +1517,7 @@
 </div>
 
 <script>
-    // ======================== ZAKŁADKI GŁÓWNE (bez zmian) ========================
+    // ======================== ZAKŁADKI GŁÓWNE ========================
     function switchTab(tab, event) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -1506,7 +1546,7 @@
         }
     }
 
-    // ======================== MODUŁ IP INFO (bez zmian) ========================
+    // ======================== MODUŁ IP INFO ========================
     let ipData = null;
     window.ipDataLoaded = false;
     let ipMap = null;
@@ -1601,7 +1641,7 @@
         if (customIP && customIP.trim()) fetchIPInfo(customIP.trim());
     }
 
-    // ======================== MODUŁ WALUTY (bez zmian) ========================
+    // ======================== MODUŁ WALUTY ========================
     let exchangeRates = {};
     let previousRates = {};
     let lastSuccessfulRates = null;
@@ -1870,7 +1910,7 @@
         convert();
     }
 
-    // ======================== MODUŁ KONWERTERA (bez zmian) ========================
+    // ======================== MODUŁ KONWERTERA ========================
     const unitNames = {
         mm: 'milimetr', cm: 'centymetr', dm: 'decymetr', m: 'metr', km: 'kilometr',
         in: 'cal', ft: 'stopa', yd: 'jard', mi: 'mila', nmi: 'mila morska',
@@ -2038,7 +2078,7 @@
         }
     }
 
-    // ======================== MODUŁ KALKULATORÓW (bez zmian) ========================
+    // ======================== MODUŁ KALKULATORÓW ========================
     function switchSubTab(sub, event) {
         document.querySelectorAll('#finance-tab .sub-content').forEach(el => el.style.display = 'none');
         document.querySelectorAll('#finance-tab .sub-tab-btn').forEach(el => el.classList.remove('active'));
@@ -2243,7 +2283,7 @@
         updateFromDecimal();
     }
 
-    // ======================== MODUŁ SPEED TESTU (bez zmian) ========================
+    // ======================== MODUŁ SPEED TESTU ========================
     let speedChart = null;
     let isTesting = false;
 
@@ -2429,7 +2469,7 @@
         isTesting = false;
     }
 
-    // ======================== MODUŁ CZASU I STREF (bez zmian) ========================
+    // ======================== MODUŁ CZASU I STREF ========================
     let timezoneCards = [];
     const defaultCards = [
         { name: "Warszawa", tz: "Europe/Warsaw" },
@@ -2627,21 +2667,16 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (ULEPSZONY) ========================
+    // ======================== COOKIE CLICKER (ulepszony) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
     let prestigeLevel = 0;
     let prestigeMultiplier = 1.0;
     let activeBonuses = { 
-        tsunami: false,      // Nowy: x100 CPS
-        magicBlast: false,   // Nowy: x1000 kliknięcia
-        goldenDownpour: false, // Nowy: co sekundę +500% CPS
-        superFrenzy: false,  // zostawiam
-        megaClick: false,    // zostawiam
-        goldenRain: false,
-        chocolateShower: false,
-        cosmicClick: false
+        tsunami: false, magicBlast: false, goldenDownpour: false,
+        superFrenzy: false, megaClick: false, goldenRain: false,
+        chocolateShower: false, cosmicClick: false
     };
     let bonusTimer = null;
     let goldenCookieTimeout = null;
@@ -2667,16 +2702,15 @@
     window.totalClicks = 0;
     window.goldenCollected = 0;
 
-    // Budynki: podwojony CPS i niższe ceny (np. 1/2 lub 2/3)
     const buildings = [
-        { name: "🌪️ Ręka Przeznaczenia", baseCps: 0.4, basePrice: 8, count: 0 },      // x2 CPS, cena 8
-        { name: "👵 Armia Babć II", baseCps: 2, basePrice: 60, count: 0 },            // x2 CPS, cena 60
-        { name: "🌾 Złote Pole", baseCps: 16, basePrice: 600, count: 0 },             // x2, cena 600
-        { name: "🏭 Mega Fabryka", baseCps: 80, basePrice: 6000, count: 0 },          // x2, cena 6000
-        { name: "💰 Bank Marcepanu", baseCps: 520, basePrice: 70000, count: 0 },      // x2, cena 70k
-        { name: "⛪ Świątynia Smaku", baseCps: 2800, basePrice: 850000, count: 0 },   // x2, cena 850k
-        { name: "🔮 Wieża Magii", baseCps: 15600, basePrice: 10.5e6, count: 0 },      // x2, cena ~10,5M
-        { name: "⏳ Wehikuł Cukru", baseCps: 88000, basePrice: 130e6, count: 0 },     // x2
+        { name: "🌪️ Ręka Przeznaczenia", baseCps: 0.4, basePrice: 8, count: 0 },
+        { name: "👵 Armia Babć II", baseCps: 2, basePrice: 60, count: 0 },
+        { name: "🌾 Złote Pole", baseCps: 16, basePrice: 600, count: 0 },
+        { name: "🏭 Mega Fabryka", baseCps: 80, basePrice: 6000, count: 0 },
+        { name: "💰 Bank Marcepanu", baseCps: 520, basePrice: 70000, count: 0 },
+        { name: "⛪ Świątynia Smaku", baseCps: 2800, basePrice: 850000, count: 0 },
+        { name: "🔮 Wieża Magii", baseCps: 15600, basePrice: 10.5e6, count: 0 },
+        { name: "⏳ Wehikuł Cukru", baseCps: 88000, basePrice: 130e6, count: 0 },
         { name: "💥 Antymateria", baseCps: 520000, basePrice: 1.55e9, count: 0 },
         { name: "🌈 Pryzmat Słodkości", baseCps: 3.2e6, basePrice: 35.5e9, count: 0 },
         { name: "🚀 Rakieta Konfetti", baseCps: 20e6, basePrice: 600e9, count: 0 },
@@ -2685,7 +2719,6 @@
         { name: "🌌 Czarodziejska Piekarnia", baseCps: 5.6e9, basePrice: 1.05e15, count: 0 }
     ];
 
-    // Ulepszenia: ceny zmniejszone o połowę
     const upgrades = [
         { id: "click_power", name: "✋ Podwójny Uścisk", desc: "Kliknięcia dają 2x ciastek", price: 125, purchased: false, apply: () => { clickMultiplier *= 2; } },
         { id: "cursor_boost", name: "🖱️ Turbo Kursor", desc: "+0,4 CPS za kursor", price: 250, purchased: false, apply: () => { buildings[0].baseCps += 0.4; recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
@@ -3003,7 +3036,6 @@
             let bonus = Math.random();
             let multiplier = (window.bonusPower || 1);
             if (window.luckyStream && Math.random() < 0.3) bonus *= 2;
-            // Nowe bonusy (usunięty stary frenzy x7)
             if (bonus < 0.2 && window.luckyCharm) {
                 activeBonuses.tsunami = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
@@ -3028,7 +3060,7 @@
                         clearInterval(downpourInterval);
                         return;
                     }
-                    cookies += cookiesPerSecond * 5; // +500% CPS co sekundę
+                    cookies += cookiesPerSecond * 5;
                     updateStats();
                 }, 1000);
                 setTimeout(() => {
@@ -3265,7 +3297,7 @@
         let currentCPS = cookiesPerSecond;
         if (activeBonuses.tsunami) currentCPS *= 100;
         else if (activeBonuses.superFrenzy) currentCPS *= 50;
-        if (activeBonuses.goldenDownpour) currentCPS *= 6; // +500% => 6x
+        if (activeBonuses.goldenDownpour) currentCPS *= 6;
         if (window.divineIntervention && Math.random() < 0.01) {
             currentCPS *= 2;
         }
@@ -3277,7 +3309,7 @@
         setTimeout(gameLoop, 200);
     }
 
-    // ======================== MODUŁ: KONWERTER WARTOŚCI ODŻYWCZYCH ========================
+    // ======================== MODUŁ WARTOŚCI ODŻYWCZYCH ========================
     const nutritionCategories = {
         energy: { base: 'kcal', units: { kcal: 1, kJ: 4.184, J: 4184, Wh: 1.16222 } },
         fat: { base: 'g', units: { 'g tłuszczu': 1, 'kcal z tłuszczu': 9 } },
@@ -3668,9 +3700,25 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODA (ULEPSZONY – 7 DNI, 24h prognoza, lepszy wykres) ========================
+    // ======================== MODUŁ POGODA (ulepszony) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
+    let currentWeatherData = null; // przechowuje dane do ewentualnego odświeżenia
+
+    // Tłumaczenie faz księżyca na polski
+    function translateMoonPhase(engPhase) {
+        const moonMap = {
+            "New Moon": "Nów (New Moon)",
+            "Waxing Crescent": "Przybywający sierp (Waxing Crescent)",
+            "First Quarter": "Pierwsza kwadra (First Quarter)",
+            "Waxing Gibbous": "Przybywający garbaty (Waxing Gibbous)",
+            "Full Moon": "Pełnia (Full Moon)",
+            "Waning Gibbous": "Ubywający garbaty (Waning Gibbous)",
+            "Last Quarter": "Ostatnia kwadra (Last Quarter)",
+            "Waning Crescent": "Ubywający sierp (Waning Crescent)"
+        };
+        return moonMap[engPhase] || engPhase;
+    }
 
     async function searchWeatherByCity() {
         const city = document.getElementById('weatherCityInput').value.trim();
@@ -3689,6 +3737,7 @@
             if (!data || !data.current_condition || data.current_condition.length === 0) {
                 throw new Error('Lokalizacja nie rozpoznana przez serwer pogodowy.');
             }
+            currentWeatherData = data;
             displayWeatherWttr(data, city);
         } catch (err) {
             console.error('Pogoda błąd:', err);
@@ -3715,6 +3764,7 @@
                 if (!res.ok) throw new Error('Błąd sieci');
                 const data = await res.json();
                 if (!data || !data.current_condition) throw new Error('Nieprawidłowa odpowiedź');
+                currentWeatherData = data;
                 displayWeatherWttr(data, `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
             } catch (err) {
                 document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}</div>`;
@@ -3767,10 +3817,13 @@
         if (tempC > 25) tempClass = 'hot';
         else if (tempC < 10) tempClass = 'cold';
         
+        // astronomy: wschód/zachód słońca (już są lokalne)
         const astronomy = daily[0]?.astronomy?.[0] || {};
         const sunrise = astronomy.sunrise || '--';
         const sunset = astronomy.sunset || '--';
-        const moonPhase = daily[0]?.hourly?.[0]?.weatherDesc?.[0]?.value || '---';
+        // faza księżyca po angielsku, tłumaczymy
+        const moonPhaseEng = daily[0]?.hourly?.[0]?.weatherDesc?.[0]?.value || '---';
+        const moonPhasePl = translateMoonPhase(moonPhaseEng);
         
         const dailyWithRain = daily.slice(0,7).map(day => {
             let totalRain = 0;
@@ -3786,7 +3839,9 @@
             return { ...day, totalRain };
         });
 
-        const hourlyForecast = daily[0]?.hourly || [];  // całe 24 godziny
+        // Prognoza godzinowa: co 3 godziny (dla czytelności) – ale można też wszystkie 24
+        // Tutaj wyświetlamy wszystkie dostępne godziny (zazwyczaj 24 wpisy)
+        const hourlyForecast = daily[0]?.hourly || [];
         
         const html = `
             <div class="weather-current ${tempClass} weather-fade">
@@ -3804,11 +3859,11 @@
                     <div class="weather-detail-item"><i class="fas fa-eye"></i> Widzialność: ${current.visibility} km</div>
                     <div class="weather-detail-item"><i class="fas fa-umbrella"></i> Opady: ${current.precipMM} mm</div>
                     <div class="weather-detail-item"><i class="fas fa-sun"></i> Wschód: ${sunrise} / Zachód: ${sunset}</div>
-                    <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhase}</div>
+                    <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhasePl}</div>
                 </div>
             </div>
             <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury (7 dni)</h3>
-            <div class="chart-container" style="height: 300px;"><canvas id="tempChart"></canvas></div>
+            <div class="chart-container" style="height: 350px;"><canvas id="tempChart"></canvas></div>
             <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (najbliższe 24h)</h3>
             <div class="hourly-forecast">
                 ${hourlyForecast.slice(0,24).map(h => {
@@ -3848,20 +3903,51 @@
         const minTemps = dailyWithRain.map(d => d.mintempC);
         const ctx = document.getElementById('tempChart').getContext('2d');
         if (weatherChart) weatherChart.destroy();
+        // ULEPSZONY WYKRES: gradient pod linią, większe punkty, cień
+        const gradientMax = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientMax.addColorStop(0, 'rgba(239,68,68,0.4)');
+        gradientMax.addColorStop(1, 'rgba(239,68,68,0.0)');
+        const gradientMin = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientMin.addColorStop(0, 'rgba(59,130,246,0.4)');
+        gradientMin.addColorStop(1, 'rgba(59,130,246,0.0)');
         weatherChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Max temp.', data: maxTemps, borderColor: '#ef4444', tension: 0.3, fill: false, pointBackgroundColor: '#ef4444', pointBorderColor: '#fff', pointRadius: 4 },
-                    { label: 'Min temp.', data: minTemps, borderColor: '#3b82f6', tension: 0.3, fill: false, pointBackgroundColor: '#3b82f6', pointBorderColor: '#fff', pointRadius: 4 }
+                    { 
+                        label: 'Max temp.', 
+                        data: maxTemps, 
+                        borderColor: '#ef4444', 
+                        backgroundColor: gradientMax,
+                        tension: 0.3, 
+                        fill: true,
+                        pointBackgroundColor: '#ef4444', 
+                        pointBorderColor: '#fff', 
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        borderWidth: 2
+                    },
+                    { 
+                        label: 'Min temp.', 
+                        data: minTemps, 
+                        borderColor: '#3b82f6', 
+                        backgroundColor: gradientMin,
+                        tension: 0.3, 
+                        fill: true,
+                        pointBackgroundColor: '#3b82f6', 
+                        pointBorderColor: '#fff', 
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        borderWidth: 2
+                    }
                 ]
             },
             options: { 
                 responsive: true, 
                 maintainAspectRatio: true, 
                 plugins: { 
-                    legend: { labels: { color: 'white' } },
+                    legend: { labels: { color: 'white', font: { size: 12 } } },
                     tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#cbd5e1' }
                 },
                 scales: {
@@ -3885,9 +3971,16 @@
         weatherUnitsSystem = weatherUnitsSystem === 'metric' ? 'imperial' : 'metric';
         const btn = document.getElementById('weatherUnitsBtn');
         btn.innerHTML = weatherUnitsSystem === 'metric' ? 'Jednostki: °C / km/h' : 'Jednostki: °F / mph';
-        const cityInput = document.getElementById('weatherCityInput').value;
-        if (cityInput) searchWeatherByCity();
-        else getWeatherByGeolocation();
+        if (currentWeatherData) {
+            // odśwież pogodę z tą samą lokalizacją (ale musielibyśmy zapamiętać lokalizację)
+            const cityInput = document.getElementById('weatherCityInput').value;
+            if (cityInput) searchWeatherByCity();
+            else getWeatherByGeolocation();
+        } else {
+            const cityInput = document.getElementById('weatherCityInput').value;
+            if (cityInput) searchWeatherByCity();
+            else getWeatherByGeolocation();
+        }
     }
 
     function initWeather() {
