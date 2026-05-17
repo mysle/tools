@@ -2799,7 +2799,7 @@
         div.style.whiteSpace = 'nowrap';
         div.style.animation = 'fadeOutUp 1s forwards';
         document.body.appendChild(div);
-        // Zmiana czasu wyświetlania z 1s na 4s
+        // Komunikat 4 sekundy
         setTimeout(() => div.remove(), 4000);
     }
 
@@ -3031,22 +3031,23 @@
             let bonus = Math.random();
             let multiplier = (window.bonusPower || 1);
             if (window.luckyStream && Math.random() < 0.3) bonus *= 2;
+            // Mocniejsze bonusy
             if (bonus < 0.2 && window.luckyCharm) {
                 activeBonuses.tsunami = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = (window.quantumAccelerator ? 25000 : 15000) * multiplier;
+                let duration = (window.quantumAccelerator ? 30000 : 20000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.tsunami = false; updateStats(); }, duration);
                 updateStats();
-                showFloatingMessage("🌊 CUKIERKOWE TSUNAMI! x100 CPS!", "#f97316");
+                showFloatingMessage("🌊 CUKIERKOWE TSUNAMI! x150 CPS!", "#f97316");
                 document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
             } else if (bonus < 0.4) {
                 activeBonuses.magicBlast = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = (window.quantumAccelerator ? 20000 : 10000) * multiplier;
+                let duration = (window.quantumAccelerator ? 25000 : 15000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.magicBlast = false; updateStats(); }, duration);
                 updateStats();
-                showFloatingMessage("✨ MAGICZNY PODMUCH! x1000 klik!", "#fbbf24");
+                showFloatingMessage("✨ MAGICZNY PODMUCH! x2000 klik!", "#fbbf24");
             } else if (bonus < 0.6 && window.goldenRainUpgrade) {
                 if (downpourInterval) clearInterval(downpourInterval);
                 activeBonuses.goldenDownpour = true;
@@ -3055,17 +3056,17 @@
                         clearInterval(downpourInterval);
                         return;
                     }
-                    cookies += cookiesPerSecond * 5;
+                    cookies += cookiesPerSecond * 8;
                     updateStats();
                 }, 1000);
                 setTimeout(() => {
                     activeBonuses.goldenDownpour = false;
                     clearInterval(downpourInterval);
-                }, 20000);
-                showFloatingMessage("🌧️ ZŁOTE ULEWY! +500% CPS co sekundę!", "#facc15");
+                }, 25000);
+                showFloatingMessage("🌧️ ZŁOTE ULEWY! +800% CPS co sekundę!", "#facc15");
             } else if (bonus < 0.75) {
-                let bonusCookies = cookiesPerSecond * 10 * multiplier;
-                if (window.treasureChest) bonusCookies *= 3;
+                let bonusCookies = cookiesPerSecond * 20 * multiplier;
+                if (window.treasureChest) bonusCookies *= 4;
                 cookies += bonusCookies;
                 if (window.luckyCharm) cookies += bonusCookies * 0.5;
                 updateStats();
@@ -3078,16 +3079,16 @@
                         clearInterval(stormInterval);
                         return;
                     }
-                    cookies += clickMultiplier * 10;
+                    cookies += clickMultiplier * 25;
                     updateStats();
                 }, 500);
                 setTimeout(() => {
                     activeBonuses.goldenRain = false;
                     clearInterval(stormInterval);
-                }, 10000);
-                showFloatingMessage("🌧️ Złoty Deszcz! +10 ciastek co 0,5s!", "#fbbf24");
+                }, 15000);
+                showFloatingMessage("🌧️ Złoty Deszcz! +25 ciastek co 0,5s!", "#fbbf24");
             } else {
-                const bonusCookies = cookiesPerSecond * 30 * multiplier;
+                const bonusCookies = cookiesPerSecond * 50 * multiplier;
                 cookies += bonusCookies;
                 updateStats();
                 showFloatingMessage(`⏰ Ciasteczka z przyszłości! +${Math.floor(bonusCookies).toLocaleString()}`, "#8b5cf6");
@@ -3096,14 +3097,14 @@
             scheduleGoldenCookie();
         };
         document.body.appendChild(golden);
-        // ZŁOTE CIASTECZKO WIDOCZNE PRZEZ 6 SEKUND
-        setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 6000);
+        // Złote ciasteczko widoczne przez 10 sekund
+        setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 10000);
     }
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 10000 * goldenCookieFrequencyMultiplier;
-        const delay = baseDelay + Math.random() * 20000;
+        let baseDelay = 8000 * goldenCookieFrequencyMultiplier;
+        const delay = baseDelay + Math.random() * 15000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
 
@@ -3112,50 +3113,13 @@
             alert("Osiągnąłeś już maksymalny poziom prestiżu!");
             return;
         }
-        if (confirm(`Czy chcesz dokonać prestiżu? Stracisz wszystkie ciasteczka, budynki i ulepszenia, ale otrzymasz +20% do CPS na zawsze (aktualny poziom: ${prestigeLevel}).`)) {
+        if (confirm(`Czy chcesz dokonać prestiżu? Otrzymasz +20% do CPS na zawsze (aktualny poziom: ${prestigeLevel}). Twoje ciasteczka, budynki i ulepszenia pozostaną!`)) {
             prestigeLevel++;
-            prestigeMultiplier = 1 + prestigeLevel * 0.20;   // +20% zamiast 25%
-            cookies = 0;
-            clickMultiplier = 1;
-            for (let b of buildings) { b.count = 0; }
-            const defaults = [0.4, 2, 16, 80, 520, 2800, 15600, 88000, 520000, 3.2e6, 20e6, 130e6, 860e6, 5.6e9];
-            for (let i = 0; i < buildings.length; i++) buildings[i].baseCps = defaults[i];
-            for (let u of upgrades) { u.purchased = false; }
-            if (bonusTimer) clearTimeout(bonusTimer);
-            if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-            if (stormInterval) clearInterval(stormInterval);
-            if (chocolateShowerInterval) clearInterval(chocolateShowerInterval);
-            if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
-            if (window.futureClickInterval) clearInterval(window.futureClickInterval);
-            if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
-            activeBonuses = { tsunami: false, magicBlast: false, goldenDownpour: false, superFrenzy: false, megaClick: false, goldenRain: false, chocolateShower: false, cosmicClick: false };
-            globalCPSMultiplier = 1;
-            extraClickBonusPercent = 0;
-            doubleClickChance = 0;
-            goldenCookieFrequencyMultiplier = 0.5;
-            window.luckyCharm = false;
-            window.divineIntervention = false;
-            window.quantumAccelerator = false;
-            window.doubleTapChance = 0;
-            window.bonusPower = 1;
-            window.luckyStream = false;
-            window.goldenRainUpgrade = false;
-            window.treasureChest = false;
-            window.doubleJoy = false;
-            window.futureClick = false;
-            window.cosmicClick = false;
-            window.clickCountCosmic = 0;
-            window.goldenHour = false;
-            window.sugarRush = false;
-            window.totalClicks = 0;
-            window.goldenCollected = 0;
-            for (let key in achievements) {
-                if (key !== 'prestige') achievements[key].achieved = false;
-            }
-            achievements.prestige.achieved = (prestigeLevel >= 1);
+            prestigeMultiplier = 1 + prestigeLevel * 0.20;   // +20% za poziom
+            // NIE resetujemy cookies, budynków ani ulepszeń!
+            // Tylko przeliczamy CPS i zapisujemy
+            recalcCPS();
             updateStats();
-            rebuildBuildings();
-            rebuildUpgrades();
             saveGame();
             showFloatingMessage(`🏆 Prestiż poziom ${prestigeLevel}! Stały bonus +${prestigeLevel*20}% CPS!`, "#facc15");
         }
@@ -3197,6 +3161,10 @@
             window.sugarRush = false;
             window.totalClicks = 0;
             window.goldenCollected = 0;
+            for (let key in achievements) {
+                if (key !== 'prestige') achievements[key].achieved = false;
+            }
+            achievements.prestige.achieved = (prestigeLevel >= 1);
             updateStats();
             rebuildBuildings();
             rebuildUpgrades();
