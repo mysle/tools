@@ -43,11 +43,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html, body {
-            overflow-x: hidden;
-            max-width: 100%;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
@@ -107,7 +102,7 @@
         .tab-btn:hover { color: var(--text); background: rgba(99, 102, 241, 0.1); }
         .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
 
-        .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
         .tab-content { display: none; animation: fadeIn 0.5s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -183,8 +178,8 @@
 
         .status-bar {
             position: fixed;
-            bottom: 1rem;
-            right: 1rem;
+            bottom: 2rem;
+            right: 2rem;
             background: rgba(30, 41, 59, 0.85);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
@@ -292,15 +287,16 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(99,102,241,0.3);
             box-shadow: 0 0 20px rgba(99,102,241,0.2);
+            overflow-x: auto;
         }
         .cookie-count {
-            font-size: 3rem;
+            font-size: clamp(1.8rem, 8vw, 3rem);
             font-weight: 800;
             background: linear-gradient(135deg, #fff, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             word-break: break-word;
-            overflow-wrap: break-word;
+            white-space: normal;
             max-width: 100%;
         }
         .cookie {
@@ -636,14 +632,12 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-
             .ip-display {
                 font-size: 1.5rem;
                 word-break: break-all;
                 white-space: normal;
                 overflow-x: auto;
             }
-
             .nutrition-converter-row {
                 flex-direction: column !important;
                 gap: 0.75rem !important;
@@ -654,8 +648,6 @@
                 width: 100% !important;
                 margin: 0 !important;
             }
-            body { overflow-x: hidden; }
-            .status-bar { right: 0.5rem; bottom: 0.5rem; min-width: 140px; white-space: normal; }
         }
 
         @media (max-width: 480px) {
@@ -896,7 +888,7 @@
 </nav>
 
 <div class="container">
-    <!-- ============ ZAKŁADKA WALUTY (bez zmian) ============ -->
+    <!-- ============ ZAKŁADKA WALUTY ============ -->
     <div id="currency-tab" class="tab-content active">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-coins"></i></div>
@@ -961,7 +953,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA KONWERTER (bez zmian) ============ -->
+    <!-- ============ ZAKŁADKA KONWERTER ============ -->
     <div id="converter-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-exchange-alt"></i></div>
@@ -998,7 +990,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA KALKULATORY (bez zmian) ============ -->
+    <!-- ============ ZAKŁADKA KALKULATORY ============ -->
     <div id="finance-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-calculator"></i></div>
@@ -1160,7 +1152,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA SPEED TEST (bez zmian) ============ -->
+    <!-- ============ ZAKŁADKA SPEED TEST ============ -->
     <div id="speed-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -1204,7 +1196,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA CZAS I STREFY (bez zmian) ============ -->
+    <!-- ============ ZAKŁADKA CZAS I STREFY ============ -->
     <div id="time-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-clock"></i></div>
@@ -1416,7 +1408,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (ULEPSZONA) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (poprawiona) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <div class="tab-icon"><i class="fas fa-cloud-sun"></i></div>
@@ -1436,7 +1428,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (ULEPSZONY) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <div class="tab-icon"><i class="fas fa-cookie-bite"></i></div>
@@ -2667,7 +2659,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (ULEPSZONY) ========================
+    // ======================== COOKIE CLICKER (poprawiony) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2681,6 +2673,8 @@
     let bonusTimer = null;
     let goldenCookieTimeout = null;
     let downpourInterval = null;
+    let stormInterval = null;
+    let chocolateShowerInterval = null;
 
     let globalCPSMultiplier = 1;
     let extraClickBonusPercent = 0;
@@ -3101,7 +3095,7 @@
             scheduleGoldenCookie();
         };
         document.body.appendChild(golden);
-        // ZMIANA: złote ciasteczko znika po 6 sekundach zamiast 10
+        // ZŁOTE CIASTECZKO WIDOCZNE PRZEZ 6 SEKUND
         setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 6000);
     }
 
@@ -3119,8 +3113,7 @@
         }
         if (confirm(`Czy chcesz dokonać prestiżu? Stracisz wszystkie ciasteczka, budynki i ulepszenia, ale otrzymasz +25% do CPS na zawsze (aktualny poziom: ${prestigeLevel}).`)) {
             prestigeLevel++;
-            // ZMIANA: prestiż daje +25% zamiast +10%
-            prestigeMultiplier = 1 + prestigeLevel * 0.25;
+            prestigeMultiplier = 1 + prestigeLevel * 0.25;   // +25% zamiast 10%
             cookies = 0;
             clickMultiplier = 1;
             for (let b of buildings) { b.count = 0; }
@@ -3704,19 +3697,33 @@
     // ======================== MODUŁ POGODA (ULEPSZONY) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
-    let currentWeatherData = null; // przechowuje dane do ewentualnego odświeżenia
+    let currentWeatherData = null;
 
-    // Tłumaczenie faz księżyca na polski
+    function convertTo24h(timeStr) {
+        // timeStr np. "06:30 AM" lub "06:30"
+        if (!timeStr) return '--:--';
+        timeStr = timeStr.trim();
+        let lower = timeStr.toLowerCase();
+        if (lower.includes('am') || lower.includes('pm')) {
+            let [time, modifier] = timeStr.split(' ');
+            let [hours, minutes] = time.split(':');
+            if (modifier === 'PM' && hours !== '12') hours = String(parseInt(hours) + 12);
+            if (modifier === 'AM' && hours === '12') hours = '00';
+            return `${hours.padStart(2,'0')}:${minutes}`;
+        }
+        return timeStr;
+    }
+
     function translateMoonPhase(engPhase) {
         const moonMap = {
-            "New Moon": "Nów (New Moon)",
-            "Waxing Crescent": "Przybywający sierp (Waxing Crescent)",
-            "First Quarter": "Pierwsza kwadra (First Quarter)",
-            "Waxing Gibbous": "Przybywający garbaty (Waxing Gibbous)",
-            "Full Moon": "Pełnia (Full Moon)",
-            "Waning Gibbous": "Ubywający garbaty (Waning Gibbous)",
-            "Last Quarter": "Ostatnia kwadra (Last Quarter)",
-            "Waning Crescent": "Ubywający sierp (Waning Crescent)"
+            "New Moon": "Nów",
+            "Waxing Crescent": "Przybywający sierp",
+            "First Quarter": "Pierwsza kwadra",
+            "Waxing Gibbous": "Przybywający garbaty",
+            "Full Moon": "Pełnia",
+            "Waning Gibbous": "Ubywający garbaty",
+            "Last Quarter": "Ostatnia kwadra",
+            "Waning Crescent": "Ubywający sierp"
         };
         return moonMap[engPhase] || engPhase;
     }
@@ -3818,12 +3825,14 @@
         if (tempC > 25) tempClass = 'hot';
         else if (tempC < 10) tempClass = 'cold';
         
-        // astronomy: wschód/zachód słońca (już są lokalne)
+        // astronomy – konwersja na 24h
         const astronomy = daily[0]?.astronomy?.[0] || {};
-        const sunrise = astronomy.sunrise || '--';
-        const sunset = astronomy.sunset || '--';
-        // faza księżyca – pobieramy z astronomy
-        const moonPhaseEng = daily[0]?.astronomy?.[0]?.moon_phase || '---';
+        let sunrise = astronomy.sunrise || '--';
+        let sunset = astronomy.sunset || '--';
+        sunrise = convertTo24h(sunrise);
+        sunset = convertTo24h(sunset);
+        
+        const moonPhaseEng = daily[0]?.hourly?.[0]?.weatherDesc?.[0]?.value || '---';
         const moonPhasePl = translateMoonPhase(moonPhaseEng);
         
         const dailyWithRain = daily.slice(0,7).map(day => {
@@ -3840,8 +3849,7 @@
             return { ...day, totalRain };
         });
 
-        // Prognoza godzinowa: co 3 godziny (dla czytelności) – ale można też wszystkie 24
-        // Tutaj wyświetlamy wszystkie dostępne godziny (zazwyczaj 24 wpisy)
+        // Prognoza godzinowa – poprawne godziny
         const hourlyForecast = daily[0]?.hourly || [];
         
         const html = `
@@ -3868,10 +3876,15 @@
             <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (najbliższe 24h)</h3>
             <div class="hourly-forecast">
                 ${hourlyForecast.slice(0,24).map(h => {
-                    const hour = new Date(h.time).getHours();
+                    let hour = '--:--';
+                    if (h.time) {
+                        try {
+                            hour = new Date(h.time).toLocaleTimeString('pl-PL', { hour:'2-digit', minute:'2-digit' });
+                        } catch(e) { hour = h.time; }
+                    }
                     const temp = h.tempC;
                     const icon = getWeatherIconWttr(h.weatherCode);
-                    return `<div class="hourly-card">${hour}:00<br>${icon}<br>${Math.round(temp)}${tempUnit}</div>`;
+                    return `<div class="hourly-card">${hour}<br>${icon}<br>${Math.round(temp)}${tempUnit}</div>`;
                 }).join('')}
             </div>
             <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa</h3>
@@ -3884,6 +3897,11 @@
                     const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
                     const rain = day.totalRain;
                     const icon = getWeatherIconWttr(day.hourly[0]?.weatherCode || '113');
+                    let sunriseDay = '--', sunsetDay = '--';
+                    if (day.astronomy && day.astronomy[0]) {
+                        sunriseDay = convertTo24h(day.astronomy[0].sunrise);
+                        sunsetDay = convertTo24h(day.astronomy[0].sunset);
+                    }
                     return `
                         <div class="forecast-card">
                             <div class="forecast-day">${dayName}<br>${date.toLocaleDateString('pl-PL', {day:'numeric',month:'short'})}</div>
@@ -3891,7 +3909,7 @@
                             <div class="forecast-temp">${maxTemp}${tempUnit} / ${minTemp}${tempUnit}</div>
                             <div><i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
                             <div><i class="fas fa-cloud-rain"></i> ${rain.toFixed(1)} mm</div>
-                            ${day.astronomy?.[0] ? `<div><i class="fas fa-sun"></i> ${day.astronomy[0].sunrise}/${day.astronomy[0].sunset}</div>` : ''}
+                            <div><i class="fas fa-sun"></i> ${sunriseDay}/${sunsetDay}</div>
                         </div>
                     `;
                 }).join('')}
@@ -3904,7 +3922,6 @@
         const minTemps = dailyWithRain.map(d => d.mintempC);
         const ctx = document.getElementById('tempChart').getContext('2d');
         if (weatherChart) weatherChart.destroy();
-        // ULEPSZONY WYKRES: gradient pod linią, większe punkty, cień
         const gradientMax = ctx.createLinearGradient(0, 0, 0, 300);
         gradientMax.addColorStop(0, 'rgba(239,68,68,0.4)');
         gradientMax.addColorStop(1, 'rgba(239,68,68,0.0)');
@@ -3973,7 +3990,6 @@
         const btn = document.getElementById('weatherUnitsBtn');
         btn.innerHTML = weatherUnitsSystem === 'metric' ? 'Jednostki: °C / km/h' : 'Jednostki: °F / mph';
         if (currentWeatherData) {
-            // odśwież pogodę z tą samą lokalizacją (ale musielibyśmy zapamiętać lokalizację)
             const cityInput = document.getElementById('weatherCityInput').value;
             if (cityInput) searchWeatherByCity();
             else getWeatherByGeolocation();
