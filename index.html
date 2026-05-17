@@ -1472,17 +1472,17 @@
             </div>
 
             <div style="margin-top: 1.5rem;">
-                <h3 class="section-title"><i class="fas fa-star"></i> Magiczne ulepszenia (teraz o 50% tańsze!)</h3>
+                <h3 class="section-title"><i class="fas fa-star"></i> Magiczne ulepszenia</h3>
                 <div class="upgrades-list" id="upgradesList"></div>
             </div>
 
-            <h3 class="section-title"><i class="fas fa-industry"></i> Królestwo słodkości (podwojona moc i niższe ceny!)</h3>
+            <h3 class="section-title"><i class="fas fa-industry"></i> Królestwo słodkości</h3>
             <div class="buildings-grid" id="buildingsContainer"></div>
             
             <div style="margin-top: 2rem; text-align: center;">
-                <button class="btn prestige-btn" onclick="prestigeReset()"><i class="fas fa-crown"></i> Prestiż +25% bonusu</button>
+                <button class="btn prestige-btn" onclick="prestigeReset()"><i class="fas fa-crown"></i> Prestiż +20% bonusu</button>
                 <button class="btn prestige-btn" onclick="resetGame()" style="margin-left: 1rem;"><i class="fas fa-sync-alt"></i> Zresetuj grę</button>
-                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">Reset usuwa postęp, ale Prestiż daje stały +25% CPS za każdy poziom (maks. 10).</p>
+                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">Reset usuwa postęp, ale Prestiż daje stały +20% CPS za każdy poziom (maks. 10).</p>
             </div>
         </div>
     </div>
@@ -2799,7 +2799,8 @@
         div.style.whiteSpace = 'nowrap';
         div.style.animation = 'fadeOutUp 1s forwards';
         document.body.appendChild(div);
-        setTimeout(() => div.remove(), 1000);
+        // Zmiana czasu wyświetlania z 1s na 4s
+        setTimeout(() => div.remove(), 4000);
     }
 
     function recalcCPS() {
@@ -3111,9 +3112,9 @@
             alert("Osiągnąłeś już maksymalny poziom prestiżu!");
             return;
         }
-        if (confirm(`Czy chcesz dokonać prestiżu? Stracisz wszystkie ciasteczka, budynki i ulepszenia, ale otrzymasz +25% do CPS na zawsze (aktualny poziom: ${prestigeLevel}).`)) {
+        if (confirm(`Czy chcesz dokonać prestiżu? Stracisz wszystkie ciasteczka, budynki i ulepszenia, ale otrzymasz +20% do CPS na zawsze (aktualny poziom: ${prestigeLevel}).`)) {
             prestigeLevel++;
-            prestigeMultiplier = 1 + prestigeLevel * 0.25;   // +25% zamiast 10%
+            prestigeMultiplier = 1 + prestigeLevel * 0.20;   // +20% zamiast 25%
             cookies = 0;
             clickMultiplier = 1;
             for (let b of buildings) { b.count = 0; }
@@ -3156,7 +3157,7 @@
             rebuildBuildings();
             rebuildUpgrades();
             saveGame();
-            showFloatingMessage(`🏆 Prestiż poziom ${prestigeLevel}! Stały bonus +${prestigeLevel*25}% CPS!`, "#facc15");
+            showFloatingMessage(`🏆 Prestiż poziom ${prestigeLevel}! Stały bonus +${prestigeLevel*20}% CPS!`, "#facc15");
         }
     }
 
@@ -3242,7 +3243,7 @@
                 cookies = typeof state.cookies === 'number' && !isNaN(state.cookies) ? state.cookies : 0;
                 clickMultiplier = typeof state.clickMultiplier === 'number' ? state.clickMultiplier : 1;
                 prestigeLevel = typeof state.prestigeLevel === 'number' ? state.prestigeLevel : 0;
-                prestigeMultiplier = 1 + prestigeLevel * 0.25;
+                prestigeMultiplier = 1 + prestigeLevel * 0.20;
                 if (state.buildings) {
                     for (let i = 0; i < buildings.length && i < state.buildings.length; i++) {
                         if (typeof state.buildings[i].count === 'number') buildings[i].count = state.buildings[i].count;
@@ -3430,7 +3431,28 @@
         const select = document.getElementById('mealFoodSelect');
         if (!select) return;
         const currentValue = select.value;
-        select.innerHTML = '<option value="">Wybierz produkt lub dodaj własny</option><optgroup label="Popularne produkty"><option value="apple">🍎 Jabłko (52 kcal/100g, B:0.3 T:0.2 W:14)</option><option value="banana">🍌 Banan (89 kcal/100g, B:1.1 T:0.3 W:23)</option><option value="chicken">🍗 Pierś z kurczaka (165 kcal/100g, B:31 T:3.6 W:0)</option><option value="rice">🍚 Ryż biały (130 kcal/100g, B:2.7 T:0.3 W:28)</option><option value="bread">🍞 Chleb pszenny (265 kcal/100g, B:9 T:3.2 W:49)</option><option value="egg">🥚 Jajko (155 kcal/sztuka, B:13 T:11 W:1.1)</option></optgroup>';
+        select.innerHTML = '<option value="">Wybierz produkt lub dodaj własny</option><optgroup label="Popularne produkty">' +
+            '<option value="apple">🍎 Jabłko (52 kcal/100g, B:0.3 T:0.2 W:14)</option>' +
+            '<option value="banana">🍌 Banan (89 kcal/100g, B:1.1 T:0.3 W:23)</option>' +
+            '<option value="chicken">🍗 Pierś z kurczaka (165 kcal/100g, B:31 T:3.6 W:0)</option>' +
+            '<option value="rice">🍚 Ryż biały (130 kcal/100g, B:2.7 T:0.3 W:28)</option>' +
+            '<option value="bread">🍞 Chleb pszenny (265 kcal/100g, B:9 T:3.2 W:49)</option>' +
+            '<option value="egg">🥚 Jajko (155 kcal/100g, B:13 T:11 W:1.1)</option>' +
+            '<option value="potato">🥔 Ziemniak (77 kcal/100g, B:2 T:0.1 W:17)</option>' +
+            '<option value="tomato">🍅 Pomidor (18 kcal/100g, B:0.9 T:0.2 W:3.9)</option>' +
+            '<option value="cucumber">🥒 Ogórek (15 kcal/100g, B:0.7 T:0.1 W:3.6)</option>' +
+            '<option value="milk">🥛 Mleko 2% (50 kcal/100g, B:3.3 T:2 W:4.7)</option>' +
+            '<option value="yogurt">🍶 Jogurt naturalny (61 kcal/100g, B:3.5 T:3.3 W:4.7)</option>' +
+            '<option value="cheese">🧀 Ser żółty (402 kcal/100g, B:25 T:33 W:1.3)</option>' +
+            '<option value="beef">🥩 Wołowina (250 kcal/100g, B:26 T:15 W:0)</option>' +
+            '<option value="pork">🐖 Wieprzowina (242 kcal/100g, B:27 T:14 W:0)</option>' +
+            '<option value="salmon">🐟 Łosoś (208 kcal/100g, B:20 T:13 W:0)</option>' +
+            '<option value="oatmeal">🥣 Płatki owsiane (389 kcal/100g, B:16.9 T:6.9 W:66)</option>' +
+            '<option value="pasta">🍝 Makaron (131 kcal/100g, B:5 T:1.1 W:25)</option>' +
+            '<option value="broccoli">🥦 Brokuł (34 kcal/100g, B:2.8 T:0.4 W:6.6)</option>' +
+            '<option value="carrot">🥕 Marchew (41 kcal/100g, B:0.9 T:0.2 W:9.6)</option>' +
+            '<option value="orange">🍊 Pomarańcza (47 kcal/100g, B:0.9 T:0.1 W:11.8)</option>' +
+            '</optgroup>';
         if (customFoods.length > 0) {
             const optgroup = document.createElement('optgroup');
             optgroup.label = 'Moje produkty';
@@ -3626,7 +3648,21 @@
             chicken: { name: "Pierś z kurczaka", kcalPer100g: 165, proteinPer100g: 31, fatPer100g: 3.6, carbsPer100g: 0 },
             rice: { name: "Ryż biały", kcalPer100g: 130, proteinPer100g: 2.7, fatPer100g: 0.3, carbsPer100g: 28 },
             bread: { name: "Chleb pszenny", kcalPer100g: 265, proteinPer100g: 9, fatPer100g: 3.2, carbsPer100g: 49 },
-            egg: { name: "Jajko", kcalPer100g: 155, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 1.1 }
+            egg: { name: "Jajko", kcalPer100g: 155, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 1.1 },
+            potato: { name: "Ziemniak", kcalPer100g: 77, proteinPer100g: 2, fatPer100g: 0.1, carbsPer100g: 17 },
+            tomato: { name: "Pomidor", kcalPer100g: 18, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 3.9 },
+            cucumber: { name: "Ogórek", kcalPer100g: 15, proteinPer100g: 0.7, fatPer100g: 0.1, carbsPer100g: 3.6 },
+            milk: { name: "Mleko 2%", kcalPer100g: 50, proteinPer100g: 3.3, fatPer100g: 2, carbsPer100g: 4.7 },
+            yogurt: { name: "Jogurt naturalny", kcalPer100g: 61, proteinPer100g: 3.5, fatPer100g: 3.3, carbsPer100g: 4.7 },
+            cheese: { name: "Ser żółty", kcalPer100g: 402, proteinPer100g: 25, fatPer100g: 33, carbsPer100g: 1.3 },
+            beef: { name: "Wołowina", kcalPer100g: 250, proteinPer100g: 26, fatPer100g: 15, carbsPer100g: 0 },
+            pork: { name: "Wieprzowina", kcalPer100g: 242, proteinPer100g: 27, fatPer100g: 14, carbsPer100g: 0 },
+            salmon: { name: "Łosoś", kcalPer100g: 208, proteinPer100g: 20, fatPer100g: 13, carbsPer100g: 0 },
+            oatmeal: { name: "Płatki owsiane", kcalPer100g: 389, proteinPer100g: 16.9, fatPer100g: 6.9, carbsPer100g: 66 },
+            pasta: { name: "Makaron", kcalPer100g: 131, proteinPer100g: 5, fatPer100g: 1.1, carbsPer100g: 25 },
+            broccoli: { name: "Brokuł", kcalPer100g: 34, proteinPer100g: 2.8, fatPer100g: 0.4, carbsPer100g: 6.6 },
+            carrot: { name: "Marchew", kcalPer100g: 41, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 9.6 },
+            orange: { name: "Pomarańcza", kcalPer100g: 47, proteinPer100g: 0.9, fatPer100g: 0.1, carbsPer100g: 11.8 }
         };
         if (productMap[val]) {
             product = productMap[val];
@@ -3700,7 +3736,6 @@
     let currentWeatherData = null;
 
     function convertTo24h(timeStr) {
-        // timeStr np. "06:30 AM" lub "06:30"
         if (!timeStr) return '--:--';
         timeStr = timeStr.trim();
         let lower = timeStr.toLowerCase();
@@ -3825,7 +3860,6 @@
         if (tempC > 25) tempClass = 'hot';
         else if (tempC < 10) tempClass = 'cold';
         
-        // astronomy – konwersja na 24h
         const astronomy = daily[0]?.astronomy?.[0] || {};
         let sunrise = astronomy.sunrise || '--';
         let sunset = astronomy.sunset || '--';
@@ -3849,7 +3883,6 @@
             return { ...day, totalRain };
         });
 
-        // Prognoza godzinowa – poprawne godziny
         const hourlyForecast = daily[0]?.hourly || [];
         
         const html = `
@@ -3871,9 +3904,9 @@
                     <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhasePl}</div>
                 </div>
             </div>
-            <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury (7 dni)</h3>
+            <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury</h3>
             <div class="chart-container" style="height: 350px;"><canvas id="tempChart"></canvas></div>
-            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (najbliższe 24h)</h3>
+            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa</h3>
             <div class="hourly-forecast">
                 ${hourlyForecast.slice(0,24).map(h => {
                     let hour = '--:--';
