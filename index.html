@@ -680,27 +680,30 @@
             }
         }
 
+        /* ULEPSZENIA POGODY */
         .weather-current {
             display: flex;
             flex-wrap: wrap;
             gap: 2rem;
             margin-bottom: 2rem;
-            background: rgba(15,23,42,0.4);
+            background: rgba(15,23,42,0.5);
             border-radius: 1.5rem;
             padding: 1.5rem;
             transition: all 0.3s;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
         }
         .weather-current.hot {
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.4), rgba(249, 115, 22, 0.3));
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(249, 115, 22, 0.4));
             border-left: 4px solid #f97316;
         }
         .weather-current.cold {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3));
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.4));
             border-left: 4px solid #3b82f6;
         }
         .weather-current.mild {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(99, 102, 241, 0.3));
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(99, 102, 241, 0.4));
             border-left: 4px solid #22c55e;
         }
         .weather-main {
@@ -722,15 +725,16 @@
             gap: 1rem;
         }
         .weather-detail-item {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             border-radius: 1rem;
             padding: 0.8rem;
             text-align: center;
             transition: transform 0.2s, background 0.2s;
+            backdrop-filter: blur(4px);
         }
         .weather-detail-item:hover {
             transform: translateY(-3px);
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
         }
         .forecast-grid {
             display: grid;
@@ -739,7 +743,7 @@
             margin-top: 1rem;
         }
         .forecast-card {
-            background: rgba(15,23,42,0.6);
+            background: rgba(15,23,42,0.7);
             border: 1px solid var(--glass-border);
             border-radius: 1rem;
             padding: 1rem;
@@ -750,7 +754,7 @@
         .forecast-card:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
-            background: rgba(99,102,241,0.2);
+            background: rgba(99,102,241,0.3);
         }
         .forecast-day {
             font-weight: 700;
@@ -765,68 +769,6 @@
             font-size: 1.2rem;
             font-weight: 600;
         }
-        .portion-panel, .meal-log-panel, .bmr-panel {
-            background: rgba(0,0,0,0.3);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-        .custom-food-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        .custom-food-item {
-            background: rgba(99,102,241,0.2);
-            border-radius: 2rem;
-            padding: 0.3rem 0.8rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .custom-food-item:hover {
-            background: var(--primary);
-            transform: scale(1.02);
-        }
-        .tab-icon {
-            text-align: center;
-            margin-bottom: 1rem;
-            font-size: 3rem;
-            filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));
-        }
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
-        .shake {
-            animation: shake 0.5s ease-in-out;
-        }
-        .weather-fade {
-            animation: fadeInWeather 0.6s ease-out;
-        }
-        @keyframes fadeInWeather {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .achievement-badge {
-            background: rgba(255,215,0,0.2);
-            border: 1px solid gold;
-            border-radius: 2rem;
-            padding: 0.3rem 0.8rem;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin: 0.2rem;
-        }
         .hourly-forecast {
             display: flex;
             overflow-x: auto;
@@ -835,35 +777,18 @@
             scrollbar-width: thin;
         }
         .hourly-card {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             border-radius: 1rem;
-            padding: 0.5rem;
-            min-width: 80px;
+            padding: 0.6rem;
+            min-width: 90px;
             text-align: center;
             flex-shrink: 0;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
         }
-        .meal-entry {
-            background: rgba(0,0,0,0.3);
-            border-radius: 1rem;
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .custom-food-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
-            gap: 0.5rem;
-            align-items: end;
-        }
-        .nutrition-converter-row {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
+        .hourly-card:hover {
+            background: rgba(99,102,241,0.4);
+            transform: scale(1.02);
         }
     </style>
 </head>
@@ -2892,13 +2817,13 @@
         document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
         recalcCPS();
         let bonusText = "";
-        if (activeBonuses.tsunami) bonusText += "🌊 Cukierkowe Tsunami (x100 CPS)! ";
+        if (activeBonuses.tsunami) bonusText += "🌊 Cukierkowe Tsunami (x300 CPS)! ";
         else if (activeBonuses.superFrenzy) bonusText += "💥 Super Frenzy (x50 CPS)! ";
-        if (activeBonuses.magicBlast) bonusText += "✨ Magiczny Podmuch (x1000 kliknięcie)! ";
+        if (activeBonuses.magicBlast) bonusText += "✨ Magiczny Podmuch (x5000 kliknięcie)! ";
         else if (activeBonuses.megaClick) bonusText += "💢 Mega Click (x1000 kliknięcie)! ";
-        if (activeBonuses.goldenDownpour) bonusText += "🌧️ Złote Ulewy (+500% CPS co sekundę)! ";
-        if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (co sekundę ciasteczka)! ";
-        if (activeBonuses.chocolateShower) bonusText += "🍫 Ulewa Czekoladowa (kliknięcia dają +25% ciastek)! ";
+        if (activeBonuses.goldenDownpour) bonusText += "🌧️ Złote Ulewy (+1500% CPS co sekundę)! ";
+        if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (x50 ciastek co 0,5s)! ";
+        if (activeBonuses.chocolateShower) bonusText += "🍫 Ulewa Czekoladowa (kliknięcia dają +50% ciastek)! ";
         document.getElementById('bonusInfo').innerText = bonusText;
         updateAchievements();
     }
@@ -2953,12 +2878,12 @@
 
     function clickCookie() {
         let gain = clickMultiplier * prestigeMultiplier;
-        if (activeBonuses.magicBlast) gain *= 1000;
+        if (activeBonuses.magicBlast) gain *= 5000;
         else if (activeBonuses.megaClick) gain *= 1000;
         else if (activeBonuses.clickFrenzy) gain *= 777;
-        if (activeBonuses.tsunami) gain *= 100;
+        if (activeBonuses.tsunami) gain *= 300;
         if (activeBonuses.superFrenzy) gain *= 50;
-        if (activeBonuses.chocolateShower) gain *= 1.25;
+        if (activeBonuses.chocolateShower) gain *= 1.5;
         if (extraClickBonusPercent > 0) {
             gain += cookies * extraClickBonusPercent;
         }
@@ -3035,19 +2960,19 @@
             if (bonus < 0.2 && window.luckyCharm) {
                 activeBonuses.tsunami = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = (window.quantumAccelerator ? 30000 : 20000) * multiplier;
+                let duration = (window.quantumAccelerator ? 35000 : 25000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.tsunami = false; updateStats(); }, duration);
                 updateStats();
-                showFloatingMessage("🌊 CUKIERKOWE TSUNAMI! x150 CPS!", "#f97316");
+                showFloatingMessage("🌊 CUKIERKOWE TSUNAMI! x300 CPS przez 25s!", "#f97316");
                 document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
             } else if (bonus < 0.4) {
                 activeBonuses.magicBlast = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = (window.quantumAccelerator ? 25000 : 15000) * multiplier;
+                let duration = (window.quantumAccelerator ? 30000 : 20000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.magicBlast = false; updateStats(); }, duration);
                 updateStats();
-                showFloatingMessage("✨ MAGICZNY PODMUCH! x2000 klik!", "#fbbf24");
+                showFloatingMessage("✨ MAGICZNY PODMUCH! x5000 klik przez 20s!", "#fbbf24");
             } else if (bonus < 0.6 && window.goldenRainUpgrade) {
                 if (downpourInterval) clearInterval(downpourInterval);
                 activeBonuses.goldenDownpour = true;
@@ -3056,17 +2981,17 @@
                         clearInterval(downpourInterval);
                         return;
                     }
-                    cookies += cookiesPerSecond * 8;
+                    cookies += cookiesPerSecond * 15;
                     updateStats();
                 }, 1000);
                 setTimeout(() => {
                     activeBonuses.goldenDownpour = false;
                     clearInterval(downpourInterval);
-                }, 25000);
-                showFloatingMessage("🌧️ ZŁOTE ULEWY! +800% CPS co sekundę!", "#facc15");
+                }, 30000);
+                showFloatingMessage("🌧️ ZŁOTE ULEWY! +1500% CPS co sekundę przez 30s!", "#facc15");
             } else if (bonus < 0.75) {
-                let bonusCookies = cookiesPerSecond * 20 * multiplier;
-                if (window.treasureChest) bonusCookies *= 4;
+                let bonusCookies = cookiesPerSecond * 30 * multiplier;
+                if (window.treasureChest) bonusCookies *= 5;
                 cookies += bonusCookies;
                 if (window.luckyCharm) cookies += bonusCookies * 0.5;
                 updateStats();
@@ -3079,16 +3004,16 @@
                         clearInterval(stormInterval);
                         return;
                     }
-                    cookies += clickMultiplier * 25;
+                    cookies += clickMultiplier * 50;
                     updateStats();
                 }, 500);
                 setTimeout(() => {
                     activeBonuses.goldenRain = false;
                     clearInterval(stormInterval);
-                }, 15000);
-                showFloatingMessage("🌧️ Złoty Deszcz! +25 ciastek co 0,5s!", "#fbbf24");
+                }, 20000);
+                showFloatingMessage("🌧️ Złoty Deszcz! +50 ciastek co 0,5s przez 20s!", "#fbbf24");
             } else {
-                const bonusCookies = cookiesPerSecond * 50 * multiplier;
+                const bonusCookies = cookiesPerSecond * 100 * multiplier;
                 cookies += bonusCookies;
                 updateStats();
                 showFloatingMessage(`⏰ Ciasteczka z przyszłości! +${Math.floor(bonusCookies).toLocaleString()}`, "#8b5cf6");
@@ -3097,13 +3022,13 @@
             scheduleGoldenCookie();
         };
         document.body.appendChild(golden);
-        // Złote ciasteczko widoczne przez 10 sekund
-        setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 10000);
+        // Złote ciasteczko widoczne przez 12 sekund
+        setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 12000);
     }
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 8000 * goldenCookieFrequencyMultiplier;
+        let baseDelay = 5000 * goldenCookieFrequencyMultiplier;
         const delay = baseDelay + Math.random() * 15000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
@@ -3258,9 +3183,9 @@
 
     function gameLoop() {
         let currentCPS = cookiesPerSecond;
-        if (activeBonuses.tsunami) currentCPS *= 100;
+        if (activeBonuses.tsunami) currentCPS *= 300;
         else if (activeBonuses.superFrenzy) currentCPS *= 50;
-        if (activeBonuses.goldenDownpour) currentCPS *= 6;
+        if (activeBonuses.goldenDownpour) currentCPS *= 15;
         if (window.divineIntervention && Math.random() < 0.01) {
             currentCPS *= 2;
         }
@@ -3741,6 +3666,7 @@
         document.getElementById('weatherContent').innerHTML = '';
         try {
             const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
+            // Używamy wttr.in z lepszym dopasowaniem lokalizacji
             const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=pl&${unitsParam}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
