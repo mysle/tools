@@ -944,7 +944,7 @@
             </div>
             <div class="table-wrapper">
                 <table id="convTable">
-                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
+                    <thead><tr><th>Jednostka</th><th>Wynik</th><tr></thead>
                     <tbody id="convTableBody"></tbody>
                 </table>
             </div>
@@ -2616,7 +2616,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (poprawiona animacja i komunikaty) ========================
+    // ======================== COOKIE CLICKER (poprawiona animacja i komunikaty, nowe bonusy) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2625,13 +2625,18 @@
     let activeBonuses = { 
         tsunami: false, magicBlast: false, goldenDownpour: false,
         superFrenzy: false, megaClick: false, goldenRain: false,
-        chocolateShower: false, quantumRush: false, clickFrenzy: false
+        chocolateShower: false, quantumRush: false, clickFrenzy: false,
+        chocolateRevolution: false, sugarRush: false, cosmicRain: false,
+        luckyStreak: false, bakerBlessing: false, doughExplosion: false,
+        infiniteCookies: false
     };
     let bonusTimer = null;
     let goldenCookieTimeout = null;
     let downpourInterval = null;
     let stormInterval = null;
     let chocolateShowerInterval = null;
+    let sugarRushInterval = null;
+    let cosmicRainInterval = null;
 
     let globalCPSMultiplier = 1;
     let extraClickBonusPercent = 0;
@@ -2844,13 +2849,15 @@
         document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
         recalcCPS();
         let bonusText = "";
-        if (activeBonuses.tsunami) bonusText += "🌊 Tsunami Ciastek (x500 CPS)! ";
-        if (activeBonuses.superFrenzy) bonusText += "💥 Super Frenzy (x100 CPS)! ";
-        if (activeBonuses.magicBlast) bonusText += "✨ Magiczny Podmuch (x10000 kliknięcie)! ";
-        if (activeBonuses.quantumRush) bonusText += "⚡ Przyspieszenie Kwantowe (x2 CPS, x2 klik)! ";
-        if (activeBonuses.goldenDownpour) bonusText += "🌧️ Złote Ulewy (+3000% CPS co sekundę)! ";
-        if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (x100 ciastek co 0,5s)! ";
-        if (activeBonuses.clickFrenzy) bonusText += "🖱️ Click Frenzy (x777 za kliknięcie)! ";
+        if (activeBonuses.tsunami) bonusText += "🌊 Tsunami Ciastek (x1000 CPS)! ";
+        if (activeBonuses.superFrenzy) bonusText += "💥 Super Frenzy (x200 CPS)! ";
+        if (activeBonuses.magicBlast) bonusText += "✨ Magiczny Podmuch (x50000 kliknięcie)! ";
+        if (activeBonuses.quantumRush) bonusText += "⚡ Przyspieszenie Kwantowe (x3 CPS, x3 klik)! ";
+        if (activeBonuses.goldenDownpour) bonusText += "🌧️ Złote Ulewy (+5000% CPS co sekundę)! ";
+        if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (x500 ciastek co 0,5s)! ";
+        if (activeBonuses.clickFrenzy) bonusText += "🖱️ Click Frenzy (x7777 za kliknięcie)! ";
+        if (activeBonuses.chocolateRevolution) bonusText += "🍫 Czekoladowa Rewolucja (x10 CPS, +10% ciastek/s)! ";
+        if (activeBonuses.cosmicRain) bonusText += "🌌 Kosmiczny Deszcz (x100 ciastek co 0,2s)! ";
         document.getElementById('bonusInfo').innerText = bonusText;
         updateAchievements();
     }
@@ -2906,11 +2913,11 @@
     let isAnimatingCookie = false;
     function clickCookie() {
         let gain = clickMultiplier * prestigeMultiplier;
-        if (activeBonuses.magicBlast) gain *= 10000;
-        else if (activeBonuses.clickFrenzy) gain *= 777;
-        if (activeBonuses.quantumRush) gain *= 2;
-        if (activeBonuses.tsunami) gain *= 500;
-        if (activeBonuses.superFrenzy) gain *= 100;
+        if (activeBonuses.magicBlast) gain *= 50000;
+        else if (activeBonuses.clickFrenzy) gain *= 7777;
+        if (activeBonuses.quantumRush) gain *= 3;
+        if (activeBonuses.tsunami) gain *= 1000;
+        if (activeBonuses.superFrenzy) gain *= 200;
         if (extraClickBonusPercent > 0) {
             gain += cookies * extraClickBonusPercent;
         }
@@ -2925,7 +2932,6 @@
         updateStats();
         saveGame();
         
-        // Poprawiona animacja kliknięcia - zawsze działa płynnie
         const cookieImg = document.querySelector('#cookieImage svg');
         if(cookieImg && !isAnimatingCookie) {
             isAnimatingCookie = true;
@@ -2935,9 +2941,8 @@
                 isAnimatingCookie = false;
             }, 200);
         } else if (cookieImg && isAnimatingCookie) {
-            // jeśli animacja już trwa, wymuś restart
             cookieImg.classList.remove('cookie-animation');
-            void cookieImg.offsetWidth; // wymuszenie reflow
+            void cookieImg.offsetWidth;
             cookieImg.classList.add('cookie-animation');
         }
         
@@ -2999,41 +3004,37 @@
             window.goldenCollected = (window.goldenCollected || 0) + 1;
             let rand = Math.random();
             let multiplier = (window.bonusPower || 1);
-            if (window.luckyStream && Math.random() < 0.3) rand = Math.min(rand * 0.8, 0.95);
+            if (window.luckyStream && Math.random() < 0.3) rand = Math.min(rand * 0.7, 0.95);
             
-            // Zawsze dodatnia nagroda bazowa (1% - 8% aktualnych ciastek)
-            let baseReward = Math.floor(cookies * (0.01 + Math.random() * 0.07));
+            let baseReward = Math.floor(cookies * (0.02 + Math.random() * 0.12));
             if (baseReward < 100 && cookies > 1000) baseReward = 100;
             if (baseReward < 10) baseReward = 10;
             let reward = baseReward;
             let message = `✨ +${baseReward.toLocaleString()} ciastek!`;
             let specialEffect = false;
             
-            // Lista potężnych bonusów - każdy wywołuje showFloatingMessage tylko raz
-            if (rand < 0.12 && window.luckyCharm) {
-                // TSUNAMI
+            // NOWE, JESZCZE MOCNIEJSZE BONUSY
+            if (rand < 0.10 && window.luckyCharm) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.tsunami = true;
-                let duration = (window.quantumAccelerator ? 40000 : 30000) * multiplier;
+                let duration = (window.quantumAccelerator ? 50000 : 40000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.tsunami = false; updateStats(); }, duration);
                 updateStats();
-                message = "🌊 TSUNAMI CIASTEK! x500 CPS przez 30s!";
+                message = "🌊 BURZA CIASTEK! x1000 CPS przez 40s!";
                 specialEffect = true;
                 showFloatingMessage(message, "#f97316");
                 document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
-            } else if (rand < 0.24) {
-                // MAGICZNY PODMUCH
+            } else if (rand < 0.20) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.magicBlast = true;
-                let duration = (window.quantumAccelerator ? 35000 : 25000) * multiplier;
+                let duration = (window.quantumAccelerator ? 40000 : 30000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.magicBlast = false; updateStats(); }, duration);
                 updateStats();
-                message = "✨ MAGICZNY PODMUCH! x10000 za kliknięcie przez 25s!";
+                message = "💥 WYBUCH SŁODYCZY! x50000 za kliknięcie przez 30s!";
                 specialEffect = true;
                 showFloatingMessage(message, "#fbbf24");
-            } else if (rand < 0.36 && window.goldenRainUpgrade) {
-                // ZŁOTE ULEWY
+            } else if (rand < 0.30 && window.goldenRainUpgrade) {
                 if (downpourInterval) clearInterval(downpourInterval);
                 activeBonuses.goldenDownpour = true;
                 downpourInterval = setInterval(() => {
@@ -3041,18 +3042,17 @@
                         clearInterval(downpourInterval);
                         return;
                     }
-                    cookies += cookiesPerSecond * 30;
+                    cookies += cookiesPerSecond * 50;
                     updateStats();
                 }, 1000);
                 setTimeout(() => {
                     activeBonuses.goldenDownpour = false;
                     clearInterval(downpourInterval);
-                }, 30000);
-                message = "🌧️ ZŁOTE ULEWY! +3000% CPS co sekundę przez 30s!";
+                }, 35000);
+                message = "🌧️ ZŁOTE ULEWY! +5000% CPS co sekundę przez 35s!";
                 specialEffect = true;
                 showFloatingMessage(message, "#facc15");
-            } else if (rand < 0.48 && window.goldenRainUpgrade) {
-                // ZŁOTY DESZCZ
+            } else if (rand < 0.40 && window.goldenRainUpgrade) {
                 if (stormInterval) clearInterval(stormInterval);
                 activeBonuses.goldenRain = true;
                 stormInterval = setInterval(() => {
@@ -3060,68 +3060,94 @@
                         clearInterval(stormInterval);
                         return;
                     }
-                    cookies += clickMultiplier * 100;
+                    cookies += clickMultiplier * 500;
                     updateStats();
                 }, 500);
                 setTimeout(() => {
                     activeBonuses.goldenRain = false;
                     clearInterval(stormInterval);
-                }, 20000);
-                message = "🌧️ ZŁOTY DESZCZ! +100 ciastek co 0.5s przez 20s!";
+                }, 25000);
+                message = "🌧️ ZŁOTY DESZCZ! +500 ciastek co 0.5s przez 25s!";
                 specialEffect = true;
                 showFloatingMessage(message, "#fbbf24");
-            } else if (rand < 0.6 && window.quantumAccelerator) {
-                // PRZYSPIESZENIE KWANTOWE
+            } else if (rand < 0.50 && window.quantumAccelerator) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.quantumRush = true;
-                globalCPSMultiplier *= 2;
+                globalCPSMultiplier *= 3;
                 let oldClick = clickMultiplier;
-                clickMultiplier *= 2;
-                let duration = 20000 * multiplier;
+                clickMultiplier *= 3;
+                let duration = 25000 * multiplier;
                 bonusTimer = setTimeout(() => { 
                     activeBonuses.quantumRush = false;
-                    globalCPSMultiplier /= 2;
+                    globalCPSMultiplier /= 3;
                     clickMultiplier = oldClick;
                     recalcCPS();
                     updateStats();
                 }, duration);
                 recalcCPS();
                 updateStats();
-                message = "⚡ PRZYSPIESZENIE KWANTOWE! Podwojone CPS i kliknięcia na 20s!";
+                message = "⚡ PRZYSPIESZENIE KWANTOWE! x3 CPS i kliknięcia na 25s!";
                 specialEffect = true;
                 showFloatingMessage(message, "#8b5cf6");
-            } else if (rand < 0.72) {
-                // HOJNY DAR
-                reward = baseReward * (window.treasureChest ? 10 : 6);
-                message = `⭐ HOJNY DAR! +${Math.floor(reward).toLocaleString()} ciastek!`;
-                specialEffect = true;
+            } else if (rand < 0.60) {
+                reward = baseReward * (window.treasureChest ? 15 : 10);
+                message = `💎 SKARBIEC FORTUNY! +${Math.floor(reward).toLocaleString()} ciastek!`;
                 cookies += reward;
                 showFloatingMessage(message, "#10b981");
-            } else if (rand < 0.85 && window.clickFrenzyUpgrade) {
-                // CLICK FRENZY
+                specialEffect = true;
+            } else if (rand < 0.70 && window.clickFrenzyUpgrade) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.clickFrenzy = true;
-                let duration = 15000 * multiplier;
+                let duration = 20000 * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.clickFrenzy = false; updateStats(); }, duration);
                 updateStats();
-                message = "🖱️ CLICK FRENZY! x777 za każde kliknięcie na 15s!";
+                message = "🖱️ SUPER FRENZY! x7777 za kliknięcie na 20s!";
                 specialEffect = true;
                 showFloatingMessage(message, "#ec4899");
+            } else if (rand < 0.80 && window.chocolateRevolutionUpgrade) {
+                if (bonusTimer) clearTimeout(bonusTimer);
+                activeBonuses.chocolateRevolution = true;
+                globalCPSMultiplier *= 10;
+                let duration = 20000 * multiplier;
+                bonusTimer = setTimeout(() => { 
+                    activeBonuses.chocolateRevolution = false;
+                    globalCPSMultiplier /= 10;
+                    recalcCPS();
+                    updateStats();
+                }, duration);
+                recalcCPS();
+                updateStats();
+                message = "🍫 CZEKOLADOWA REWOLUCJA! x10 CPS na 20s!";
+                specialEffect = true;
+                showFloatingMessage(message, "#a0522d");
+            } else if (rand < 0.90) {
+                if (cosmicRainInterval) clearInterval(cosmicRainInterval);
+                activeBonuses.cosmicRain = true;
+                cosmicRainInterval = setInterval(() => {
+                    if (!activeBonuses.cosmicRain) {
+                        clearInterval(cosmicRainInterval);
+                        return;
+                    }
+                    cookies += 100;
+                    updateStats();
+                }, 200);
+                setTimeout(() => {
+                    activeBonuses.cosmicRain = false;
+                    clearInterval(cosmicRainInterval);
+                }, 15000);
+                message = "🌌 KOSMICZNY DESZCZ! +100 ciastek co 0.2s przez 15s!";
+                specialEffect = true;
+                showFloatingMessage(message, "#3b82f6");
             } else {
-                // PRZYSZŁOŚĆ
-                reward = baseReward * (window.treasureChest ? 5 : 3);
+                reward = baseReward * (window.treasureChest ? 8 : 5);
                 message = `⏰ CIASTECZKA Z PRZYSZŁOŚCI! +${Math.floor(reward).toLocaleString()}`;
                 cookies += reward;
                 showFloatingMessage(message, "#10b981");
             }
             
-            // Jeśli nie był to specjalny efekt, który już dodał ciasteczka, dodajemy je tutaj.
-            // Dla przypadków HOJNY DAR i PRZYSZŁOŚĆ już dodano powyżej.
             if (!specialEffect) {
                 cookies += reward;
                 showFloatingMessage(message, "#10b981");
-            } else if (specialEffect && message !== "🌊 TSUNAMI CIASTEK! x500 CPS przez 30s!" && message !== "✨ MAGICZNY PODMUCH! x10000 za kliknięcie przez 25s!" && message !== "🌧️ ZŁOTE ULEWY! +3000% CPS co sekundę przez 30s!" && message !== "🌧️ ZŁOTY DESZCZ! +100 ciastek co 0.5s przez 20s!" && message !== "⚡ PRZYSPIESZENIE KWANTOWE! Podwojone CPS i kliknięcia na 20s!" && message !== "🖱️ CLICK FRENZY! x777 za każde kliknięcie na 15s!") {
-                cookies += reward;
             }
             updateStats();
             saveGame();
@@ -3167,7 +3193,8 @@
             if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
             if (window.futureClickInterval) clearInterval(window.futureClickInterval);
             if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
-            activeBonuses = { tsunami: false, magicBlast: false, goldenDownpour: false, superFrenzy: false, megaClick: false, goldenRain: false, chocolateShower: false, quantumRush: false, clickFrenzy: false };
+            if (cosmicRainInterval) clearInterval(cosmicRainInterval);
+            activeBonuses = { tsunami: false, magicBlast: false, goldenDownpour: false, superFrenzy: false, megaClick: false, goldenRain: false, chocolateShower: false, quantumRush: false, clickFrenzy: false, chocolateRevolution: false, sugarRush: false, cosmicRain: false, luckyStreak: false, bakerBlessing: false, doughExplosion: false, infiniteCookies: false };
             globalCPSMultiplier = 1;
             extraClickBonusPercent = 0;
             doubleClickChance = 0;
@@ -3187,6 +3214,7 @@
             window.goldenHour = false;
             window.sugarRush = false;
             window.clickFrenzyUpgrade = false;
+            window.chocolateRevolutionUpgrade = false;
             window.totalClicks = 0;
             window.goldenCollected = 0;
             for (let key in achievements) {
@@ -3225,6 +3253,7 @@
             goldenHour: window.goldenHour || false,
             sugarRush: window.sugarRush || false,
             clickFrenzyUpgrade: window.clickFrenzyUpgrade || false,
+            chocolateRevolutionUpgrade: window.chocolateRevolutionUpgrade || false,
             totalClicks: window.totalClicks || 0,
             goldenCollected: window.goldenCollected || 0,
             achievements: achievements
@@ -3270,6 +3299,7 @@
                 if (state.goldenHour) window.goldenHour = state.goldenHour;
                 if (state.sugarRush) { window.sugarRush = state.sugarRush; startSugarRushInterval(); }
                 if (state.clickFrenzyUpgrade) window.clickFrenzyUpgrade = state.clickFrenzyUpgrade;
+                if (state.chocolateRevolutionUpgrade) window.chocolateRevolutionUpgrade = state.chocolateRevolutionUpgrade;
                 if (state.totalClicks) window.totalClicks = state.totalClicks;
                 if (state.goldenCollected) window.goldenCollected = state.goldenCollected;
                 if (state.achievements) {
@@ -3288,10 +3318,11 @@
 
     function gameLoop() {
         let currentCPS = cookiesPerSecond;
-        if (activeBonuses.tsunami) currentCPS *= 500;
-        if (activeBonuses.superFrenzy) currentCPS *= 100;
-        if (activeBonuses.goldenDownpour) currentCPS *= 30;
-        if (activeBonuses.quantumRush) currentCPS *= 2;
+        if (activeBonuses.tsunami) currentCPS *= 1000;
+        if (activeBonuses.superFrenzy) currentCPS *= 200;
+        if (activeBonuses.goldenDownpour) currentCPS *= 50;
+        if (activeBonuses.quantumRush) currentCPS *= 3;
+        if (activeBonuses.chocolateRevolution) currentCPS *= 10;
         if (window.divineIntervention && Math.random() < 0.01) {
             currentCPS *= 2;
         }
@@ -3764,7 +3795,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODA (poprawiona prognoza godzinowa - prawidłowe godziny) ========================
+    // ======================== MODUŁ POGODA (poprawiona prognoza godzinowa - 24 godziny) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -3916,7 +3947,6 @@
     }
 
     function formatHourFromWttr(timeVal) {
-        // timeVal może być liczbą 0,100,200,...2300 lub stringiem "0","100",... "2300"
         if (timeVal === undefined || timeVal === null) return "--:--";
         let val = parseInt(timeVal, 10);
         if (isNaN(val)) return "--:--";
@@ -3961,7 +3991,10 @@
             return { ...day, totalRain };
         });
 
+        // Pobieramy wszystkie 24 godziny dla dzisiejszej prognozy
         const hourlyForecast = daily[0]?.hourly || [];
+        // Sortujemy po czasie, aby mieć pewność, że są w kolejności
+        hourlyForecast.sort((a,b) => parseInt(a.time) - parseInt(b.time));
         
         const html = `
             <div class="weather-current ${tempClass} weather-fade">
@@ -3984,10 +4017,9 @@
             </div>
             <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury</h3>
             <div class="chart-container" style="height: 350px;"><canvas id="tempChart"></canvas></div>
-            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś)</h3>
+            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś, 00:00 - 23:00)</h3>
             <div class="hourly-forecast">
-                ${hourlyForecast.slice(0,24).map(h => {
-                    // Poprawne formatowanie godziny - konwersja z wartości liczbowej HHMM
+                ${hourlyForecast.map(h => {
                     let hourStr = formatHourFromWttr(h.time);
                     const temp = parseFloat(h.tempC);
                     const icon = getWeatherIconWttr(h.weatherCode);
