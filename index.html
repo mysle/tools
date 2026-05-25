@@ -314,7 +314,7 @@
         }
         @keyframes cookiePop {
             0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
         .golden-cookie {
@@ -1206,7 +1206,7 @@
             <div class="table-wrapper">
                 <table id="timeDiffTable">
                     <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
-                    <tbody id="timeDiffTableBody"><td><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tr></tbody>
+                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tr></tbody>
                 </table>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
@@ -1383,7 +1383,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona animacja) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cookie Clicker – Królestwo Słodkości</h2>
@@ -2616,7 +2616,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (poprawiony) ========================
+    // ======================== COOKIE CLICKER (poprawiona animacja) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2903,6 +2903,7 @@
         }
     }
 
+    let isAnimatingCookie = false;
     function clickCookie() {
         let gain = clickMultiplier * prestigeMultiplier;
         if (activeBonuses.magicBlast) gain *= 10000;
@@ -2923,11 +2924,23 @@
         window.totalClicks = (window.totalClicks || 0) + 1;
         updateStats();
         saveGame();
+        
+        // Poprawiona animacja kliknięcia - zawsze działa płynnie
         const cookieImg = document.querySelector('#cookieImage svg');
-        if(cookieImg) {
+        if(cookieImg && !isAnimatingCookie) {
+            isAnimatingCookie = true;
             cookieImg.classList.add('cookie-animation');
-            setTimeout(() => cookieImg.classList.remove('cookie-animation'), 200);
+            setTimeout(() => {
+                cookieImg.classList.remove('cookie-animation');
+                isAnimatingCookie = false;
+            }, 200);
+        } else if (cookieImg && isAnimatingCookie) {
+            // jeśli animacja już trwa, wymuś restart
+            cookieImg.classList.remove('cookie-animation');
+            void cookieImg.offsetWidth; // wymuszenie reflow
+            cookieImg.classList.add('cookie-animation');
         }
+        
         if (window.doubleJoy && Math.random() < 0.1) {
             let extra = cookiesPerSecond;
             cookies += extra;
@@ -3961,13 +3974,18 @@
                     // Poprawne parsowanie godziny z wttr.in (minuty od północy)
                     let hourStr = '--:--';
                     if (h.time !== undefined) {
-                        let mins = parseInt(h.time, 10);
-                        if (!isNaN(mins)) {
-                            let hrs = Math.floor(mins / 60);
-                            let minPart = mins % 60;
-                            hourStr = `${hrs.toString().padStart(2,'0')}:${minPart.toString().padStart(2,'0')}`;
-                        } else {
+                        if (typeof h.time === 'string' && h.time.includes(':')) {
+                            // Jeśli format HH:MM (czasem bywa)
                             hourStr = h.time;
+                        } else {
+                            let mins = parseInt(h.time, 10);
+                            if (!isNaN(mins)) {
+                                let hrs = Math.floor(mins / 60);
+                                let minPart = mins % 60;
+                                hourStr = `${hrs.toString().padStart(2,'0')}:${minPart.toString().padStart(2,'0')}`;
+                            } else {
+                                hourStr = h.time;
+                            }
                         }
                     }
                     const temp = parseFloat(h.tempC);
