@@ -944,7 +944,7 @@
             </div>
             <div class="table-wrapper">
                 <table id="convTable">
-                    <thead><tr><th>Jednostka</th><th>Wynik</th><tr></thead>
+                    <thead><tr><th>Jednostka</th><th>Wynik</th></tr></thead>
                     <tbody id="convTableBody"></tbody>
                 </table>
             </div>
@@ -1206,7 +1206,7 @@
             <div class="table-wrapper">
                 <table id="timeDiffTable">
                     <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
-                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tr></tbody>
+                    <tbody id="timeDiffTableBody"><td><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tr></tbody>
                 </table>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
@@ -2616,7 +2616,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (poprawiona animacja i komunikaty, nowe bonusy) ========================
+    // ======================== COOKIE CLICKER (poprawiona animacja i komunikaty) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -3013,7 +3013,7 @@
             let message = `✨ +${baseReward.toLocaleString()} ciastek!`;
             let specialEffect = false;
             
-            // NOWE, JESZCZE MOCNIEJSZE BONUSY
+            // NOWE, JESZCZE MOCNIEJSZE BONUSY – każdy przypadek sam dodaje ciasteczka i komunikat
             if (rand < 0.10 && window.luckyCharm) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.tsunami = true;
@@ -3143,12 +3143,10 @@
                 message = `⏰ CIASTECZKA Z PRZYSZŁOŚCI! +${Math.floor(reward).toLocaleString()}`;
                 cookies += reward;
                 showFloatingMessage(message, "#10b981");
+                specialEffect = true;
             }
             
-            if (!specialEffect) {
-                cookies += reward;
-                showFloatingMessage(message, "#10b981");
-            }
+            // Nie dodajemy nic więcej – każdy przypadek sam obsłużył dodanie ciastek i komunikat
             updateStats();
             saveGame();
             scheduleGoldenCookie();
@@ -3795,7 +3793,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODA (poprawiona prognoza godzinowa - 24 godziny) ========================
+    // ======================== MODUŁ POGODA (poprawiona prognoza godzinowa - 24 godziny z prawidłowym formatowaniem) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -3948,6 +3946,10 @@
 
     function formatHourFromWttr(timeVal) {
         if (timeVal === undefined || timeVal === null) return "--:--";
+        // Obsługa formatu HH:MM (string)
+        if (typeof timeVal === 'string' && timeVal.includes(':')) {
+            return timeVal;
+        }
         let val = parseInt(timeVal, 10);
         if (isNaN(val)) return "--:--";
         let hours = Math.floor(val / 100);
@@ -3991,9 +3993,9 @@
             return { ...day, totalRain };
         });
 
-        // Pobieramy wszystkie 24 godziny dla dzisiejszej prognozy
+        // Pobieramy wszystkie dostępne godziny prognozy (zwykle co 3 godziny, ale formatujemy prawidłowo)
         const hourlyForecast = daily[0]?.hourly || [];
-        // Sortujemy po czasie, aby mieć pewność, że są w kolejności
+        // Sortujemy po czasie (wartość liczbowa, np. 0, 300, 600...)
         hourlyForecast.sort((a,b) => parseInt(a.time) - parseInt(b.time));
         
         const html = `
@@ -4017,7 +4019,7 @@
             </div>
             <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury</h3>
             <div class="chart-container" style="height: 350px;"><canvas id="tempChart"></canvas></div>
-            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś, 00:00 - 23:00)</h3>
+            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś)</h3>
             <div class="hourly-forecast">
                 ${hourlyForecast.map(h => {
                     let hourStr = formatHourFromWttr(h.time);
