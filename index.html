@@ -738,7 +738,7 @@
         }
         .forecast-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
             gap: 1rem;
             margin-top: 1rem;
         }
@@ -780,7 +780,7 @@
             background: rgba(0,0,0,0.5);
             border-radius: 1rem;
             padding: 0.6rem;
-            min-width: 90px;
+            min-width: 110px;
             text-align: center;
             flex-shrink: 0;
             backdrop-filter: blur(4px);
@@ -789,6 +789,44 @@
         .hourly-card:hover {
             background: rgba(99,102,241,0.4);
             transform: scale(1.02);
+        }
+        /* Kontener na komunikaty */
+        .message-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            pointer-events: none;
+            gap: 8px;
+            max-width: 400px;
+        }
+        .message-item {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--primary);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            pointer-events: auto;
+            animation: slideInLeft 0.3s ease forwards;
+            width: 100%;
+        }
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
@@ -816,7 +854,6 @@
     <!-- ============ ZAKŁADKA WALUTY ============ -->
     <div id="currency-tab" class="tab-content active">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-coins"></i></div>
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 style="font-size: 2.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">💰 Przeliczanie walut</h1>
                 <p style="color: var(--text-muted);">Kursy pobierane są raz, przy ładowaniu strony – zawsze aktualne na ten moment.</p>
@@ -881,7 +918,6 @@
     <!-- ============ ZAKŁADKA KONWERTER ============ -->
     <div id="converter-tab" class="tab-content">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-exchange-alt"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📏 Konwerter Pro</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Wpisz wartość – wszystkie przeliczenia w jednym miejscu.</p>
 
@@ -918,7 +954,6 @@
     <!-- ============ ZAKŁADKA KALKULATORY ============ -->
     <div id="finance-tab" class="tab-content">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-calculator"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">💸 Kalkulatory Pro</h2>
             <div class="sub-tabs">
                 <button class="sub-tab-btn active" onclick="switchSubTab('credit', event)">🏦 Kredyt</button>
@@ -1080,7 +1115,6 @@
     <!-- ============ ZAKŁADKA SPEED TEST ============ -->
     <div id="speed-tab" class="tab-content">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-tachometer-alt"></i></div>
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1 style="font-size: 2.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">⚡ Sprawdź prędkość internetu</h1>
                 <p style="color: var(--text-muted);">Dowiedz się, jak szybko ładują się strony, filmiki i gry online!</p>
@@ -1124,7 +1158,6 @@
     <!-- ============ ZAKŁADKA CZAS I STREFY ============ -->
     <div id="time-tab" class="tab-content">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-clock"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📅 Czas i strefy czasowe</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Aktualny czas na świecie, konwerter czasu i różnice między strefami.</p>
 
@@ -1183,7 +1216,6 @@
     <!-- ============ ZAKŁADKA IP INFO ============ -->
     <div id="ip-tab" class="tab-content">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-globe"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌐 Twój adres IP i dane sieci</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Automatycznie wykrywamy informacje o Twoim połączeniu – wszystko w jednym miejscu.</p>
 
@@ -1246,7 +1278,6 @@
     <!-- ============ ZAKŁADKA ŻYWNOŚĆ ============ -->
     <div id="nutrition-tab" class="tab-content">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-apple-alt"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🥗 Inteligentny Asystent Żywieniowy</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Konwerter odżywczy, kalkulator zapotrzebowania i dziennik posiłków.</p>
 
@@ -1336,7 +1367,6 @@
     <!-- ============ ZAKŁADKA POGODA (poprawiona) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
-            <div class="tab-icon"><i class="fas fa-cloud-sun"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda, 7-dniowa prognoza, wschód/zachód słońca, faza księżyca i wykres temperatury.</p>
 
@@ -1356,7 +1386,6 @@
     <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
-            <div class="tab-icon"><i class="fas fa-cookie-bite"></i></div>
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cookie Clicker – Królestwo Słodkości</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Klikaj, zbieraj złote ciasteczka, odblokowuj potężne ulepszenia i osiągnięcia!</p>
             
@@ -1432,6 +1461,9 @@
         <button id="rejectCookies" class="cookie-btn cookie-reject">Odrzucam opcjonalne</button>
     </div>
 </div>
+
+<!-- Kontener na komunikaty -->
+<div class="message-container" id="messageContainer"></div>
 
 <script>
     // ======================== ZAKŁADKI GŁÓWNE ========================
@@ -2709,23 +2741,18 @@
     }
 
     function showFloatingMessage(msg, color) {
+        const container = document.getElementById('messageContainer');
+        if (!container) return;
         const div = document.createElement('div');
+        div.className = 'message-item';
+        div.style.borderLeftColor = color;
         div.textContent = msg;
-        div.style.position = 'fixed';
-        div.style.bottom = '30%';
-        div.style.left = '50%';
-        div.style.transform = 'translateX(-50%)';
-        div.style.backgroundColor = color;
-        div.style.color = '#000';
-        div.style.padding = '0.5rem 1rem';
-        div.style.borderRadius = '2rem';
-        div.style.fontWeight = 'bold';
-        div.style.zIndex = '10001';
-        div.style.whiteSpace = 'nowrap';
-        div.style.animation = 'fadeOutUp 1s forwards';
-        document.body.appendChild(div);
-        // Komunikat 4 sekundy
-        setTimeout(() => div.remove(), 4000);
+        container.appendChild(div);
+        setTimeout(() => {
+            div.style.opacity = '0';
+            div.style.transition = 'opacity 0.5s';
+            setTimeout(() => div.remove(), 500);
+        }, 4000);
     }
 
     function recalcCPS() {
@@ -2817,13 +2844,13 @@
         document.getElementById('cookieDisplay').innerText = Math.floor(cookies).toLocaleString();
         recalcCPS();
         let bonusText = "";
-        if (activeBonuses.tsunami) bonusText += "🌊 Cukierkowe Tsunami (x300 CPS)! ";
-        else if (activeBonuses.superFrenzy) bonusText += "💥 Super Frenzy (x50 CPS)! ";
-        if (activeBonuses.magicBlast) bonusText += "✨ Magiczny Podmuch (x5000 kliknięcie)! ";
-        else if (activeBonuses.megaClick) bonusText += "💢 Mega Click (x1000 kliknięcie)! ";
-        if (activeBonuses.goldenDownpour) bonusText += "🌧️ Złote Ulewy (+1500% CPS co sekundę)! ";
-        if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (x50 ciastek co 0,5s)! ";
-        if (activeBonuses.chocolateShower) bonusText += "🍫 Ulewa Czekoladowa (kliknięcia dają +50% ciastek)! ";
+        if (activeBonuses.tsunami) bonusText += "🌊 Cukierkowe Tsunami (x500 CPS)! ";
+        else if (activeBonuses.superFrenzy) bonusText += "💥 Super Frenzy (x100 CPS)! ";
+        if (activeBonuses.magicBlast) bonusText += "✨ Magiczny Podmuch (x10000 kliknięcie)! ";
+        else if (activeBonuses.megaClick) bonusText += "💢 Mega Click (x2000 kliknięcie)! ";
+        if (activeBonuses.goldenDownpour) bonusText += "🌧️ Złote Ulewy (+3000% CPS co sekundę)! ";
+        if (activeBonuses.goldenRain) bonusText += "🌧️ Złoty Deszcz (x100 ciastek co 0,5s)! ";
+        if (activeBonuses.chocolateShower) bonusText += "🍫 Ulewa Czekoladowa (kliknięcia dają +100% ciastek)! ";
         document.getElementById('bonusInfo').innerText = bonusText;
         updateAchievements();
     }
@@ -2878,12 +2905,12 @@
 
     function clickCookie() {
         let gain = clickMultiplier * prestigeMultiplier;
-        if (activeBonuses.magicBlast) gain *= 5000;
-        else if (activeBonuses.megaClick) gain *= 1000;
+        if (activeBonuses.magicBlast) gain *= 10000;
+        else if (activeBonuses.megaClick) gain *= 2000;
         else if (activeBonuses.clickFrenzy) gain *= 777;
-        if (activeBonuses.tsunami) gain *= 300;
-        if (activeBonuses.superFrenzy) gain *= 50;
-        if (activeBonuses.chocolateShower) gain *= 1.5;
+        if (activeBonuses.tsunami) gain *= 500;
+        if (activeBonuses.superFrenzy) gain *= 100;
+        if (activeBonuses.chocolateShower) gain *= 2;
         if (extraClickBonusPercent > 0) {
             gain += cookies * extraClickBonusPercent;
         }
@@ -2912,7 +2939,7 @@
             window.clickCountCosmic = (window.clickCountCosmic || 0) + 1;
             if (window.clickCountCosmic >= 10) {
                 window.clickCountCosmic = 0;
-                let cosmicBonus = cookiesPerSecond * 1000;
+                let cosmicBonus = cookiesPerSecond * 2000;
                 cookies += cosmicBonus;
                 updateStats();
                 showFloatingMessage(`🌌 Kliknięcie Kosmiczne! +${Math.floor(cosmicBonus).toLocaleString()} ciastek!`, "#8b5cf6");
@@ -2956,24 +2983,38 @@
             let bonus = Math.random();
             let multiplier = (window.bonusPower || 1);
             if (window.luckyStream && Math.random() < 0.3) bonus *= 2;
-            // Mocniejsze bonusy
-            if (bonus < 0.2 && window.luckyCharm) {
+            
+            // Podstawowa nagroda: zawsze dodatnia, rosnąca z ilością ciastek (1% - 8% aktualnych ciastek)
+            let baseReward = Math.floor(cookies * (0.01 + Math.random() * 0.07));
+            if (baseReward < 100 && cookies > 1000) baseReward = 100; // Minimum 100 dla większych stanów
+            if (baseReward < 10) baseReward = 10; // Minimum 10 dla małych stanów
+            
+            let reward = baseReward;
+            let message = `✨ +${baseReward.toLocaleString()} ciastek!`;
+            let specialEffect = false;
+            
+            // Bonusy specjalne - wzmocnione
+            if (bonus < 0.15 && window.luckyCharm) {
                 activeBonuses.tsunami = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = (window.quantumAccelerator ? 35000 : 25000) * multiplier;
+                let duration = (window.quantumAccelerator ? 40000 : 30000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.tsunami = false; updateStats(); }, duration);
                 updateStats();
-                showFloatingMessage("🌊 CUKIERKOWE TSUNAMI! x300 CPS przez 25s!", "#f97316");
+                message = "🌊 CUKIERKOWE TSUNAMI! x500 CPS przez 30s!";
+                specialEffect = true;
+                showFloatingMessage(message, "#f97316");
                 document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
-            } else if (bonus < 0.4) {
+            } else if (bonus < 0.3) {
                 activeBonuses.magicBlast = true;
                 if (bonusTimer) clearTimeout(bonusTimer);
-                let duration = (window.quantumAccelerator ? 30000 : 20000) * multiplier;
+                let duration = (window.quantumAccelerator ? 35000 : 25000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.magicBlast = false; updateStats(); }, duration);
                 updateStats();
-                showFloatingMessage("✨ MAGICZNY PODMUCH! x5000 klik przez 20s!", "#fbbf24");
-            } else if (bonus < 0.6 && window.goldenRainUpgrade) {
+                message = "✨ MAGICZNY PODMUCH! x10000 klik przez 25s!";
+                specialEffect = true;
+                showFloatingMessage(message, "#fbbf24");
+            } else if (bonus < 0.45 && window.goldenRainUpgrade) {
                 if (downpourInterval) clearInterval(downpourInterval);
                 activeBonuses.goldenDownpour = true;
                 downpourInterval = setInterval(() => {
@@ -2981,22 +3022,21 @@
                         clearInterval(downpourInterval);
                         return;
                     }
-                    cookies += cookiesPerSecond * 15;
+                    cookies += cookiesPerSecond * 30;
                     updateStats();
                 }, 1000);
                 setTimeout(() => {
                     activeBonuses.goldenDownpour = false;
                     clearInterval(downpourInterval);
                 }, 30000);
-                showFloatingMessage("🌧️ ZŁOTE ULEWY! +1500% CPS co sekundę przez 30s!", "#facc15");
-            } else if (bonus < 0.75) {
-                let bonusCookies = cookiesPerSecond * 30 * multiplier;
-                if (window.treasureChest) bonusCookies *= 5;
-                cookies += bonusCookies;
-                if (window.luckyCharm) cookies += bonusCookies * 0.5;
-                updateStats();
-                showFloatingMessage(`✨ +${Math.floor(bonusCookies).toLocaleString()} ciastek!`, "#10b981");
-            } else if (bonus < 0.9 && window.goldenRainUpgrade) {
+                message = "🌧️ ZŁOTE ULEWY! +3000% CPS co sekundę przez 30s!";
+                specialEffect = true;
+                showFloatingMessage(message, "#facc15");
+            } else if (bonus < 0.6) {
+                reward = baseReward * (window.treasureChest ? 8 : 5);
+                message = `⭐ Hojny dar! +${Math.floor(reward).toLocaleString()} ciastek!`;
+                specialEffect = true;
+            } else if (bonus < 0.75 && window.goldenRainUpgrade) {
                 if (stormInterval) clearInterval(stormInterval);
                 activeBonuses.goldenRain = true;
                 stormInterval = setInterval(() => {
@@ -3004,32 +3044,42 @@
                         clearInterval(stormInterval);
                         return;
                     }
-                    cookies += clickMultiplier * 50;
+                    cookies += clickMultiplier * 100;
                     updateStats();
                 }, 500);
                 setTimeout(() => {
                     activeBonuses.goldenRain = false;
                     clearInterval(stormInterval);
                 }, 20000);
-                showFloatingMessage("🌧️ Złoty Deszcz! +50 ciastek co 0,5s przez 20s!", "#fbbf24");
+                message = "🌧️ Złoty Deszcz! +100 ciastek co 0,5s przez 20s!";
+                specialEffect = true;
+                showFloatingMessage(message, "#fbbf24");
             } else {
-                const bonusCookies = cookiesPerSecond * 100 * multiplier;
-                cookies += bonusCookies;
-                updateStats();
-                showFloatingMessage(`⏰ Ciasteczka z przyszłości! +${Math.floor(bonusCookies).toLocaleString()}`, "#8b5cf6");
+                reward = baseReward * 3;
+                message = `⏰ Ciasteczka z przyszłości! +${Math.floor(reward).toLocaleString()}`;
+                specialEffect = true;
             }
+            
+            if (!specialEffect) {
+                cookies += reward;
+                showFloatingMessage(message, "#10b981");
+            } else if (specialEffect && !message.includes("Tsunami") && !message.includes("Podmuch") && !message.includes("Ulewy") && !message.includes("Deszcz")) {
+                cookies += reward;
+                showFloatingMessage(message, "#10b981");
+            }
+            updateStats();
             saveGame();
             scheduleGoldenCookie();
         };
         document.body.appendChild(golden);
-        // Złote ciasteczko widoczne przez 12 sekund
-        setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 12000);
+        // Złote ciasteczko widoczne przez 7 sekund
+        setTimeout(() => { if (golden.parentNode) golden.remove(); scheduleGoldenCookie(); }, 7000);
     }
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        let baseDelay = 5000 * goldenCookieFrequencyMultiplier;
-        const delay = baseDelay + Math.random() * 15000;
+        // Losowy czas od 4 do 12 sekund
+        const delay = 4000 + Math.random() * 8000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
 
@@ -3183,9 +3233,9 @@
 
     function gameLoop() {
         let currentCPS = cookiesPerSecond;
-        if (activeBonuses.tsunami) currentCPS *= 300;
-        else if (activeBonuses.superFrenzy) currentCPS *= 50;
-        if (activeBonuses.goldenDownpour) currentCPS *= 15;
+        if (activeBonuses.tsunami) currentCPS *= 500;
+        else if (activeBonuses.superFrenzy) currentCPS *= 100;
+        if (activeBonuses.goldenDownpour) currentCPS *= 30;
         if (window.divineIntervention && Math.random() < 0.01) {
             currentCPS *= 2;
         }
@@ -3213,6 +3263,76 @@
     let customPortions = [];
     let customFoods = [];
     let meals = [];
+
+    // ROZSZERZONA LISTA PRODUKTÓW (50)
+    const productMap = {
+        apple: { name: "Jabłko", kcalPer100g: 52, proteinPer100g: 0.3, fatPer100g: 0.2, carbsPer100g: 14 },
+        banana: { name: "Banan", kcalPer100g: 89, proteinPer100g: 1.1, fatPer100g: 0.3, carbsPer100g: 23 },
+        chicken: { name: "Pierś z kurczaka", kcalPer100g: 165, proteinPer100g: 31, fatPer100g: 3.6, carbsPer100g: 0 },
+        rice: { name: "Ryż biały", kcalPer100g: 130, proteinPer100g: 2.7, fatPer100g: 0.3, carbsPer100g: 28 },
+        bread: { name: "Chleb pszenny", kcalPer100g: 265, proteinPer100g: 9, fatPer100g: 3.2, carbsPer100g: 49 },
+        egg: { name: "Jajko", kcalPer100g: 155, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 1.1 },
+        potato: { name: "Ziemniak", kcalPer100g: 77, proteinPer100g: 2, fatPer100g: 0.1, carbsPer100g: 17 },
+        tomato: { name: "Pomidor", kcalPer100g: 18, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 3.9 },
+        cucumber: { name: "Ogórek", kcalPer100g: 15, proteinPer100g: 0.7, fatPer100g: 0.1, carbsPer100g: 3.6 },
+        milk: { name: "Mleko 2%", kcalPer100g: 50, proteinPer100g: 3.3, fatPer100g: 2, carbsPer100g: 4.7 },
+        yogurt: { name: "Jogurt naturalny", kcalPer100g: 61, proteinPer100g: 3.5, fatPer100g: 3.3, carbsPer100g: 4.7 },
+        cheese: { name: "Ser żółty", kcalPer100g: 402, proteinPer100g: 25, fatPer100g: 33, carbsPer100g: 1.3 },
+        beef: { name: "Wołowina", kcalPer100g: 250, proteinPer100g: 26, fatPer100g: 15, carbsPer100g: 0 },
+        pork: { name: "Wieprzowina", kcalPer100g: 242, proteinPer100g: 27, fatPer100g: 14, carbsPer100g: 0 },
+        salmon: { name: "Łosoś", kcalPer100g: 208, proteinPer100g: 20, fatPer100g: 13, carbsPer100g: 0 },
+        oatmeal: { name: "Płatki owsiane", kcalPer100g: 389, proteinPer100g: 16.9, fatPer100g: 6.9, carbsPer100g: 66 },
+        pasta: { name: "Makaron", kcalPer100g: 131, proteinPer100g: 5, fatPer100g: 1.1, carbsPer100g: 25 },
+        broccoli: { name: "Brokuł", kcalPer100g: 34, proteinPer100g: 2.8, fatPer100g: 0.4, carbsPer100g: 6.6 },
+        carrot: { name: "Marchew", kcalPer100g: 41, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 9.6 },
+        orange: { name: "Pomarańcza", kcalPer100g: 47, proteinPer100g: 0.9, fatPer100g: 0.1, carbsPer100g: 11.8 },
+        // Dodatkowe produkty do 50
+        cottage_cheese: { name: "Twaróg półtłusty", kcalPer100g: 120, proteinPer100g: 18, fatPer100g: 4.5, carbsPer100g: 3.5 },
+        tofu: { name: "Tofu naturalne", kcalPer100g: 76, proteinPer100g: 8, fatPer100g: 4.8, carbsPer100g: 1.9 },
+        lentils: { name: "Soczewica zielona", kcalPer100g: 116, proteinPer100g: 9, fatPer100g: 0.4, carbsPer100g: 20 },
+        chickpeas: { name: "Ciecierzyca", kcalPer100g: 139, proteinPer100g: 8.9, fatPer100g: 2.6, carbsPer100g: 22 },
+        buckwheat: { name: "Kasza gryczana", kcalPer100g: 120, proteinPer100g: 3.8, fatPer100g: 1.1, carbsPer100g: 24 },
+        millet: { name: "Kasza jaglana", kcalPer100g: 119, proteinPer100g: 3.5, fatPer100g: 1, carbsPer100g: 24 },
+        quinoa: { name: "Quinoa", kcalPer100g: 120, proteinPer100g: 4.4, fatPer100g: 1.9, carbsPer100g: 21 },
+        sweet_potato: { name: "Batat", kcalPer100g: 86, proteinPer100g: 1.6, fatPer100g: 0.1, carbsPer100g: 20 },
+        avocado: { name: "Awokado", kcalPer100g: 160, proteinPer100g: 2, fatPer100g: 15, carbsPer100g: 9 },
+        walnuts: { name: "Orzechy włoskie", kcalPer100g: 654, proteinPer100g: 15, fatPer100g: 65, carbsPer100g: 14 },
+        almonds: { name: "Migdały", kcalPer100g: 579, proteinPer100g: 21, fatPer100g: 50, carbsPer100g: 22 },
+        flaxseed: { name: "Siemię lniane", kcalPer100g: 534, proteinPer100g: 18, fatPer100g: 42, carbsPer100g: 29 },
+        chia: { name: "Nasiona chia", kcalPer100g: 486, proteinPer100g: 17, fatPer100g: 31, carbsPer100g: 42 },
+        olive_oil: { name: "Oliwa z oliwek", kcalPer100g: 884, proteinPer100g: 0, fatPer100g: 100, carbsPer100g: 0 },
+        coconut_oil: { name: "Olej kokosowy", kcalPer100g: 862, proteinPer100g: 0, fatPer100g: 100, carbsPer100g: 0 },
+        peanut_butter: { name: "Masło orzechowe", kcalPer100g: 588, proteinPer100g: 25, fatPer100g: 50, carbsPer100g: 20 },
+        greek_yogurt: { name: "Jogurt grecki", kcalPer100g: 59, proteinPer100g: 10, fatPer100g: 0.4, carbsPer100g: 4 },
+        kefir: { name: "Kefir", kcalPer100g: 41, proteinPer100g: 3.5, fatPer100g: 1.5, carbsPer100g: 4 },
+        smoked_salmon: { name: "Łosoś wędzony", kcalPer100g: 180, proteinPer100g: 22, fatPer100g: 12, carbsPer100g: 0 },
+        tuna: { name: "Tuńczyk w wodzie", kcalPer100g: 116, proteinPer100g: 23, fatPer100g: 1.5, carbsPer100g: 0 },
+        mackerel: { name: "Makrela", kcalPer100g: 205, proteinPer100g: 19, fatPer100g: 14, carbsPer100g: 0 },
+        turkey: { name: "Indyk (pierś)", kcalPer100g: 135, proteinPer100g: 29, fatPer100g: 1.5, carbsPer100g: 0 },
+        lamb: { name: "Jagnięcina", kcalPer100g: 294, proteinPer100g: 25, fatPer100g: 21, carbsPer100g: 0 },
+        quail_egg: { name: "Jajko przepiórcze", kcalPer100g: 158, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 0.4 },
+        feta: { name: "Ser Feta", kcalPer100g: 264, proteinPer100g: 14, fatPer100g: 21, carbsPer100g: 4 },
+        mozzarella: { name: "Mozzarella", kcalPer100g: 280, proteinPer100g: 18, fatPer100g: 22, carbsPer100g: 2 },
+        parmesan: { name: "Parmezan", kcalPer100g: 431, proteinPer100g: 38, fatPer100g: 29, carbsPer100g: 4 },
+        spinach: { name: "Szpinak", kcalPer100g: 23, proteinPer100g: 2.9, fatPer100g: 0.4, carbsPer100g: 3.6 },
+        kale: { name: "Jarmuż", kcalPer100g: 49, proteinPer100g: 4.3, fatPer100g: 0.9, carbsPer100g: 9 },
+        cauliflower: { name: "Kalafior", kcalPer100g: 25, proteinPer100g: 1.9, fatPer100g: 0.3, carbsPer100g: 5 },
+        onion: { name: "Cebula", kcalPer100g: 40, proteinPer100g: 1.1, fatPer100g: 0.1, carbsPer100g: 9 },
+        garlic: { name: "Czosnek", kcalPer100g: 149, proteinPer100g: 6.4, fatPer100g: 0.5, carbsPer100g: 33 },
+        mushrooms: { name: "Pieczarki", kcalPer100g: 22, proteinPer100g: 3.1, fatPer100g: 0.3, carbsPer100g: 3.3 },
+        strawberries: { name: "Truskawki", kcalPer100g: 32, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 7.7 },
+        blueberries: { name: "Jagody", kcalPer100g: 57, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 14 },
+        raspberries: { name: "Maliny", kcalPer100g: 52, proteinPer100g: 1.2, fatPer100g: 0.7, carbsPer100g: 12 },
+        kiwi: { name: "Kiwi", kcalPer100g: 61, proteinPer100g: 1.1, fatPer100g: 0.5, carbsPer100g: 14 },
+        grapefruit: { name: "Grejpfrut", kcalPer100g: 42, proteinPer100g: 0.8, fatPer100g: 0.1, carbsPer100g: 10 },
+        lemon: { name: "Cytryna", kcalPer100g: 29, proteinPer100g: 1.1, fatPer100g: 0.3, carbsPer100g: 9 },
+        watermelon: { name: "Arbuz", kcalPer100g: 30, proteinPer100g: 0.6, fatPer100g: 0.2, carbsPer100g: 8 },
+        melon: { name: "Melon", kcalPer100g: 34, proteinPer100g: 0.8, fatPer100g: 0.2, carbsPer100g: 8 },
+        peach: { name: "Brzoskwinia", kcalPer100g: 39, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 10 },
+        apricot: { name: "Morela", kcalPer100g: 48, proteinPer100g: 1.4, fatPer100g: 0.4, carbsPer100g: 11 },
+        plum: { name: "Śliwka", kcalPer100g: 46, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 11 },
+        grapes: { name: "Winogrona", kcalPer100g: 69, proteinPer100g: 0.7, fatPer100g: 0.2, carbsPer100g: 18 }
+    };
 
     function loadCustomPortions() {
         const saved = localStorage.getItem('customPortions');
@@ -3324,38 +3444,26 @@
         const select = document.getElementById('mealFoodSelect');
         if (!select) return;
         const currentValue = select.value;
-        select.innerHTML = '<option value="">Wybierz produkt lub dodaj własny</option><optgroup label="Popularne produkty">' +
-            '<option value="apple">🍎 Jabłko (52 kcal/100g, B:0.3 T:0.2 W:14)</option>' +
-            '<option value="banana">🍌 Banan (89 kcal/100g, B:1.1 T:0.3 W:23)</option>' +
-            '<option value="chicken">🍗 Pierś z kurczaka (165 kcal/100g, B:31 T:3.6 W:0)</option>' +
-            '<option value="rice">🍚 Ryż biały (130 kcal/100g, B:2.7 T:0.3 W:28)</option>' +
-            '<option value="bread">🍞 Chleb pszenny (265 kcal/100g, B:9 T:3.2 W:49)</option>' +
-            '<option value="egg">🥚 Jajko (155 kcal/100g, B:13 T:11 W:1.1)</option>' +
-            '<option value="potato">🥔 Ziemniak (77 kcal/100g, B:2 T:0.1 W:17)</option>' +
-            '<option value="tomato">🍅 Pomidor (18 kcal/100g, B:0.9 T:0.2 W:3.9)</option>' +
-            '<option value="cucumber">🥒 Ogórek (15 kcal/100g, B:0.7 T:0.1 W:3.6)</option>' +
-            '<option value="milk">🥛 Mleko 2% (50 kcal/100g, B:3.3 T:2 W:4.7)</option>' +
-            '<option value="yogurt">🍶 Jogurt naturalny (61 kcal/100g, B:3.5 T:3.3 W:4.7)</option>' +
-            '<option value="cheese">🧀 Ser żółty (402 kcal/100g, B:25 T:33 W:1.3)</option>' +
-            '<option value="beef">🥩 Wołowina (250 kcal/100g, B:26 T:15 W:0)</option>' +
-            '<option value="pork">🐖 Wieprzowina (242 kcal/100g, B:27 T:14 W:0)</option>' +
-            '<option value="salmon">🐟 Łosoś (208 kcal/100g, B:20 T:13 W:0)</option>' +
-            '<option value="oatmeal">🥣 Płatki owsiane (389 kcal/100g, B:16.9 T:6.9 W:66)</option>' +
-            '<option value="pasta">🍝 Makaron (131 kcal/100g, B:5 T:1.1 W:25)</option>' +
-            '<option value="broccoli">🥦 Brokuł (34 kcal/100g, B:2.8 T:0.4 W:6.6)</option>' +
-            '<option value="carrot">🥕 Marchew (41 kcal/100g, B:0.9 T:0.2 W:9.6)</option>' +
-            '<option value="orange">🍊 Pomarańcza (47 kcal/100g, B:0.9 T:0.1 W:11.8)</option>' +
-            '</optgroup>';
+        select.innerHTML = '<option value="">Wybierz produkt lub dodaj własny</option>';
+        const popularGroup = document.createElement('optgroup');
+        popularGroup.label = "Popularne produkty";
+        for (let [key, product] of Object.entries(productMap)) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = `${product.name} (${product.kcalPer100g} kcal/100g, B:${product.proteinPer100g} T:${product.fatPer100g} W:${product.carbsPer100g})`;
+            popularGroup.appendChild(option);
+        }
+        select.appendChild(popularGroup);
         if (customFoods.length > 0) {
-            const optgroup = document.createElement('optgroup');
-            optgroup.label = 'Moje produkty';
+            const customGroup = document.createElement('optgroup');
+            customGroup.label = 'Moje produkty';
             customFoods.forEach(food => {
                 const option = document.createElement('option');
                 option.value = food.name;
                 option.textContent = `${food.name} (${food.caloriesPer100g} kcal/100g, B:${food.proteinPer100g} T:${food.fatPer100g} W:${food.carbsPer100g})`;
-                optgroup.appendChild(option);
+                customGroup.appendChild(option);
             });
-            select.appendChild(optgroup);
+            select.appendChild(customGroup);
         }
         if (currentValue && [...select.options].some(opt => opt.value === currentValue)) {
             select.value = currentValue;
@@ -3535,28 +3643,6 @@
         const val = select.value;
         if (!val) return;
         let product = null;
-        const productMap = {
-            apple: { name: "Jabłko", kcalPer100g: 52, proteinPer100g: 0.3, fatPer100g: 0.2, carbsPer100g: 14 },
-            banana: { name: "Banan", kcalPer100g: 89, proteinPer100g: 1.1, fatPer100g: 0.3, carbsPer100g: 23 },
-            chicken: { name: "Pierś z kurczaka", kcalPer100g: 165, proteinPer100g: 31, fatPer100g: 3.6, carbsPer100g: 0 },
-            rice: { name: "Ryż biały", kcalPer100g: 130, proteinPer100g: 2.7, fatPer100g: 0.3, carbsPer100g: 28 },
-            bread: { name: "Chleb pszenny", kcalPer100g: 265, proteinPer100g: 9, fatPer100g: 3.2, carbsPer100g: 49 },
-            egg: { name: "Jajko", kcalPer100g: 155, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 1.1 },
-            potato: { name: "Ziemniak", kcalPer100g: 77, proteinPer100g: 2, fatPer100g: 0.1, carbsPer100g: 17 },
-            tomato: { name: "Pomidor", kcalPer100g: 18, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 3.9 },
-            cucumber: { name: "Ogórek", kcalPer100g: 15, proteinPer100g: 0.7, fatPer100g: 0.1, carbsPer100g: 3.6 },
-            milk: { name: "Mleko 2%", kcalPer100g: 50, proteinPer100g: 3.3, fatPer100g: 2, carbsPer100g: 4.7 },
-            yogurt: { name: "Jogurt naturalny", kcalPer100g: 61, proteinPer100g: 3.5, fatPer100g: 3.3, carbsPer100g: 4.7 },
-            cheese: { name: "Ser żółty", kcalPer100g: 402, proteinPer100g: 25, fatPer100g: 33, carbsPer100g: 1.3 },
-            beef: { name: "Wołowina", kcalPer100g: 250, proteinPer100g: 26, fatPer100g: 15, carbsPer100g: 0 },
-            pork: { name: "Wieprzowina", kcalPer100g: 242, proteinPer100g: 27, fatPer100g: 14, carbsPer100g: 0 },
-            salmon: { name: "Łosoś", kcalPer100g: 208, proteinPer100g: 20, fatPer100g: 13, carbsPer100g: 0 },
-            oatmeal: { name: "Płatki owsiane", kcalPer100g: 389, proteinPer100g: 16.9, fatPer100g: 6.9, carbsPer100g: 66 },
-            pasta: { name: "Makaron", kcalPer100g: 131, proteinPer100g: 5, fatPer100g: 1.1, carbsPer100g: 25 },
-            broccoli: { name: "Brokuł", kcalPer100g: 34, proteinPer100g: 2.8, fatPer100g: 0.4, carbsPer100g: 6.6 },
-            carrot: { name: "Marchew", kcalPer100g: 41, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 9.6 },
-            orange: { name: "Pomarańcza", kcalPer100g: 47, proteinPer100g: 0.9, fatPer100g: 0.1, carbsPer100g: 11.8 }
-        };
         if (productMap[val]) {
             product = productMap[val];
         } else {
@@ -3666,7 +3752,6 @@
         document.getElementById('weatherContent').innerHTML = '';
         try {
             const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
-            // Używamy wttr.in z lepszym dopasowaniem lokalizacji
             const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=pl&${unitsParam}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -3850,10 +3935,10 @@
         const ctx = document.getElementById('tempChart').getContext('2d');
         if (weatherChart) weatherChart.destroy();
         const gradientMax = ctx.createLinearGradient(0, 0, 0, 300);
-        gradientMax.addColorStop(0, 'rgba(239,68,68,0.4)');
+        gradientMax.addColorStop(0, 'rgba(239,68,68,0.6)');
         gradientMax.addColorStop(1, 'rgba(239,68,68,0.0)');
         const gradientMin = ctx.createLinearGradient(0, 0, 0, 300);
-        gradientMin.addColorStop(0, 'rgba(59,130,246,0.4)');
+        gradientMin.addColorStop(0, 'rgba(59,130,246,0.6)');
         gradientMin.addColorStop(1, 'rgba(59,130,246,0.0)');
         weatherChart = new Chart(ctx, {
             type: 'line',
