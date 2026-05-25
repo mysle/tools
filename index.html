@@ -1383,7 +1383,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona animacja) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona animacja i komunikaty) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cookie Clicker – Królestwo Słodkości</h2>
@@ -2616,7 +2616,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (poprawiona animacja) ========================
+    // ======================== COOKIE CLICKER (poprawiona animacja i komunikaty) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -3009,7 +3009,7 @@
             let message = `✨ +${baseReward.toLocaleString()} ciastek!`;
             let specialEffect = false;
             
-            // Lista potężnych bonusów
+            // Lista potężnych bonusów - każdy wywołuje showFloatingMessage tylko raz
             if (rand < 0.12 && window.luckyCharm) {
                 // TSUNAMI
                 if (bonusTimer) clearTimeout(bonusTimer);
@@ -3095,6 +3095,8 @@
                 reward = baseReward * (window.treasureChest ? 10 : 6);
                 message = `⭐ HOJNY DAR! +${Math.floor(reward).toLocaleString()} ciastek!`;
                 specialEffect = true;
+                cookies += reward;
+                showFloatingMessage(message, "#10b981");
             } else if (rand < 0.85 && window.clickFrenzyUpgrade) {
                 // CLICK FRENZY
                 if (bonusTimer) clearTimeout(bonusTimer);
@@ -3109,15 +3111,17 @@
                 // PRZYSZŁOŚĆ
                 reward = baseReward * (window.treasureChest ? 5 : 3);
                 message = `⏰ CIASTECZKA Z PRZYSZŁOŚCI! +${Math.floor(reward).toLocaleString()}`;
-                specialEffect = true;
+                cookies += reward;
+                showFloatingMessage(message, "#10b981");
             }
             
+            // Jeśli nie był to specjalny efekt, który już dodał ciasteczka, dodajemy je tutaj.
+            // Dla przypadków HOJNY DAR i PRZYSZŁOŚĆ już dodano powyżej.
             if (!specialEffect) {
                 cookies += reward;
                 showFloatingMessage(message, "#10b981");
-            } else if (specialEffect && !message.includes("Tsunami") && !message.includes("Podmuch") && !message.includes("Ulewy") && !message.includes("Deszcz") && !message.includes("Przyspieszenie") && !message.includes("Frenzy")) {
+            } else if (specialEffect && message !== "🌊 TSUNAMI CIASTEK! x500 CPS przez 30s!" && message !== "✨ MAGICZNY PODMUCH! x10000 za kliknięcie przez 25s!" && message !== "🌧️ ZŁOTE ULEWY! +3000% CPS co sekundę przez 30s!" && message !== "🌧️ ZŁOTY DESZCZ! +100 ciastek co 0.5s przez 20s!" && message !== "⚡ PRZYSPIESZENIE KWANTOWE! Podwojone CPS i kliknięcia na 20s!" && message !== "🖱️ CLICK FRENZY! x777 za każde kliknięcie na 15s!") {
                 cookies += reward;
-                showFloatingMessage(message, "#10b981");
             }
             updateStats();
             saveGame();
@@ -3760,7 +3764,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODA (poprawiona prognoza godzinowa) ========================
+    // ======================== MODUŁ POGODA (poprawiona prognoza godzinowa - prawidłowe godziny) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -3911,6 +3915,18 @@
         return plDesc[desc] || desc;
     }
 
+    function formatHourFromWttr(timeVal) {
+        // timeVal może być liczbą 0,100,200,...2300 lub stringiem "0","100",... "2300"
+        if (timeVal === undefined || timeVal === null) return "--:--";
+        let val = parseInt(timeVal, 10);
+        if (isNaN(val)) return "--:--";
+        let hours = Math.floor(val / 100);
+        let minutes = val % 100;
+        if (hours < 0 || hours > 23) hours = 0;
+        if (minutes < 0 || minutes > 59) minutes = 0;
+        return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}`;
+    }
+
     function displayWeatherWttr(data, locationName) {
         const current = data.current_condition[0];
         const daily = data.weather;
@@ -3971,23 +3987,8 @@
             <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś)</h3>
             <div class="hourly-forecast">
                 ${hourlyForecast.slice(0,24).map(h => {
-                    // Poprawne parsowanie godziny z wttr.in (minuty od północy)
-                    let hourStr = '--:--';
-                    if (h.time !== undefined) {
-                        if (typeof h.time === 'string' && h.time.includes(':')) {
-                            // Jeśli format HH:MM (czasem bywa)
-                            hourStr = h.time;
-                        } else {
-                            let mins = parseInt(h.time, 10);
-                            if (!isNaN(mins)) {
-                                let hrs = Math.floor(mins / 60);
-                                let minPart = mins % 60;
-                                hourStr = `${hrs.toString().padStart(2,'0')}:${minPart.toString().padStart(2,'0')}`;
-                            } else {
-                                hourStr = h.time;
-                            }
-                        }
-                    }
+                    // Poprawne formatowanie godziny - konwersja z wartości liczbowej HHMM
+                    let hourStr = formatHourFromWttr(h.time);
                     const temp = parseFloat(h.tempC);
                     const icon = getWeatherIconWttr(h.weatherCode);
                     const desc = getWeatherDescription(h.weatherDesc[0]?.value);
