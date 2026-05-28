@@ -537,194 +537,52 @@
             color: #f87171;
         }
         
-        /* NOWY KONTENER NA KOMUNIKATY (ŚRODEK EKRANU) */
-        .center-messages {
+        /* ULEPSZONE KOMUNIKATY - ŚRODEK EKRANU, 1 POD 2, NIE BLOKUJĄ KLIKANIA */
+        .message-container {
             position: fixed;
-            top: 20%;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -50%);
             z-index: 10001;
             display: flex;
             flex-direction: column;
             align-items: center;
-            pointer-events: none;
+            justify-content: center;
             gap: 12px;
             max-width: 90%;
             width: auto;
+            pointer-events: none;
         }
-        .center-message {
+        .message-item {
             background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(12px);
-            border-left: 5px solid var(--primary);
-            border-radius: 1rem;
-            padding: 0.9rem 1.5rem;
+            backdrop-filter: blur(16px);
+            border-left: 6px solid var(--primary);
+            border-radius: 1.2rem;
+            padding: 0.9rem 1.8rem;
             color: white;
             font-weight: 600;
             font-size: 1rem;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
-            pointer-events: auto;
-            animation: slideInCenter 0.25s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
             text-align: center;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+            pointer-events: none;
+            animation: messageSlideIn 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
             width: auto;
-            max-width: 400px;
-            white-space: normal;
+            min-width: 220px;
+            max-width: 85vw;
             word-break: break-word;
+            letter-spacing: 0.3px;
         }
-        @keyframes slideInCenter {
+        @keyframes messageSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
+                transform: translateY(30px) scale(0.9);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
-        /* ULEPSZENIA POGODY */
-        .weather-current {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            background: rgba(15,23,42,0.5);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            transition: all 0.3s;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
-        }
-        .weather-current.hot {
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(249, 115, 22, 0.4));
-            border-left: 4px solid #f97316;
-        }
-        .weather-current.cold {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.4));
-            border-left: 4px solid #3b82f6;
-        }
-        .weather-current.mild {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(99, 102, 241, 0.4));
-            border-left: 4px solid #22c55e;
-        }
-        .weather-main {
-            flex: 2;
-            text-align: center;
-        }
-        .weather-main .temp {
-            font-size: 4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(0,0,0,0.3);
-        }
-        .weather-details {
-            flex: 3;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
-            gap: 1rem;
-        }
-        .weather-detail-item {
-            background: rgba(0,0,0,0.5);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            text-align: center;
-            transition: transform 0.2s, background 0.2s;
-            backdrop-filter: blur(4px);
-        }
-        .weather-detail-item:hover {
-            transform: translateY(-3px);
-            background: rgba(0,0,0,0.7);
-        }
-        .forecast-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .forecast-card {
-            background: rgba(15,23,42,0.7);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 1rem;
-            text-align: center;
-            transition: 0.2s;
-            backdrop-filter: blur(5px);
-        }
-        .forecast-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            background: rgba(99,102,241,0.3);
-        }
-        .forecast-day {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        .forecast-icon {
-            font-size: 2rem;
-            margin: 0.5rem 0;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-        .forecast-temp {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        .hourly-forecast {
-            display: flex;
-            overflow-x: auto;
-            gap: 1rem;
-            padding: 1rem 0;
-            scrollbar-width: thin;
-        }
-        .hourly-card {
-            background: rgba(0,0,0,0.5);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            min-width: 130px;
-            text-align: center;
-            flex-shrink: 0;
-            backdrop-filter: blur(4px);
-            transition: 0.2s;
-        }
-        .hourly-card:hover {
-            background: rgba(99,102,241,0.4);
-            transform: scale(1.02);
-        }
-        .food-icon {
-            margin-right: 6px;
-            font-size: 1rem;
-        }
-        .custom-food-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .custom-food-item {
-            background: rgba(99,102,241,0.2);
-            padding: 0.4rem 0.8rem;
-            border-radius: 2rem;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-block;
-            margin: 0.2rem;
-        }
-        .custom-food-item:hover {
-            background: rgba(239,68,68,0.5);
-        }
-        .meal-entry {
-            background: rgba(15,23,42,0.6);
-            border-radius: 0.8rem;
-            padding: 0.6rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
         @media (max-width: 768px) {
             .tabs { gap: 0.2rem; }
             .tab-btn { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
@@ -836,6 +694,10 @@
                 width: 100% !important;
                 margin: 0 !important;
             }
+            .message-item {
+                font-size: 0.85rem;
+                padding: 0.7rem 1.2rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -866,6 +728,123 @@
             .ip-display {
                 font-size: 1.2rem;
             }
+        }
+
+        /* ULEPSZENIA POGODY */
+        .weather-current {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            background: rgba(15,23,42,0.5);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        }
+        .weather-current.hot {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(249, 115, 22, 0.4));
+            border-left: 4px solid #f97316;
+        }
+        .weather-current.cold {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.4));
+            border-left: 4px solid #3b82f6;
+        }
+        .weather-current.mild {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(99, 102, 241, 0.4));
+            border-left: 4px solid #22c55e;
+        }
+        .weather-main {
+            flex: 2;
+            text-align: center;
+        }
+        .weather-main .temp {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        .weather-details {
+            flex: 3;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+            gap: 1rem;
+        }
+        .weather-detail-item {
+            background: rgba(0,0,0,0.5);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+            transition: transform 0.2s, background 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .weather-detail-item:hover {
+            transform: translateY(-3px);
+            background: rgba(0,0,0,0.7);
+        }
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+        .forecast-card {
+            background: rgba(15,23,42,0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        .forecast-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(99,102,241,0.3);
+        }
+        .forecast-day {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .forecast-icon {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .forecast-temp {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        .hourly-forecast {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+            scrollbar-width: thin;
+        }
+        .hourly-card {
+            background: rgba(0,0,0,0.5);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            min-width: 130px;
+            text-align: center;
+            flex-shrink: 0;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+        }
+        .hourly-card:hover {
+            background: rgba(99,102,241,0.4);
+            transform: scale(1.02);
+        }
+        .product-emoji {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
         }
     </style>
 </head>
@@ -1245,8 +1224,7 @@
             <div class="table-wrapper">
                 <table id="timeDiffTable">
                     <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
-                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tr>
-                </tbody>
+                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</table></tbody>
                 </table>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
@@ -1408,7 +1386,7 @@
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda, 10-dniowa prognoza, wschód/zachód słońca, faza księżyca i wykres temperatury.</p>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda, 7-dniowa prognoza, wschód/zachód słońca, faza księżyca i wykres temperatury.</p>
 
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
                 <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;">
@@ -1423,7 +1401,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona animacja i komunikaty) ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cookie Clicker – Królestwo Słodkości</h2>
@@ -1502,8 +1480,8 @@
     </div>
 </div>
 
-<!-- Nowy kontener na komunikaty na środku ekranu -->
-<div class="center-messages" id="centerMessageContainer"></div>
+<!-- Kontener na komunikaty (środek ekranu) -->
+<div class="message-container" id="messageContainer"></div>
 
 <script>
     // ======================== ZAKŁADKI GŁÓWNE ========================
@@ -1779,9 +1757,10 @@
                 allStatsData.push({ currency, valueInBase, changePercent });
             });
 
+            // TOP 10 wzrostów i spadków (zamiast 5)
             changes.sort((a, b) => b.changePercent - a.changePercent);
-            const topGainers = changes.slice(0, 10);  // TOP 10 wzrosty
-            const topLosers = changes.slice(-10).reverse(); // TOP 10 spadki
+            const topGainers = changes.slice(0, 10);
+            const topLosers = changes.slice(-10).reverse();
 
             const gainersHTML = topGainers.length > 0 ? topGainers.map(c => `
                 <div class="mover-item">
@@ -2625,15 +2604,15 @@
                 <tr>
                     <td><strong>${card.name}</strong><br><span style="font-size:0.7rem;">${card.tz}</span></td>
                     <td>${time}<br><span style="font-size:0.7rem;">${date}</span></td>
-                    <td>${diffStr}</div></td>
+                    <td>${diffStr}</div></div></td>
                 </tr>
             `;
         });
         tbody.innerHTML += `
             <tr style="background:rgba(99,102,241,0.2);">
                 <td><strong>Strefa bazowa</strong><br><span style="font-size:0.7rem;">${baseTZ}</span></td>
-                <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></td>
-                <td>0h</div></td>
+                <td>${baseFormatted.time}<br><span style="font-size:0.7rem;">${baseFormatted.date}</span></div></td>
+                <td>0h</div></div></td>
             </tr>
         `;
     }
@@ -2656,7 +2635,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (z komunikatami na środku) ========================
+    // ======================== COOKIE CLICKER (poprawiona animacja i komunikaty) ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2668,9 +2647,7 @@
         chocolateShower: false, quantumRush: false, clickFrenzy: false,
         chocolateRevolution: false, sugarRush: false, cosmicRain: false,
         luckyStreak: false, bakerBlessing: false, doughExplosion: false,
-        infiniteCookies: false, galacticTsunami: false, timePortal: false,
-        hyperClick: false, divinePrestige: false, infinity: false,
-        blackHole: false, absoluteClick: false
+        infiniteCookies: false
     };
     let bonusTimer = null;
     let goldenCookieTimeout = null;
@@ -2744,30 +2721,8 @@
         { id: "future_click", name: "⏩ Kliknięcie przyszłości", desc: "Od czasu do czasu dostajesz ciasteczka z przyszłości (50x CPS)", price: 10e9, purchased: false, apply: () => { window.futureClick = true; startFutureClickInterval(); } },
         { id: "cosmic_click", name: "🌌 Kliknięcie Kosmiczne", desc: "Co 10 kliknięć dostajesz 1000x CPS", price: 25e9, purchased: false, apply: () => { window.cosmicClick = true; window.clickCountCosmic = 0; } },
         { id: "infinite_oven", name: "♾️ Nieskończona Piekarnia", desc: "Podwaja moc wszystkich budynków", price: 500e9, purchased: false, apply: () => { buildings.forEach(b => { b.baseCps *= 2; }); recalcCPS(); rebuildBuildings(); rebuildUpgrades(); } },
-        { id: "golden_hour", name: "⏰ Złota Godzina", desc: "Co 5 minut otrzymujesz 5000x CPS", price: 2.5e12, purchased: false, apply: () => { window.goldenHour = true; startGoldenHour(); } },
-        // NOWE ULEPSZENIA
-        { id: "galactic_tsunami", name: "🌊 Galaktyczne Tsunami Ciastek", desc: "Złote ciasteczka dają tsunami x5000 CPS!", price: 5e13, purchased: false, apply: () => { window.galacticTsunami = true; } },
-        { id: "time_portal", name: "⏳ Portal Czasu", desc: "Podwaja CPS i szansę na złote ciasteczka", price: 1e14, purchased: false, apply: () => { globalCPSMultiplier *= 2; goldenCookieFrequencyMultiplier *= 0.7; scheduleGoldenCookie(); recalcCPS(); } },
-        { id: "hyper_click", name: "⚡ Hiperklik", desc: "Kliknięcia dają 10x więcej ciastek", price: 5e14, purchased: false, apply: () => { clickMultiplier *= 10; } },
-        { id: "divine_prestige", name: "👑 Boski Prestiż", desc: "Bonus prestiżu +10% (kumuluje się)", price: 1e15, purchased: false, apply: () => { prestigeMultiplier += 0.1; recalcCPS(); } },
-        { id: "infinity", name: "∞ Nieskończoność", desc: "Co sekundę otrzymujesz 5% aktualnej liczby ciastek", price: 5e15, purchased: false, apply: () => { window.infinity = true; startInfinityInterval(); } },
-        { id: "black_hole", name: "🌀 Słodka Czarna Dziura", desc: "Podwaja wszystkie bonusy i mnożniki", price: 1e16, purchased: false, apply: () => { globalCPSMultiplier *= 2; clickMultiplier *= 2; extraClickBonusPercent *= 2; doubleClickChance *= 1.5; recalcCPS(); } },
-        { id: "absolute_click", name: "💥 Kliknięcie Absolutu", desc: "Kliknięcie daje 1000x CPS i resetuje inne timery", price: 1e17, purchased: false, apply: () => { window.absoluteClick = true; } }
+        { id: "golden_hour", name: "⏰ Złota Godzina", desc: "Co 5 minut otrzymujesz 5000x CPS", price: 2.5e12, purchased: false, apply: () => { window.goldenHour = true; startGoldenHour(); } }
     ];
-
-    function startInfinityInterval() {
-        if (window.infinityInterval) clearInterval(window.infinityInterval);
-        window.infinityInterval = setInterval(() => {
-            if (window.infinity) {
-                let bonus = cookies * 0.05;
-                if (bonus > 0) {
-                    cookies += bonus;
-                    updateStats();
-                    showCenterMessage(`♾️ Nieskończoność! +${Math.floor(bonus).toLocaleString()} ciastek!`, "#a78bfa");
-                }
-            }
-        }, 1000);
-    }
 
     function startGoldenHour() {
         if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
@@ -2776,7 +2731,7 @@
                 let bonus = cookiesPerSecond * 5000;
                 cookies += bonus;
                 updateStats();
-                showCenterMessage(`⭐ Złota Godzina! +${Math.floor(bonus).toLocaleString()} ciastek!`, "#facc15");
+                showFloatingMessage(`⭐ Złota Godzina! +${Math.floor(bonus).toLocaleString()} ciastek!`, "#facc15");
             }
         }, 300000);
     }
@@ -2788,7 +2743,7 @@
                 let bonus = cookiesPerSecond * 50;
                 cookies += bonus;
                 updateStats();
-                showCenterMessage(`🚀 Kliknięcie przyszłości! +${Math.floor(bonus).toLocaleString()} ciastek!`, "#8b5cf6");
+                showFloatingMessage(`🚀 Kliknięcie przyszłości! +${Math.floor(bonus).toLocaleString()} ciastek!`, "#8b5cf6");
             }
         }, 30000);
     }
@@ -2803,27 +2758,27 @@
                     if (bonusTimer) clearTimeout(bonusTimer);
                     bonusTimer = setTimeout(() => { activeBonuses.tsunami = false; updateStats(); }, duration);
                     updateStats();
-                    showCenterMessage("🍬 Cukierkowa Burza! +50% CPS przez 15s!", "#fbbf24");
+                    showFloatingMessage("🍬 Cukierkowa Burza! +50% CPS przez 15s!", "#fbbf24");
                 }
             }
         }, 10000);
     }
 
-    // Funkcja wyświetlająca komunikaty na środku
-    function showCenterMessage(msg, color) {
-        const container = document.getElementById('centerMessageContainer');
+    // Komunikaty na środku ekranu, 1 pod drugim – nie blokują kliknięcia
+    function showFloatingMessage(msg, color) {
+        const container = document.getElementById('messageContainer');
         if (!container) return;
         const div = document.createElement('div');
-        div.className = 'center-message';
+        div.className = 'message-item';
         div.style.borderLeftColor = color;
         div.textContent = msg;
         container.appendChild(div);
         setTimeout(() => {
             div.style.opacity = '0';
-            div.style.transform = 'translateY(-10px)';
-            div.style.transition = 'opacity 0.3s, transform 0.3s';
-            setTimeout(() => div.remove(), 400);
-        }, 3500);
+            div.style.transform = 'translateY(-20px)';
+            div.style.transition = 'opacity 0.4s, transform 0.4s';
+            setTimeout(() => div.remove(), 500);
+        }, 4000);
     }
 
     function recalcCPS() {
@@ -2854,13 +2809,9 @@
         window.cosmicClick = false;
         window.clickCountCosmic = 0;
         window.goldenHour = false;
-        window.galacticTsunami = false;
-        window.infinity = false;
-        window.absoluteClick = false;
         if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
         if (window.futureClickInterval) clearInterval(window.futureClickInterval);
         if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
-        if (window.infinityInterval) clearInterval(window.infinityInterval);
         window.sugarRush = false;
         const defaultBaseCps = [0.4, 2, 16, 80, 520, 2800, 15600, 88000, 520000, 3.2e6, 20e6, 130e6, 860e6, 5.6e9];
         const defaultBasePrice = [8, 60, 600, 6000, 70000, 850000, 10.5e6, 130e6, 1.55e9, 35.5e9, 600e9, 7e12, 85e12, 1.05e15];
@@ -2928,8 +2879,6 @@
         if (activeBonuses.clickFrenzy) bonusText += "🖱️ Click Frenzy (x7777 za kliknięcie)! ";
         if (activeBonuses.chocolateRevolution) bonusText += "🍫 Czekoladowa Rewolucja (x10 CPS, +10% ciastek/s)! ";
         if (activeBonuses.cosmicRain) bonusText += "🌌 Kosmiczny Deszcz (x100 ciastek co 0,2s)! ";
-        if (activeBonuses.galacticTsunami) bonusText += "🌊 Galaktyczne Tsunami (x5000 CPS)! ";
-        if (activeBonuses.timePortal) bonusText += "⏳ Portal Czasu (x2 CPS, więcej złotych)! ";
         document.getElementById('bonusInfo').innerText = bonusText;
         updateAchievements();
     }
@@ -2940,13 +2889,13 @@
             if (!achievements[key].achieved && achievements[key].check()) {
                 achievements[key].achieved = true;
                 changed = true;
-                showCenterMessage(`🏆 Osiągnięcie: ${achievements[key].name}`, "#facc15");
+                showFloatingMessage(`🏆 Osiągnięcie: ${achievements[key].name}`, "#facc15");
             }
         }
         if (changed) {
             const achContainer = document.getElementById('achievementsList');
             if (achContainer) {
-                achContainer.innerHTML = Object.values(achievements).filter(a => a.achieved).map(a => `<span class="achievement-badge" style="display:inline-block; background:rgba(99,102,241,0.3); border-radius:2rem; padding:0.2rem 0.6rem; margin:0.2rem;">${a.name}</span>`).join('');
+                achContainer.innerHTML = Object.values(achievements).filter(a => a.achieved).map(a => `<span class="achievement-badge">${a.name}</span>`).join('');
             }
             saveGame();
         }
@@ -2990,7 +2939,6 @@
         if (activeBonuses.quantumRush) gain *= 3;
         if (activeBonuses.tsunami) gain *= 1000;
         if (activeBonuses.superFrenzy) gain *= 200;
-        if (activeBonuses.galacticTsunami) gain *= 5000;
         if (extraClickBonusPercent > 0) {
             gain += cookies * extraClickBonusPercent;
         }
@@ -2999,13 +2947,6 @@
         }
         if (window.doubleTapChance && Math.random() < window.doubleTapChance) {
             gain *= 3;
-        }
-        if (window.absoluteClick && Math.random() < 0.05) {
-            gain *= 1000;
-            if (bonusTimer) clearTimeout(bonusTimer);
-            activeBonuses.tsunami = true;
-            bonusTimer = setTimeout(() => { activeBonuses.tsunami = false; updateStats(); }, 10000);
-            showCenterMessage("💥 KLIKNIĘCIE ABSOLUTU! x1000 CPS i x1000 klik!", "#ff3366");
         }
         cookies += gain;
         window.totalClicks = (window.totalClicks || 0) + 1;
@@ -3030,7 +2971,7 @@
             let extra = cookiesPerSecond;
             cookies += extra;
             updateStats();
-            showCenterMessage(`🎉 Podwójna Radość! +${Math.floor(extra).toLocaleString()} ciastek!`, "#f59e0b");
+            showFloatingMessage(`🎉 Podwójna Radość! +${Math.floor(extra).toLocaleString()} ciastek!`, "#f59e0b");
         }
         if (window.cosmicClick) {
             window.clickCountCosmic = (window.clickCountCosmic || 0) + 1;
@@ -3039,7 +2980,7 @@
                 let cosmicBonus = cookiesPerSecond * 2000;
                 cookies += cosmicBonus;
                 updateStats();
-                showCenterMessage(`🌌 Kliknięcie Kosmiczne! +${Math.floor(cosmicBonus).toLocaleString()} ciastek!`, "#8b5cf6");
+                showFloatingMessage(`🌌 Kliknięcie Kosmiczne! +${Math.floor(cosmicBonus).toLocaleString()} ciastek!`, "#8b5cf6");
                 document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
             }
@@ -3093,28 +3034,28 @@
             let message = `✨ +${baseReward.toLocaleString()} ciastek!`;
             let specialEffect = false;
             
-            // Rozszerzone bonusy z nowymi efektami
-            if (rand < 0.07 && window.galacticTsunami) {
+            // Mocne bonusy – każdy przypadek dodaje ciasteczka i komunikat
+            if (rand < 0.10 && window.luckyCharm) {
                 if (bonusTimer) clearTimeout(bonusTimer);
-                activeBonuses.galacticTsunami = true;
-                let duration = (window.quantumAccelerator ? 60000 : 45000) * multiplier;
-                bonusTimer = setTimeout(() => { activeBonuses.galacticTsunami = false; updateStats(); }, duration);
+                activeBonuses.tsunami = true;
+                let duration = (window.quantumAccelerator ? 50000 : 40000) * multiplier;
+                bonusTimer = setTimeout(() => { activeBonuses.tsunami = false; updateStats(); }, duration);
                 updateStats();
-                message = "🌊 GALAKTYCZNE TSUNAMI! x5000 CPS przez 45s!";
+                message = "🌊 BURZA CIASTEK! x1000 CPS przez 40s!";
                 specialEffect = true;
-                showCenterMessage(message, "#f97316");
+                showFloatingMessage(message, "#f97316");
                 document.body.classList.add('shake');
                 setTimeout(() => document.body.classList.remove('shake'), 500);
-            } else if (rand < 0.15 && window.galacticTsunami) {
+            } else if (rand < 0.20) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.magicBlast = true;
                 let duration = (window.quantumAccelerator ? 40000 : 30000) * multiplier;
                 bonusTimer = setTimeout(() => { activeBonuses.magicBlast = false; updateStats(); }, duration);
                 updateStats();
-                message = "💥 MAGICZNY PODMUCH! x50000 za kliknięcie przez 30s!";
+                message = "💥 WYBUCH SŁODYCZY! x50000 za kliknięcie przez 30s!";
                 specialEffect = true;
-                showCenterMessage(message, "#fbbf24");
-            } else if (rand < 0.25 && window.goldenRainUpgrade) {
+                showFloatingMessage(message, "#fbbf24");
+            } else if (rand < 0.30 && window.goldenRainUpgrade) {
                 if (downpourInterval) clearInterval(downpourInterval);
                 activeBonuses.goldenDownpour = true;
                 downpourInterval = setInterval(() => {
@@ -3131,8 +3072,26 @@
                 }, 35000);
                 message = "🌧️ ZŁOTE ULEWY! +5000% CPS co sekundę przez 35s!";
                 specialEffect = true;
-                showCenterMessage(message, "#facc15");
-            } else if (rand < 0.35 && window.quantumAccelerator) {
+                showFloatingMessage(message, "#facc15");
+            } else if (rand < 0.40 && window.goldenRainUpgrade) {
+                if (stormInterval) clearInterval(stormInterval);
+                activeBonuses.goldenRain = true;
+                stormInterval = setInterval(() => {
+                    if (!activeBonuses.goldenRain) {
+                        clearInterval(stormInterval);
+                        return;
+                    }
+                    cookies += clickMultiplier * 500;
+                    updateStats();
+                }, 500);
+                setTimeout(() => {
+                    activeBonuses.goldenRain = false;
+                    clearInterval(stormInterval);
+                }, 25000);
+                message = "🌧️ ZŁOTY DESZCZ! +500 ciastek co 0.5s przez 25s!";
+                specialEffect = true;
+                showFloatingMessage(message, "#fbbf24");
+            } else if (rand < 0.50 && window.quantumAccelerator) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.quantumRush = true;
                 globalCPSMultiplier *= 3;
@@ -3150,14 +3109,14 @@
                 updateStats();
                 message = "⚡ PRZYSPIESZENIE KWANTOWE! x3 CPS i kliknięcia na 25s!";
                 specialEffect = true;
-                showCenterMessage(message, "#8b5cf6");
-            } else if (rand < 0.50 && window.treasureChest) {
-                reward = baseReward * 25;
+                showFloatingMessage(message, "#8b5cf6");
+            } else if (rand < 0.60) {
+                reward = baseReward * (window.treasureChest ? 15 : 10);
                 message = `💎 SKARBIEC FORTUNY! +${Math.floor(reward).toLocaleString()} ciastek!`;
                 cookies += reward;
-                showCenterMessage(message, "#10b981");
+                showFloatingMessage(message, "#10b981");
                 specialEffect = true;
-            } else if (rand < 0.65 && window.clickFrenzyUpgrade) {
+            } else if (rand < 0.70 && window.clickFrenzyUpgrade) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.clickFrenzy = true;
                 let duration = 20000 * multiplier;
@@ -3165,7 +3124,7 @@
                 updateStats();
                 message = "🖱️ SUPER FRENZY! x7777 za kliknięcie na 20s!";
                 specialEffect = true;
-                showCenterMessage(message, "#ec4899");
+                showFloatingMessage(message, "#ec4899");
             } else if (rand < 0.80 && window.chocolateRevolutionUpgrade) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.chocolateRevolution = true;
@@ -3181,8 +3140,8 @@
                 updateStats();
                 message = "🍫 CZEKOLADOWA REWOLUCJA! x10 CPS na 20s!";
                 specialEffect = true;
-                showCenterMessage(message, "#a0522d");
-            } else if (rand < 0.95) {
+                showFloatingMessage(message, "#a0522d");
+            } else if (rand < 0.90) {
                 if (cosmicRainInterval) clearInterval(cosmicRainInterval);
                 activeBonuses.cosmicRain = true;
                 cosmicRainInterval = setInterval(() => {
@@ -3199,12 +3158,12 @@
                 }, 15000);
                 message = "🌌 KOSMICZNY DESZCZ! +100 ciastek co 0.2s przez 15s!";
                 specialEffect = true;
-                showCenterMessage(message, "#3b82f6");
+                showFloatingMessage(message, "#3b82f6");
             } else {
                 reward = baseReward * (window.treasureChest ? 8 : 5);
                 message = `⏰ CIASTECZKA Z PRZYSZŁOŚCI! +${Math.floor(reward).toLocaleString()}`;
                 cookies += reward;
-                showCenterMessage(message, "#10b981");
+                showFloatingMessage(message, "#10b981");
                 specialEffect = true;
             }
             
@@ -3218,7 +3177,7 @@
 
     function scheduleGoldenCookie() {
         if (goldenCookieTimeout) clearTimeout(goldenCookieTimeout);
-        const delay = 4000 + Math.random() * 8000 * goldenCookieFrequencyMultiplier;
+        const delay = 4000 + Math.random() * 8000;
         goldenCookieTimeout = setTimeout(() => { spawnGoldenCookie(); }, delay);
     }
 
@@ -3233,7 +3192,7 @@
             recalcCPS();
             updateStats();
             saveGame();
-            showCenterMessage(`🏆 Prestiż poziom ${prestigeLevel}! Stały bonus +${prestigeLevel*20}% CPS!`, "#facc15");
+            showFloatingMessage(`🏆 Prestiż poziom ${prestigeLevel}! Stały bonus +${prestigeLevel*20}% CPS!`, "#facc15");
         }
     }
 
@@ -3252,9 +3211,8 @@
             if (window.sugarRushInterval) clearInterval(window.sugarRushInterval);
             if (window.futureClickInterval) clearInterval(window.futureClickInterval);
             if (window.goldenHourInterval) clearInterval(window.goldenHourInterval);
-            if (window.infinityInterval) clearInterval(window.infinityInterval);
             if (cosmicRainInterval) clearInterval(cosmicRainInterval);
-            activeBonuses = { tsunami: false, magicBlast: false, goldenDownpour: false, superFrenzy: false, megaClick: false, goldenRain: false, chocolateShower: false, quantumRush: false, clickFrenzy: false, chocolateRevolution: false, sugarRush: false, cosmicRain: false, luckyStreak: false, bakerBlessing: false, doughExplosion: false, infiniteCookies: false, galacticTsunami: false, timePortal: false, hyperClick: false, divinePrestige: false, infinity: false, blackHole: false, absoluteClick: false };
+            activeBonuses = { tsunami: false, magicBlast: false, goldenDownpour: false, superFrenzy: false, megaClick: false, goldenRain: false, chocolateShower: false, quantumRush: false, clickFrenzy: false, chocolateRevolution: false, sugarRush: false, cosmicRain: false, luckyStreak: false, bakerBlessing: false, doughExplosion: false, infiniteCookies: false };
             globalCPSMultiplier = 1;
             extraClickBonusPercent = 0;
             doubleClickChance = 0;
@@ -3272,9 +3230,6 @@
             window.cosmicClick = false;
             window.clickCountCosmic = 0;
             window.goldenHour = false;
-            window.galacticTsunami = false;
-            window.infinity = false;
-            window.absoluteClick = false;
             window.sugarRush = false;
             window.clickFrenzyUpgrade = false;
             window.chocolateRevolutionUpgrade = false;
@@ -3319,10 +3274,7 @@
             chocolateRevolutionUpgrade: window.chocolateRevolutionUpgrade || false,
             totalClicks: window.totalClicks || 0,
             goldenCollected: window.goldenCollected || 0,
-            achievements: achievements,
-            galacticTsunami: window.galacticTsunami || false,
-            infinity: window.infinity || false,
-            absoluteClick: window.absoluteClick || false
+            achievements: achievements
         };
         localStorage.setItem('cookieClickerSave', JSON.stringify(gameState));
     }
@@ -3373,10 +3325,6 @@
                         if (achievements[key]) achievements[key].achieved = state.achievements[key].achieved;
                     }
                 }
-                if (state.galacticTsunami) window.galacticTsunami = state.galacticTsunami;
-                if (state.infinity) window.infinity = state.infinity;
-                if (state.absoluteClick) window.absoluteClick = state.absoluteClick;
-                if (window.infinity) startInfinityInterval();
                 applyAllUpgrades();
                 updateStats();
                 rebuildBuildings();
@@ -3393,7 +3341,6 @@
         if (activeBonuses.goldenDownpour) currentCPS *= 50;
         if (activeBonuses.quantumRush) currentCPS *= 3;
         if (activeBonuses.chocolateRevolution) currentCPS *= 10;
-        if (activeBonuses.galacticTsunami) currentCPS *= 5000;
         if (window.divineIntervention && Math.random() < 0.01) {
             currentCPS *= 2;
         }
@@ -3405,7 +3352,7 @@
         setTimeout(gameLoop, 200);
     }
 
-    // ======================== MODUŁ WARTOŚCI ODŻYWCZYCH (z grafikami i nowymi produktami) ========================
+    // ======================== MODUŁ WARTOŚCI ODŻYWCZYCH ========================
     const nutritionCategories = {
         energy: { base: 'kcal', units: { kcal: 1, kJ: 4.184, J: 4184, Wh: 1.16222 } },
         fat: { base: 'g', units: { 'g tłuszczu': 1, 'kcal z tłuszczu': 9 } },
@@ -3422,80 +3369,81 @@
     let customFoods = [];
     let meals = [];
 
-    // ROZSZERZONA LISTA PRODUKTÓW (dodane nowe z ikonami)
+    // ROZSZERZONA LISTA PRODUKTÓW (dodano jabłko + 9 nowych z emoji)
     const productMap = {
-        // Istniejące
-        apple: { name: "🍎 Jabłko", kcalPer100g: 52, proteinPer100g: 0.3, fatPer100g: 0.2, carbsPer100g: 14, icon: "fa-apple" },
-        banana: { name: "🍌 Banan", kcalPer100g: 89, proteinPer100g: 1.1, fatPer100g: 0.3, carbsPer100g: 23, icon: "fa-apple-alt" },
-        chicken: { name: "🍗 Pierś z kurczaka", kcalPer100g: 165, proteinPer100g: 31, fatPer100g: 3.6, carbsPer100g: 0, icon: "fa-drumstick-bite" },
-        rice: { name: "🍚 Ryż biały", kcalPer100g: 130, proteinPer100g: 2.7, fatPer100g: 0.3, carbsPer100g: 28, icon: "fa-utensils" },
-        bread: { name: "🍞 Chleb pszenny", kcalPer100g: 265, proteinPer100g: 9, fatPer100g: 3.2, carbsPer100g: 49, icon: "fa-bread-slice" },
-        egg: { name: "🥚 Jajko", kcalPer100g: 155, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 1.1, icon: "fa-egg" },
-        potato: { name: "🥔 Ziemniak", kcalPer100g: 77, proteinPer100g: 2, fatPer100g: 0.1, carbsPer100g: 17, icon: "fa-potato" },
-        tomato: { name: "🍅 Pomidor", kcalPer100g: 18, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 3.9, icon: "fa-tomato" },
-        cucumber: { name: "🥒 Ogórek", kcalPer100g: 15, proteinPer100g: 0.7, fatPer100g: 0.1, carbsPer100g: 3.6, icon: "fa-leaf" },
-        milk: { name: "🥛 Mleko 2%", kcalPer100g: 50, proteinPer100g: 3.3, fatPer100g: 2, carbsPer100g: 4.7, icon: "fa-tint" },
-        yogurt: { name: "🥣 Jogurt naturalny", kcalPer100g: 61, proteinPer100g: 3.5, fatPer100g: 3.3, carbsPer100g: 4.7, icon: "fa-utensil-spoon" },
-        cheese: { name: "🧀 Ser żółty", kcalPer100g: 402, proteinPer100g: 25, fatPer100g: 33, carbsPer100g: 1.3, icon: "fa-cheese" },
-        beef: { name: "🥩 Wołowina", kcalPer100g: 250, proteinPer100g: 26, fatPer100g: 15, carbsPer100g: 0, icon: "fa-bacon" },
-        pork: { name: "🥩 Wieprzowina", kcalPer100g: 242, proteinPer100g: 27, fatPer100g: 14, carbsPer100g: 0, icon: "fa-bacon" },
-        salmon: { name: "🐟 Łosoś", kcalPer100g: 208, proteinPer100g: 20, fatPer100g: 13, carbsPer100g: 0, icon: "fa-fish" },
-        oatmeal: { name: "🥣 Płatki owsiane", kcalPer100g: 389, proteinPer100g: 16.9, fatPer100g: 6.9, carbsPer100g: 66, icon: "fa-mortar-board" },
-        pasta: { name: "🍝 Makaron", kcalPer100g: 131, proteinPer100g: 5, fatPer100g: 1.1, carbsPer100g: 25, icon: "fa-utensils" },
-        broccoli: { name: "🥦 Brokuł", kcalPer100g: 34, proteinPer100g: 2.8, fatPer100g: 0.4, carbsPer100g: 6.6, icon: "fa-leaf" },
-        carrot: { name: "🥕 Marchew", kcalPer100g: 41, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 9.6, icon: "fa-carrot" },
-        orange: { name: "🍊 Pomarańcza", kcalPer100g: 47, proteinPer100g: 0.9, fatPer100g: 0.1, carbsPer100g: 11.8, icon: "fa-orange" },
-        cottage_cheese: { name: "🧀 Twaróg półtłusty", kcalPer100g: 120, proteinPer100g: 18, fatPer100g: 4.5, carbsPer100g: 3.5, icon: "fa-cheese" },
-        tofu: { name: "🥟 Tofu naturalne", kcalPer100g: 76, proteinPer100g: 8, fatPer100g: 4.8, carbsPer100g: 1.9, icon: "fa-seedling" },
-        lentils: { name: "🫘 Soczewica zielona", kcalPer100g: 116, proteinPer100g: 9, fatPer100g: 0.4, carbsPer100g: 20, icon: "fa-seedling" },
-        chickpeas: { name: "🫘 Ciecierzyca", kcalPer100g: 139, proteinPer100g: 8.9, fatPer100g: 2.6, carbsPer100g: 22, icon: "fa-seedling" },
-        buckwheat: { name: "🌾 Kasza gryczana", kcalPer100g: 120, proteinPer100g: 3.8, fatPer100g: 1.1, carbsPer100g: 24, icon: "fa-wheat-alt" },
-        millet: { name: "🌾 Kasza jaglana", kcalPer100g: 119, proteinPer100g: 3.5, fatPer100g: 1, carbsPer100g: 24, icon: "fa-wheat-alt" },
-        quinoa: { name: "🌿 Quinoa", kcalPer100g: 120, proteinPer100g: 4.4, fatPer100g: 1.9, carbsPer100g: 21, icon: "fa-seedling" },
-        sweet_potato: { name: "🍠 Batat", kcalPer100g: 86, proteinPer100g: 1.6, fatPer100g: 0.1, carbsPer100g: 20, icon: "fa-apple-alt" },
-        avocado: { name: "🥑 Awokado", kcalPer100g: 160, proteinPer100g: 2, fatPer100g: 15, carbsPer100g: 9, icon: "fa-apple-alt" },
-        walnuts: { name: "🌰 Orzechy włoskie", kcalPer100g: 654, proteinPer100g: 15, fatPer100g: 65, carbsPer100g: 14, icon: "fa-tree" },
-        almonds: { name: "🌰 Migdały", kcalPer100g: 579, proteinPer100g: 21, fatPer100g: 50, carbsPer100g: 22, icon: "fa-tree" },
-        flaxseed: { name: "🌱 Siemię lniane", kcalPer100g: 534, proteinPer100g: 18, fatPer100g: 42, carbsPer100g: 29, icon: "fa-leaf" },
-        chia: { name: "🌱 Nasiona chia", kcalPer100g: 486, proteinPer100g: 17, fatPer100g: 31, carbsPer100g: 42, icon: "fa-leaf" },
-        olive_oil: { name: "🫒 Oliwa z oliwek", kcalPer100g: 884, proteinPer100g: 0, fatPer100g: 100, carbsPer100g: 0, icon: "fa-oil-can" },
-        coconut_oil: { name: "🥥 Olej kokosowy", kcalPer100g: 862, proteinPer100g: 0, fatPer100g: 100, carbsPer100g: 0, icon: "fa-oil-can" },
-        peanut_butter: { name: "🥜 Masło orzechowe", kcalPer100g: 588, proteinPer100g: 25, fatPer100g: 50, carbsPer100g: 20, icon: "fa-jar" },
-        greek_yogurt: { name: "🥣 Jogurt grecki", kcalPer100g: 59, proteinPer100g: 10, fatPer100g: 0.4, carbsPer100g: 4, icon: "fa-utensil-spoon" },
-        kefir: { name: "🥛 Kefir", kcalPer100g: 41, proteinPer100g: 3.5, fatPer100g: 1.5, carbsPer100g: 4, icon: "fa-tint" },
-        smoked_salmon: { name: "🐟 Łosoś wędzony", kcalPer100g: 180, proteinPer100g: 22, fatPer100g: 12, carbsPer100g: 0, icon: "fa-fish" },
-        tuna: { name: "🐟 Tuńczyk w wodzie", kcalPer100g: 116, proteinPer100g: 23, fatPer100g: 1.5, carbsPer100g: 0, icon: "fa-fish" },
-        mackerel: { name: "🐟 Makrela", kcalPer100g: 205, proteinPer100g: 19, fatPer100g: 14, carbsPer100g: 0, icon: "fa-fish" },
-        turkey: { name: "🦃 Indyk (pierś)", kcalPer100g: 135, proteinPer100g: 29, fatPer100g: 1.5, carbsPer100g: 0, icon: "fa-drumstick-bite" },
-        lamb: { name: "🐑 Jagnięcina", kcalPer100g: 294, proteinPer100g: 25, fatPer100g: 21, carbsPer100g: 0, icon: "fa-bacon" },
-        quail_egg: { name: "🥚 Jajko przepiórcze", kcalPer100g: 158, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 0.4, icon: "fa-egg" },
-        feta: { name: "🧀 Ser Feta", kcalPer100g: 264, proteinPer100g: 14, fatPer100g: 21, carbsPer100g: 4, icon: "fa-cheese" },
-        mozzarella: { name: "🧀 Mozzarella", kcalPer100g: 280, proteinPer100g: 18, fatPer100g: 22, carbsPer100g: 2, icon: "fa-cheese" },
-        parmesan: { name: "🧀 Parmezan", kcalPer100g: 431, proteinPer100g: 38, fatPer100g: 29, carbsPer100g: 4, icon: "fa-cheese" },
-        spinach: { name: "🥬 Szpinak", kcalPer100g: 23, proteinPer100g: 2.9, fatPer100g: 0.4, carbsPer100g: 3.6, icon: "fa-leaf" },
-        kale: { name: "🥬 Jarmuż", kcalPer100g: 49, proteinPer100g: 4.3, fatPer100g: 0.9, carbsPer100g: 9, icon: "fa-leaf" },
-        cauliflower: { name: "🥦 Kalafior", kcalPer100g: 25, proteinPer100g: 1.9, fatPer100g: 0.3, carbsPer100g: 5, icon: "fa-leaf" },
-        onion: { name: "🧅 Cebula", kcalPer100g: 40, proteinPer100g: 1.1, fatPer100g: 0.1, carbsPer100g: 9, icon: "fa-onion" },
-        garlic: { name: "🧄 Czosnek", kcalPer100g: 149, proteinPer100g: 6.4, fatPer100g: 0.5, carbsPer100g: 33, icon: "fa-garlic" },
-        mushrooms: { name: "🍄 Pieczarki", kcalPer100g: 22, proteinPer100g: 3.1, fatPer100g: 0.3, carbsPer100g: 3.3, icon: "fa-mushroom" },
-        strawberries: { name: "🍓 Truskawki", kcalPer100g: 32, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 7.7, icon: "fa-strawberry" },
-        blueberries: { name: "🫐 Jagody", kcalPer100g: 57, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 14, icon: "fa-berry" },
-        raspberries: { name: "🍇 Maliny", kcalPer100g: 52, proteinPer100g: 1.2, fatPer100g: 0.7, carbsPer100g: 12, icon: "fa-berry" },
-        kiwi: { name: "🥝 Kiwi", kcalPer100g: 61, proteinPer100g: 1.1, fatPer100g: 0.5, carbsPer100g: 14, icon: "fa-fruit" },
-        grapefruit: { name: "🍊 Grejpfrut", kcalPer100g: 42, proteinPer100g: 0.8, fatPer100g: 0.1, carbsPer100g: 10, icon: "fa-orange" },
-        lemon: { name: "🍋 Cytryna", kcalPer100g: 29, proteinPer100g: 1.1, fatPer100g: 0.3, carbsPer100g: 9, icon: "fa-lemon" },
-        watermelon: { name: "🍉 Arbuz", kcalPer100g: 30, proteinPer100g: 0.6, fatPer100g: 0.2, carbsPer100g: 8, icon: "fa-watermelon" },
-        melon: { name: "🍈 Melon", kcalPer100g: 34, proteinPer100g: 0.8, fatPer100g: 0.2, carbsPer100g: 8, icon: "fa-melon" },
-        peach: { name: "🍑 Brzoskwinia", kcalPer100g: 39, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 10, icon: "fa-peach" },
-        apricot: { name: "🍑 Morela", kcalPer100g: 48, proteinPer100g: 1.4, fatPer100g: 0.4, carbsPer100g: 11, icon: "fa-peach" },
-        plum: { name: "🍑 Śliwka", kcalPer100g: 46, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 11, icon: "fa-peach" },
-        grapes: { name: "🍇 Winogrona", kcalPer100g: 69, proteinPer100g: 0.7, fatPer100g: 0.2, carbsPer100g: 18, icon: "fa-grapes" },
-        // NOWE PRODUKTY
-        pear: { name: "🍐 Gruszka", kcalPer100g: 57, proteinPer100g: 0.4, fatPer100g: 0.1, carbsPer100g: 15, icon: "fa-pear" },
-        pineapple: { name: "🍍 Ananas", kcalPer100g: 50, proteinPer100g: 0.5, fatPer100g: 0.1, carbsPer100g: 13, icon: "fa-pineapple" },
-        blackberry: { name: "🍇 Jeżyna", kcalPer100g: 43, proteinPer100g: 1.4, fatPer100g: 0.5, carbsPer100g: 9.6, icon: "fa-berry" },
-        lime: { name: "🍈 Limonka", kcalPer100g: 30, proteinPer100g: 0.7, fatPer100g: 0.2, carbsPer100g: 10, icon: "fa-lemon" },
-        grapefruit2: { name: "🍊 Grejpfrut różowy", kcalPer100g: 42, proteinPer100g: 0.8, fatPer100g: 0.1, carbsPer100g: 10, icon: "fa-orange" }
+        apple: { name: "🍎 Jabłko", kcalPer100g: 52, proteinPer100g: 0.3, fatPer100g: 0.2, carbsPer100g: 14 },
+        pear: { name: "🍐 Gruszka", kcalPer100g: 57, proteinPer100g: 0.4, fatPer100g: 0.1, carbsPer100g: 15 },
+        pineapple: { name: "🍍 Ananas", kcalPer100g: 50, proteinPer100g: 0.5, fatPer100g: 0.1, carbsPer100g: 13 },
+        mango: { name: "🥭 Mango", kcalPer100g: 60, proteinPer100g: 0.8, fatPer100g: 0.4, carbsPer100g: 15 },
+        pomegranate: { name: "🍎 Granat", kcalPer100g: 83, proteinPer100g: 1.7, fatPer100g: 1.2, carbsPer100g: 19 },
+        papaya: { name: "🍈 Papaja", kcalPer100g: 43, proteinPer100g: 0.5, fatPer100g: 0.3, carbsPer100g: 11 },
+        currant: { name: "🍇 Porzeczka", kcalPer100g: 56, proteinPer100g: 1.4, fatPer100g: 0.2, carbsPer100g: 13 },
+        gooseberry: { name: "🍇 Agrest", kcalPer100g: 44, proteinPer100g: 0.9, fatPer100g: 0.6, carbsPer100g: 10 },
+        blackberry: { name: "🍇 Jeżyna", kcalPer100g: 43, proteinPer100g: 1.4, fatPer100g: 0.5, carbsPer100g: 10 },
+        raspberry: { name: "🍓 Malina", kcalPer100g: 52, proteinPer100g: 1.2, fatPer100g: 0.7, carbsPer100g: 12 },
+        banana: { name: "🍌 Banan", kcalPer100g: 89, proteinPer100g: 1.1, fatPer100g: 0.3, carbsPer100g: 23 },
+        chicken: { name: "🍗 Pierś z kurczaka", kcalPer100g: 165, proteinPer100g: 31, fatPer100g: 3.6, carbsPer100g: 0 },
+        rice: { name: "🍚 Ryż biały", kcalPer100g: 130, proteinPer100g: 2.7, fatPer100g: 0.3, carbsPer100g: 28 },
+        bread: { name: "🍞 Chleb pszenny", kcalPer100g: 265, proteinPer100g: 9, fatPer100g: 3.2, carbsPer100g: 49 },
+        egg: { name: "🥚 Jajko", kcalPer100g: 155, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 1.1 },
+        potato: { name: "🥔 Ziemniak", kcalPer100g: 77, proteinPer100g: 2, fatPer100g: 0.1, carbsPer100g: 17 },
+        tomato: { name: "🍅 Pomidor", kcalPer100g: 18, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 3.9 },
+        cucumber: { name: "🥒 Ogórek", kcalPer100g: 15, proteinPer100g: 0.7, fatPer100g: 0.1, carbsPer100g: 3.6 },
+        milk: { name: "🥛 Mleko 2%", kcalPer100g: 50, proteinPer100g: 3.3, fatPer100g: 2, carbsPer100g: 4.7 },
+        yogurt: { name: "🥣 Jogurt naturalny", kcalPer100g: 61, proteinPer100g: 3.5, fatPer100g: 3.3, carbsPer100g: 4.7 },
+        cheese: { name: "🧀 Ser żółty", kcalPer100g: 402, proteinPer100g: 25, fatPer100g: 33, carbsPer100g: 1.3 },
+        beef: { name: "🥩 Wołowina", kcalPer100g: 250, proteinPer100g: 26, fatPer100g: 15, carbsPer100g: 0 },
+        pork: { name: "🥩 Wieprzowina", kcalPer100g: 242, proteinPer100g: 27, fatPer100g: 14, carbsPer100g: 0 },
+        salmon: { name: "🐟 Łosoś", kcalPer100g: 208, proteinPer100g: 20, fatPer100g: 13, carbsPer100g: 0 },
+        oatmeal: { name: "🥣 Płatki owsiane", kcalPer100g: 389, proteinPer100g: 16.9, fatPer100g: 6.9, carbsPer100g: 66 },
+        pasta: { name: "🍝 Makaron", kcalPer100g: 131, proteinPer100g: 5, fatPer100g: 1.1, carbsPer100g: 25 },
+        broccoli: { name: "🥦 Brokuł", kcalPer100g: 34, proteinPer100g: 2.8, fatPer100g: 0.4, carbsPer100g: 6.6 },
+        carrot: { name: "🥕 Marchew", kcalPer100g: 41, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 9.6 },
+        orange: { name: "🍊 Pomarańcza", kcalPer100g: 47, proteinPer100g: 0.9, fatPer100g: 0.1, carbsPer100g: 11.8 },
+        cottage_cheese: { name: "🧀 Twaróg półtłusty", kcalPer100g: 120, proteinPer100g: 18, fatPer100g: 4.5, carbsPer100g: 3.5 },
+        tofu: { name: "🥢 Tofu naturalne", kcalPer100g: 76, proteinPer100g: 8, fatPer100g: 4.8, carbsPer100g: 1.9 },
+        lentils: { name: "🥣 Soczewica zielona", kcalPer100g: 116, proteinPer100g: 9, fatPer100g: 0.4, carbsPer100g: 20 },
+        chickpeas: { name: "🥣 Ciecierzyca", kcalPer100g: 139, proteinPer100g: 8.9, fatPer100g: 2.6, carbsPer100g: 22 },
+        buckwheat: { name: "🍚 Kasza gryczana", kcalPer100g: 120, proteinPer100g: 3.8, fatPer100g: 1.1, carbsPer100g: 24 },
+        millet: { name: "🍚 Kasza jaglana", kcalPer100g: 119, proteinPer100g: 3.5, fatPer100g: 1, carbsPer100g: 24 },
+        quinoa: { name: "🍚 Quinoa", kcalPer100g: 120, proteinPer100g: 4.4, fatPer100g: 1.9, carbsPer100g: 21 },
+        sweet_potato: { name: "🍠 Batat", kcalPer100g: 86, proteinPer100g: 1.6, fatPer100g: 0.1, carbsPer100g: 20 },
+        avocado: { name: "🥑 Awokado", kcalPer100g: 160, proteinPer100g: 2, fatPer100g: 15, carbsPer100g: 9 },
+        walnuts: { name: "🌰 Orzechy włoskie", kcalPer100g: 654, proteinPer100g: 15, fatPer100g: 65, carbsPer100g: 14 },
+        almonds: { name: "🌰 Migdały", kcalPer100g: 579, proteinPer100g: 21, fatPer100g: 50, carbsPer100g: 22 },
+        flaxseed: { name: "🌾 Siemię lniane", kcalPer100g: 534, proteinPer100g: 18, fatPer100g: 42, carbsPer100g: 29 },
+        chia: { name: "🌾 Nasiona chia", kcalPer100g: 486, proteinPer100g: 17, fatPer100g: 31, carbsPer100g: 42 },
+        olive_oil: { name: "🫒 Oliwa z oliwek", kcalPer100g: 884, proteinPer100g: 0, fatPer100g: 100, carbsPer100g: 0 },
+        coconut_oil: { name: "🥥 Olej kokosowy", kcalPer100g: 862, proteinPer100g: 0, fatPer100g: 100, carbsPer100g: 0 },
+        peanut_butter: { name: "🥜 Masło orzechowe", kcalPer100g: 588, proteinPer100g: 25, fatPer100g: 50, carbsPer100g: 20 },
+        greek_yogurt: { name: "🥣 Jogurt grecki", kcalPer100g: 59, proteinPer100g: 10, fatPer100g: 0.4, carbsPer100g: 4 },
+        kefir: { name: "🥛 Kefir", kcalPer100g: 41, proteinPer100g: 3.5, fatPer100g: 1.5, carbsPer100g: 4 },
+        smoked_salmon: { name: "🐟 Łosoś wędzony", kcalPer100g: 180, proteinPer100g: 22, fatPer100g: 12, carbsPer100g: 0 },
+        tuna: { name: "🐟 Tuńczyk w wodzie", kcalPer100g: 116, proteinPer100g: 23, fatPer100g: 1.5, carbsPer100g: 0 },
+        mackerel: { name: "🐟 Makrela", kcalPer100g: 205, proteinPer100g: 19, fatPer100g: 14, carbsPer100g: 0 },
+        turkey: { name: "🦃 Indyk (pierś)", kcalPer100g: 135, proteinPer100g: 29, fatPer100g: 1.5, carbsPer100g: 0 },
+        lamb: { name: "🐑 Jagnięcina", kcalPer100g: 294, proteinPer100g: 25, fatPer100g: 21, carbsPer100g: 0 },
+        quail_egg: { name: "🥚 Jajko przepiórcze", kcalPer100g: 158, proteinPer100g: 13, fatPer100g: 11, carbsPer100g: 0.4 },
+        feta: { name: "🧀 Ser Feta", kcalPer100g: 264, proteinPer100g: 14, fatPer100g: 21, carbsPer100g: 4 },
+        mozzarella: { name: "🧀 Mozzarella", kcalPer100g: 280, proteinPer100g: 18, fatPer100g: 22, carbsPer100g: 2 },
+        parmesan: { name: "🧀 Parmezan", kcalPer100g: 431, proteinPer100g: 38, fatPer100g: 29, carbsPer100g: 4 },
+        spinach: { name: "🥬 Szpinak", kcalPer100g: 23, proteinPer100g: 2.9, fatPer100g: 0.4, carbsPer100g: 3.6 },
+        kale: { name: "🥬 Jarmuż", kcalPer100g: 49, proteinPer100g: 4.3, fatPer100g: 0.9, carbsPer100g: 9 },
+        cauliflower: { name: "🥦 Kalafior", kcalPer100g: 25, proteinPer100g: 1.9, fatPer100g: 0.3, carbsPer100g: 5 },
+        onion: { name: "🧅 Cebula", kcalPer100g: 40, proteinPer100g: 1.1, fatPer100g: 0.1, carbsPer100g: 9 },
+        garlic: { name: "🧄 Czosnek", kcalPer100g: 149, proteinPer100g: 6.4, fatPer100g: 0.5, carbsPer100g: 33 },
+        mushrooms: { name: "🍄 Pieczarki", kcalPer100g: 22, proteinPer100g: 3.1, fatPer100g: 0.3, carbsPer100g: 3.3 },
+        strawberries: { name: "🍓 Truskawki", kcalPer100g: 32, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 7.7 },
+        blueberries: { name: "🫐 Jagody", kcalPer100g: 57, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 14 },
+        kiwi: { name: "🥝 Kiwi", kcalPer100g: 61, proteinPer100g: 1.1, fatPer100g: 0.5, carbsPer100g: 14 },
+        grapefruit: { name: "🍊 Grejpfrut", kcalPer100g: 42, proteinPer100g: 0.8, fatPer100g: 0.1, carbsPer100g: 10 },
+        lemon: { name: "🍋 Cytryna", kcalPer100g: 29, proteinPer100g: 1.1, fatPer100g: 0.3, carbsPer100g: 9 },
+        watermelon: { name: "🍉 Arbuz", kcalPer100g: 30, proteinPer100g: 0.6, fatPer100g: 0.2, carbsPer100g: 8 },
+        melon: { name: "🍈 Melon", kcalPer100g: 34, proteinPer100g: 0.8, fatPer100g: 0.2, carbsPer100g: 8 },
+        peach: { name: "🍑 Brzoskwinia", kcalPer100g: 39, proteinPer100g: 0.9, fatPer100g: 0.2, carbsPer100g: 10 },
+        apricot: { name: "🍑 Morela", kcalPer100g: 48, proteinPer100g: 1.4, fatPer100g: 0.4, carbsPer100g: 11 },
+        plum: { name: "🍒 Śliwka", kcalPer100g: 46, proteinPer100g: 0.7, fatPer100g: 0.3, carbsPer100g: 11 },
+        grapes: { name: "🍇 Winogrona", kcalPer100g: 69, proteinPer100g: 0.7, fatPer100g: 0.2, carbsPer100g: 18 }
     };
 
     function loadCustomPortions() {
@@ -3614,9 +3562,7 @@
         for (let [key, product] of Object.entries(productMap)) {
             const option = document.createElement('option');
             option.value = key;
-            // Dodajemy ikonę
-            let iconHtml = product.icon ? `<i class="fas ${product.icon} food-icon"></i> ` : '';
-            option.textContent = `${iconHtml}${product.name} (${product.kcalPer100g} kcal/100g, B:${product.proteinPer100g} T:${product.fatPer100g} W:${product.carbsPer100g})`;
+            option.textContent = `${product.name} (${product.kcalPer100g} kcal/100g, B:${product.proteinPer100g} T:${product.fatPer100g} W:${product.carbsPer100g})`;
             popularGroup.appendChild(option);
         }
         select.appendChild(popularGroup);
@@ -3814,7 +3760,7 @@
         } else {
             const custom = customFoods.find(f => f.name === val);
             if (custom) {
-                product = { name: custom.name, kcalPer100g: custom.caloriesPer100g, proteinPer100g: custom.proteinPer100g, fatPer100g: custom.fatPer100g, carbsPer100g: custom.carbsPer100g, icon: "fa-apple" };
+                product = { name: custom.name, kcalPer100g: custom.caloriesPer100g, proteinPer100g: custom.proteinPer100g, fatPer100g: custom.fatPer100g, carbsPer100g: custom.carbsPer100g };
             } else {
                 alert("Wybierz produkt z listy.");
                 return;
@@ -3832,8 +3778,7 @@
             protein: protein,
             fat: fat,
             carbs: carbs,
-            timestamp: new Date().toLocaleTimeString(),
-            icon: product.icon || "fa-apple"
+            timestamp: new Date().toLocaleTimeString()
         });
         saveMeals();
         renderMeals();
@@ -3851,9 +3796,8 @@
             totalCarb += meal.carbs;
             const div = document.createElement('div');
             div.className = 'meal-entry';
-            const iconHtml = meal.icon ? `<i class="fas ${meal.icon} food-icon"></i> ` : '';
             div.innerHTML = `
-                <span><strong>${iconHtml}${meal.name}</strong> ${meal.amount}g (${meal.timestamp})</span>
+                <span><strong>${meal.name}</strong> ${meal.amount}g (${meal.timestamp})</span>
                 <span>${meal.calories.toFixed(1)} kcal | B:${meal.protein.toFixed(1)}g | T:${meal.fat.toFixed(1)}g | W:${meal.carbs.toFixed(1)}g</span>
                 <button class="quick-btn" onclick="removeMeal(${idx})"><i class="fas fa-trash"></i></button>
             `;
@@ -3877,7 +3821,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODA (z 10-dniową prognozą, więcej danych) ========================
+    // ======================== MODUŁ POGODA (ulepszona prognoza godzinowa i 7-dniowa) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -4062,54 +4006,24 @@
         const moonPhaseEng = daily[0]?.hourly?.[0]?.weatherDesc?.[0]?.value || '---';
         const moonPhasePl = translateMoonPhase(moonPhaseEng);
         
-        // Pobierz dane dla każdego dnia – rozszerzone o opady, wiatr, wilgotność, ciśnienie
-        const dailyExtended = daily.slice(0, 10).map(day => {
+        const dailyWithRain = daily.slice(0,7).map(day => {
             let totalRain = 0;
-            let maxWind = 0;
-            let avgHumidity = 0;
-            let avgPressure = 0;
-            let count = 0;
             if (day.hourly && Array.isArray(day.hourly)) {
-                day.hourly.forEach(h => {
-                    let rain = h.precipMM;
-                    if (rain !== undefined && rain !== null) {
-                        if (typeof rain === 'string') rain = parseFloat(rain);
-                        if (!isNaN(rain)) totalRain += rain;
-                    }
-                    let wind = h.windspeedKmph;
-                    if (wind !== undefined && wind !== null) {
-                        if (typeof wind === 'string') wind = parseFloat(wind);
-                        if (!isNaN(wind) && wind > maxWind) maxWind = wind;
-                    }
-                    let hum = h.humidity;
-                    if (hum !== undefined && hum !== null) {
-                        if (typeof hum === 'string') hum = parseFloat(hum);
-                        if (!isNaN(hum)) avgHumidity += hum;
-                        count++;
-                    }
-                    let press = h.pressure;
-                    if (press !== undefined && press !== null) {
-                        if (typeof press === 'string') press = parseFloat(press);
-                        if (!isNaN(press)) avgPressure += press;
-                    }
-                });
+                totalRain = day.hourly.reduce((sum, h) => {
+                    let val = h.precipMM;
+                    if (val === undefined || val === null) return sum;
+                    if (typeof val === 'string') val = parseFloat(val);
+                    if (isNaN(val)) return sum;
+                    return sum + val;
+                }, 0);
             }
-            if (count > 0) {
-                avgHumidity = avgHumidity / count;
-                avgPressure = avgPressure / count;
-            }
-            const chanceOfRain = day.hourly ? Math.round(totalRain * 10) : 0; // przybliżenie szansy
-            return {
-                ...day,
-                totalRain: totalRain,
-                maxWind: maxWind,
-                avgHumidity: avgHumidity,
-                avgPressure: avgPressure,
-                chanceOfRain: Math.min(100, chanceOfRain)
-            };
+            const moonDay = (day.astronomy && day.astronomy[0]) ? day.astronomy[0] : null;
+            let moonPhaseDay = '---';
+            if (moonDay && moonDay.moon_phase) moonPhaseDay = translateMoonPhase(moonDay.moon_phase);
+            return { ...day, totalRain, moonPhaseDay };
         });
 
-        // Godziny prognozy
+        // Prognoza godzinowa (dziś) – sortowanie po czasie
         const hourlyForecast = daily[0]?.hourly || [];
         hourlyForecast.sort((a,b) => parseInt(a.time) - parseInt(b.time));
         
@@ -4132,11 +4046,11 @@
                     <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhasePl}</div>
                 </div>
             </div>
-            <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury (10 dni)</h3>
+            <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury</h3>
             <div class="chart-container" style="height: 350px;"><canvas id="tempChart"></canvas></div>
             <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś)</h3>
             <div class="hourly-forecast">
-                ${hourlyForecast.slice(0, 12).map(h => {
+                ${hourlyForecast.map(h => {
                     let hourStr = formatHourFromWttr(h.time);
                     const temp = parseFloat(h.tempC);
                     const icon = getWeatherIconWttr(h.weatherCode);
@@ -4152,33 +4066,36 @@
                     </div>`;
                 }).join('')}
             </div>
-            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 10-dniowa</h3>
+            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa (szczegółowa)</h3>
             <div class="forecast-grid">
-                ${dailyExtended.map(day => {
+                ${dailyWithRain.map(day => {
                     const date = new Date(day.date);
                     const dayName = date.toLocaleDateString('pl-PL', { weekday: 'short' });
                     const maxTemp = Math.round(day.maxtempC);
                     const minTemp = Math.round(day.mintempC);
-                    const wind = Math.round(day.maxWind);
+                    const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
                     const rain = day.totalRain;
-                    const humidity = Math.round(day.avgHumidity);
-                    const pressure = Math.round(day.avgPressure);
-                    const chanceRain = day.chanceOfRain;
                     const icon = getWeatherIconWttr(day.hourly[0]?.weatherCode || '113');
                     let sunriseDay = '--', sunsetDay = '--';
                     if (day.astronomy && day.astronomy[0]) {
                         sunriseDay = convertTo24h(day.astronomy[0].sunrise);
                         sunsetDay = convertTo24h(day.astronomy[0].sunset);
                     }
+                    const humidityDay = day.hourly[0]?.humidity || '--';
+                    const pressureDay = day.hourly[0]?.pressure || '--';
+                    const uvIndex = day.hourly[0]?.uvIndex || '--';
                     return `
                         <div class="forecast-card">
                             <div class="forecast-day">${dayName}<br>${date.toLocaleDateString('pl-PL', {day:'numeric',month:'short'})}</div>
                             <div class="forecast-icon">${icon}</div>
                             <div class="forecast-temp">${maxTemp}${tempUnit} / ${minTemp}${tempUnit}</div>
-                            <div><i class="fas fa-tint"></i> ${humidity}% <i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
-                            <div><i class="fas fa-cloud-rain"></i> ${rain.toFixed(1)} mm (${chanceRain}%)</div>
-                            <div><i class="fas fa-tachometer-alt"></i> ${pressure} ${pressureUnit}</div>
-                            <div><i class="fas fa-sun"></i> ${sunriseDay}/${sunsetDay}</div>
+                            <div><i class="fas fa-wind"></i> Wiatr: ${wind} ${windUnit}</div>
+                            <div><i class="fas fa-tint"></i> Wilg.: ${humidityDay}%</div>
+                            <div><i class="fas fa-cloud-rain"></i> Opady: ${rain.toFixed(1)} mm</div>
+                            <div><i class="fas fa-sun"></i> Wsch./Zach.: ${sunriseDay}/${sunsetDay}</div>
+                            <div><i class="fas fa-moon"></i> Faza: ${day.moonPhaseDay}</div>
+                            <div><i class="fas fa-tachometer-alt"></i> Ciśn.: ${pressureDay} hPa</div>
+                            <div><i class="fas fa-sun"></i> UV: ${uvIndex}</div>
                         </div>
                     `;
                 }).join('')}
@@ -4186,10 +4103,9 @@
         `;
         document.getElementById('weatherContent').innerHTML = html;
         
-        // Wykres dla 10 dni
-        const labels = dailyExtended.slice(0,10).map(d => new Date(d.date).toLocaleDateString('pl-PL', { weekday: 'short' }));
-        const maxTemps = dailyExtended.slice(0,10).map(d => d.maxtempC);
-        const minTemps = dailyExtended.slice(0,10).map(d => d.mintempC);
+        const labels = dailyWithRain.map(d => new Date(d.date).toLocaleDateString('pl-PL', { weekday: 'short' }));
+        const maxTemps = dailyWithRain.map(d => d.maxtempC);
+        const minTemps = dailyWithRain.map(d => d.mintempC);
         const ctx = document.getElementById('tempChart').getContext('2d');
         if (weatherChart) weatherChart.destroy();
         const gradientMax = ctx.createLinearGradient(0, 0, 0, 300);
