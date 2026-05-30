@@ -583,6 +583,148 @@
             }
         }
 
+        /* NOWE STYLE DLA POGODY */
+        .weather-current {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            background: rgba(15,23,42,0.6);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        }
+        .weather-current.hot {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.6), rgba(249, 115, 22, 0.5));
+            border-left: 6px solid #f97316;
+        }
+        .weather-current.cold {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(139, 92, 246, 0.5));
+            border-left: 6px solid #3b82f6;
+        }
+        .weather-current.mild {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.5), rgba(99, 102, 241, 0.5));
+            border-left: 6px solid #22c55e;
+        }
+        .weather-main {
+            flex: 2;
+            text-align: center;
+        }
+        .weather-main .temp {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        .weather-details {
+            flex: 3;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+            gap: 1rem;
+        }
+        .weather-detail-item {
+            background: rgba(0,0,0,0.5);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+            transition: transform 0.2s, background 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .weather-detail-item:hover {
+            transform: translateY(-3px);
+            background: rgba(0,0,0,0.7);
+        }
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+        .forecast-card {
+            background: rgba(15,23,42,0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            transition: 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        .forecast-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            background: rgba(99,102,241,0.3);
+        }
+        .forecast-day {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .forecast-icon {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .forecast-temp {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        .hourly-forecast {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+            scrollbar-width: thin;
+        }
+        .hourly-card {
+            background: rgba(0,0,0,0.6);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            min-width: 140px;
+            text-align: center;
+            flex-shrink: 0;
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .hourly-card:hover {
+            background: rgba(99,102,241,0.4);
+            transform: scale(1.02);
+            border-color: var(--primary);
+        }
+        .hourly-time {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        .hourly-icon {
+            font-size: 1.8rem;
+            margin: 0.2rem 0;
+        }
+        .hourly-temp {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .hourly-desc {
+            font-size: 0.7rem;
+            color: #cbd5e1;
+            margin-top: 0.2rem;
+        }
+        .hourly-wind, .hourly-humidity {
+            font-size: 0.7rem;
+            display: inline-block;
+            margin: 0.2rem 0.2rem;
+        }
+        .product-emoji {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+        }
+
         @media (max-width: 768px) {
             .tabs { gap: 0.2rem; }
             .tab-btn { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
@@ -698,6 +840,9 @@
                 font-size: 0.85rem;
                 padding: 0.7rem 1.2rem;
             }
+            .hourly-card {
+                min-width: 110px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -728,123 +873,10 @@
             .ip-display {
                 font-size: 1.2rem;
             }
-        }
-
-        /* ULEPSZENIA POGODY */
-        .weather-current {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            background: rgba(15,23,42,0.5);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            transition: all 0.3s;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
-        }
-        .weather-current.hot {
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(249, 115, 22, 0.4));
-            border-left: 4px solid #f97316;
-        }
-        .weather-current.cold {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.4));
-            border-left: 4px solid #3b82f6;
-        }
-        .weather-current.mild {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(99, 102, 241, 0.4));
-            border-left: 4px solid #22c55e;
-        }
-        .weather-main {
-            flex: 2;
-            text-align: center;
-        }
-        .weather-main .temp {
-            font-size: 4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(0,0,0,0.3);
-        }
-        .weather-details {
-            flex: 3;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
-            gap: 1rem;
-        }
-        .weather-detail-item {
-            background: rgba(0,0,0,0.5);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            text-align: center;
-            transition: transform 0.2s, background 0.2s;
-            backdrop-filter: blur(4px);
-        }
-        .weather-detail-item:hover {
-            transform: translateY(-3px);
-            background: rgba(0,0,0,0.7);
-        }
-        .forecast-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-            gap: 1.2rem;
-            margin-top: 1rem;
-        }
-        .forecast-card {
-            background: rgba(15,23,42,0.7);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 1rem;
-            text-align: center;
-            transition: 0.2s;
-            backdrop-filter: blur(5px);
-        }
-        .forecast-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            background: rgba(99,102,241,0.3);
-        }
-        .forecast-day {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        .forecast-icon {
-            font-size: 2rem;
-            margin: 0.5rem 0;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-        .forecast-temp {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-        }
-        .hourly-forecast {
-            display: flex;
-            overflow-x: auto;
-            gap: 1rem;
-            padding: 1rem 0;
-            scrollbar-width: thin;
-        }
-        .hourly-card {
-            background: rgba(0,0,0,0.5);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            min-width: 130px;
-            text-align: center;
-            flex-shrink: 0;
-            backdrop-filter: blur(4px);
-            transition: 0.2s;
-        }
-        .hourly-card:hover {
-            background: rgba(99,102,241,0.4);
-            transform: scale(1.02);
-        }
-        .product-emoji {
-            font-size: 1.2rem;
-            margin-right: 0.3rem;
+            .hourly-card {
+                min-width: 100px;
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -1382,7 +1414,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (poprawiona – pełne tłumaczenia, polskie nazwy miejscowości) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (POPRAWIONA – PEŁNE TŁUMACZENIA, WYSZUKIWANIE ŚWIATOWE, PUSTE POLE, GEOLOKALIZACJA) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
@@ -1757,7 +1789,7 @@
                 allStatsData.push({ currency, valueInBase, changePercent });
             });
 
-            // TOP 10 wzrostów i spadków (zamiast 5)
+            // TOP 10 wzrostów i spadków
             changes.sort((a, b) => b.changePercent - a.changePercent);
             const topGainers = changes.slice(0, 10);
             const topLosers = changes.slice(-10).reverse();
@@ -3821,7 +3853,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODY (ULEPSZONY – POPRAWIONE NAZWY MIEJSCOWOŚCI, PEŁNE TŁUMACZENIA) ========================
+    // ======================== MODUŁ POGODY (KOŃCOWA WERSJA – PEŁNE TŁUMACZENIA, POPRAWIONE NAZWY, LEPSZY WYGLĄD) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -3840,6 +3872,40 @@
         "Lublin": "Lublin",
         "Katowice": "Katowice"
     };
+
+    // Rozszerzone tłumaczenie opisów pogody
+    function getWeatherDescription(desc) {
+        if (!desc) return "Brak danych";
+        const plDesc = {
+            "Sunny": "Słonecznie", "Partly cloudy": "Częściowe zachmurzenie", "Cloudy": "Zachmurzenie",
+            "Overcast": "Pochmurno", "Mist": "Mgła", "Patchy rain possible": "Możliwe przelotne opady",
+            "Patchy snow possible": "Możliwe przelotne opady śniegu", "Patchy sleet possible": "Możliwy deszcz ze śniegiem",
+            "Patchy freezing drizzle possible": "Możliwa mżawka lodowa", "Thundery outbreaks possible": "Możliwe burze",
+            "Blowing snow": "Zamiecie śnieżne", "Blizzard": "Zamieć", "Fog": "Mgła", "Freezing fog": "Mgła marznąca",
+            "Patchy light drizzle": "Lekka mżawka", "Light drizzle": "Mżawka", "Freezing drizzle": "Marznąca mżawka",
+            "Heavy freezing drizzle": "Intensywna marznąca mżawka", "Patchy light rain": "Przelotne słabe opady",
+            "Light rain": "Słabe opady deszczu", "Moderate rain at times": "Okresami umiarkowane opady",
+            "Moderate rain": "Umiarkowane opady", "Heavy rain at times": "Okresami silne opady",
+            "Heavy rain": "Silne opady", "Light freezing rain": "Słabe opady marznącego deszczu",
+            "Moderate or heavy freezing rain": "Umiarkowane lub silne opady marznącego deszczu",
+            "Light sleet": "Słaby deszcz ze śniegiem", "Moderate or heavy sleet": "Umiarkowany lub silny deszcz ze śniegiem",
+            "Patchy light snow": "Przelotne słabe opady śniegu", "Light snow": "Słabe opady śniegu",
+            "Patchy moderate snow": "Przelotne umiarkowane opady śniegu", "Moderate snow": "Umiarkowane opady śniegu",
+            "Patchy heavy snow": "Przelotne silne opady śniegu", "Heavy snow": "Silne opady śniegu",
+            "Ice pellets": "Opady gradu", "Light rain shower": "Przelotne opady deszczu",
+            "Moderate or heavy rain shower": "Umiarkowane lub silne przelotne opady deszczu",
+            "Torrential rain shower": "Ulewa", "Light sleet showers": "Przelotne opady deszczu ze śniegiem",
+            "Moderate or heavy sleet showers": "Umiarkowane lub silne przelotne opady deszczu ze śniegiem",
+            "Light snow showers": "Przelotne opady śniegu", "Moderate or heavy snow showers": "Umiarkowane lub silne przelotne opady śniegu",
+            "Light showers of ice pellets": "Przelotne opady drobnego gradu", "Moderate or heavy showers of ice pellets": "Umiarkowane lub silne przelotne opady gradu",
+            "Patchy light rain in area with thunder": "Przelotne słabe opady deszczu z burzami",
+            "Moderate or heavy rain in area with thunder": "Umiarkowane lub silne opady deszczu z burzami",
+            "Patchy light snow in area with thunder": "Przelotne słabe opady śniegu z burzami",
+            "Moderate or heavy snow in area with thunder": "Umiarkowane lub silne opady śniegu z burzami",
+            "Clear": "Bezchmurnie", "Thunderstorm": "Burza", "Thunder": "Burza"
+        };
+        return plDesc[desc] || desc;
+    }
 
     function convertTo24h(timeStr) {
         if (!timeStr) return '--:--';
@@ -3887,9 +3953,7 @@
                 throw new Error('Lokalizacja nie rozpoznana przez serwer pogodowy.');
             }
             currentWeatherData = data;
-            // Wyświetlamy nazwę wpisaną przez użytkownika (może być zanglicyzowana, ale poprawimy)
             let displayName = city;
-            // Sprawdź czy jest w mapie poprawek
             for (let [eng, pl] of Object.entries(cityNameCorrections)) {
                 if (displayName.toLowerCase() === eng.toLowerCase()) {
                     displayName = pl;
@@ -3926,7 +3990,6 @@
                 let locationName = `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
                 if (data.nearest_area && data.nearest_area[0] && data.nearest_area[0].areaName && data.nearest_area[0].areaName[0]) {
                     let rawName = data.nearest_area[0].areaName[0].value;
-                    // popraw zanglicyzowane nazwy
                     for (let [eng, pl] of Object.entries(cityNameCorrections)) {
                         if (rawName === eng) {
                             rawName = pl;
@@ -3980,38 +4043,6 @@
         return codes[code] || '<i class="fas fa-cloud fa-3x"></i>';
     }
 
-    function getWeatherDescription(desc) {
-        if (!desc) return "Brak danych";
-        const plDesc = {
-            "Sunny": "Słonecznie", "Partly cloudy": "Częściowe zachmurzenie", "Cloudy": "Zachmurzenie",
-            "Overcast": "Pochmurno", "Mist": "Mgła", "Patchy rain possible": "Możliwe przelotne opady",
-            "Patchy snow possible": "Możliwe przelotne opady śniegu", "Patchy sleet possible": "Możliwy deszcz ze śniegiem",
-            "Patchy freezing drizzle possible": "Możliwa mżawka lodowa", "Thundery outbreaks possible": "Możliwe burze",
-            "Blowing snow": "Zamiecie śnieżne", "Blizzard": "Zamieć", "Fog": "Mgła", "Freezing fog": "Mgła marznąca",
-            "Patchy light drizzle": "Lekka mżawka", "Light drizzle": "Mżawka", "Freezing drizzle": "Marznąca mżawka",
-            "Heavy freezing drizzle": "Intensywna marznąca mżawka", "Patchy light rain": "Przelotne słabe opady",
-            "Light rain": "Słabe opady deszczu", "Moderate rain at times": "Okresami umiarkowane opady",
-            "Moderate rain": "Umiarkowane opady", "Heavy rain at times": "Okresami silne opady",
-            "Heavy rain": "Silne opady", "Light freezing rain": "Słabe opady marznącego deszczu",
-            "Moderate or heavy freezing rain": "Umiarkowane lub silne opady marznącego deszczu",
-            "Light sleet": "Słaby deszcz ze śniegiem", "Moderate or heavy sleet": "Umiarkowany lub silny deszcz ze śniegiem",
-            "Patchy light snow": "Przelotne słabe opady śniegu", "Light snow": "Słabe opady śniegu",
-            "Patchy moderate snow": "Przelotne umiarkowane opady śniegu", "Moderate snow": "Umiarkowane opady śniegu",
-            "Patchy heavy snow": "Przelotne silne opady śniegu", "Heavy snow": "Silne opady śniegu",
-            "Ice pellets": "Opady gradu", "Light rain shower": "Przelotne opady deszczu",
-            "Moderate or heavy rain shower": "Umiarkowane lub silne przelotne opady deszczu",
-            "Torrential rain shower": "Ulewa", "Light sleet showers": "Przelotne opady deszczu ze śniegiem",
-            "Moderate or heavy sleet showers": "Umiarkowane lub silne przelotne opady deszczu ze śniegiem",
-            "Light snow showers": "Przelotne opady śniegu", "Moderate or heavy snow showers": "Umiarkowane lub silne przelotne opady śniegu",
-            "Light showers of ice pellets": "Przelotne opady drobnego gradu", "Moderate or heavy showers of ice pellets": "Umiarkowane lub silne przelotne opady gradu",
-            "Patchy light rain in area with thunder": "Przelotne słabe opady deszczu z burzami",
-            "Moderate or heavy rain in area with thunder": "Umiarkowane lub silne opady deszczu z burzami",
-            "Patchy light snow in area with thunder": "Przelotne słabe opady śniegu z burzami",
-            "Moderate or heavy snow in area with thunder": "Umiarkowane lub silne opady śniegu z burzami"
-        };
-        return plDesc[desc] || desc;
-    }
-
     function formatHourFromWttr(timeVal) {
         if (timeVal === undefined || timeVal === null) return "--:--";
         if (typeof timeVal === 'string' && timeVal.includes(':')) {
@@ -4060,7 +4091,6 @@
             const moonDay = (day.astronomy && day.astronomy[0]) ? day.astronomy[0] : null;
             let moonPhaseDay = '---';
             if (moonDay && moonDay.moon_phase) moonPhaseDay = translateMoonPhase(moonDay.moon_phase);
-            // Dodajemy opis warunków dla dnia (z pierwszego hour)
             let dayDesc = '';
             if (day.hourly && day.hourly[0] && day.hourly[0].weatherDesc && day.hourly[0].weatherDesc[0]) {
                 dayDesc = getWeatherDescription(day.hourly[0].weatherDesc[0].value);
@@ -4068,7 +4098,6 @@
             return { ...day, totalRain, moonPhaseDay, dayDesc };
         });
 
-        // Prognoza godzinowa (dziś) – sortowanie po czasie
         const hourlyForecast = daily[0]?.hourly || [];
         hourlyForecast.sort((a,b) => parseInt(a.time) - parseInt(b.time));
         
@@ -4103,15 +4132,15 @@
                     const wind = h.windspeedKmph;
                     const humidity = h.humidity;
                     return `<div class="hourly-card">
-                        <div><strong>${hourStr}</strong></div>
-                        <div>${icon}</div>
-                        <div>${Math.round(temp)}${tempUnit}</div>
-                        <div><small>${desc}</small></div>
-                        <div><i class="fas fa-tint"></i> ${humidity}% <i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
+                        <div class="hourly-time"><strong>${hourStr}</strong></div>
+                        <div class="hourly-icon">${icon}</div>
+                        <div class="hourly-temp">${Math.round(temp)}${tempUnit}</div>
+                        <div class="hourly-desc">${desc}</div>
+                        <div><i class="fas fa-wind"></i> ${wind} ${windUnit} <i class="fas fa-tint"></i> ${humidity}%</div>
                     </div>`;
                 }).join('')}
             </div>
-            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa (szczegółowa)</h3>
+            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa</h3>
             <div class="forecast-grid">
                 ${dailyWithRain.map(day => {
                     const date = new Date(day.date);
