@@ -788,7 +788,7 @@
         }
         .forecast-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
             gap: 1.2rem;
             margin-top: 1rem;
         }
@@ -1382,7 +1382,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (poprawiona – pełne tłumaczenia, polskie nazwy miejscowości) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (w pełni po polsku) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
@@ -1757,7 +1757,6 @@
                 allStatsData.push({ currency, valueInBase, changePercent });
             });
 
-            // TOP 10 wzrostów i spadków (zamiast 5)
             changes.sort((a, b) => b.changePercent - a.changePercent);
             const topGainers = changes.slice(0, 10);
             const topLosers = changes.slice(-10).reverse();
@@ -2635,7 +2634,7 @@
         }, 1000);
     }
 
-    // ======================== COOKIE CLICKER (poprawiona animacja i komunikaty) ========================
+    // ======================== COOKIE CLICKER ========================
     let cookies = 0;
     let cookiesPerSecond = 0;
     let clickMultiplier = 1;
@@ -2764,7 +2763,6 @@
         }, 10000);
     }
 
-    // Komunikaty na środku ekranu, 1 pod drugim – nie blokują kliknięcia
     function showFloatingMessage(msg, color) {
         const container = document.getElementById('messageContainer');
         if (!container) return;
@@ -3821,7 +3819,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODY (ULEPSZONY – POPRAWIONE NAZWY MIEJSCOWOŚCI, PEŁNE TŁUMACZENIA) ========================
+    // ======================== MODUŁ POGODY (w pełni po polsku, poprawione fazy księżyca i opisy) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -3852,7 +3850,7 @@
         "Olsztyn": "Olsztyn"
     };
 
-    // Rozszerzony słownik tłumaczeń opisów pogody
+    // Kompletny słownik tłumaczeń opisów pogody
     function getWeatherDescription(desc) {
         if (!desc) return "Brak danych";
         const plDesc = {
@@ -3865,6 +3863,7 @@
             "Overcast": "Pochmurno",
             "Mist": "Mgła",
             "Fog": "Gęsta mgła",
+            "Freezing fog": "Marznąca mgła",
             "Patchy rain possible": "Możliwe przelotne opady",
             "Patchy snow possible": "Możliwe przelotne opady śniegu",
             "Patchy sleet possible": "Możliwy deszcz ze śniegiem",
@@ -3872,7 +3871,6 @@
             "Thundery outbreaks possible": "Możliwe burze",
             "Blowing snow": "Zamiecie śnieżne",
             "Blizzard": "Zamieć",
-            "Freezing fog": "Marznąca mgła",
             // Opady
             "Patchy light drizzle": "Przelotna lekka mżawka",
             "Light drizzle": "Lekka mżawka",
@@ -4075,14 +4073,15 @@
         if (tempC > 25) tempClass = 'hot';
         else if (tempC < 10) tempClass = 'cold';
         
-        const astronomy = daily[0]?.astronomy?.[0] || {};
-        let sunrise = astronomy.sunrise || '--';
-        let sunset = astronomy.sunset || '--';
+        // Pobieramy fazę księżyca dla bieżącego dnia z astronomy i tłumaczymy
+        const astronomyToday = daily[0]?.astronomy?.[0] || {};
+        const moonPhaseEngToday = astronomyToday.moon_phase || '---';
+        const moonPhasePlToday = translateMoonPhase(moonPhaseEngToday);
+        
+        let sunrise = astronomyToday.sunrise || '--';
+        let sunset = astronomyToday.sunset || '--';
         sunrise = convertTo24h(sunrise);
         sunset = convertTo24h(sunset);
-        
-        const moonPhaseEng = daily[0]?.hourly?.[0]?.weatherDesc?.[0]?.value || '---';
-        const moonPhasePl = translateMoonPhase(moonPhaseEng);
         
         const dailyWithRain = daily.slice(0,7).map(day => {
             let totalRain = 0;
@@ -4108,6 +4107,19 @@
         const hourlyForecast = daily[0]?.hourly || [];
         hourlyForecast.sort((a,b) => parseInt(a.time) - parseInt(b.time));
         
+        // Kierunek wiatru w języku polskim
+        const windDir = current.winddir16Point || '';
+        let windDirPl = '';
+        if (windDir) {
+            const windMap = {
+                'N': 'północny', 'NNE': 'północno-wschodni', 'NE': 'północno-wschodni', 'ENE': 'wschodnio-północny',
+                'E': 'wschodni', 'ESE': 'wschodnio-południowy', 'SE': 'południowo-wschodni', 'SSE': 'południowo-wschodni',
+                'S': 'południowy', 'SSW': 'południowo-zachodni', 'SW': 'południowo-zachodni', 'WSW': 'zachodnio-południowy',
+                'W': 'zachodni', 'WNW': 'zachodnio-północny', 'NW': 'północno-zachodni', 'NNW': 'północno-zachodni'
+            };
+            windDirPl = windMap[windDir] || windDir;
+        }
+        
         const html = `
             <div class="weather-current ${tempClass} weather-fade">
                 <div class="weather-main">
@@ -4118,13 +4130,13 @@
                 </div>
                 <div class="weather-details">
                     <div class="weather-detail-item"><i class="fas fa-tint"></i> Wilgotność: ${current.humidity}%</div>
-                    <div class="weather-detail-item"><i class="fas fa-wind"></i> Wiatr: ${current.windspeedKmph} ${windUnit} ${current.winddir16Point ? '('+current.winddir16Point+')' : ''}</div>
+                    <div class="weather-detail-item"><i class="fas fa-wind"></i> Wiatr: ${current.windspeedKmph} ${windUnit} ${windDirPl ? '('+windDirPl+')' : ''}</div>
                     <div class="weather-detail-item"><i class="fas fa-tachometer-alt"></i> Ciśnienie: ${current.pressure} ${pressureUnit}</div>
                     <div class="weather-detail-item"><i class="fas fa-cloud"></i> Zachmurzenie: ${current.cloudcover}%</div>
                     <div class="weather-detail-item"><i class="fas fa-eye"></i> Widzialność: ${current.visibility} km</div>
                     <div class="weather-detail-item"><i class="fas fa-umbrella"></i> Opady: ${current.precipMM} mm</div>
                     <div class="weather-detail-item"><i class="fas fa-sun"></i> Wschód: ${sunrise} / Zachód: ${sunset}</div>
-                    <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhasePl}</div>
+                    <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhasePlToday}</div>
                 </div>
             </div>
             <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury</h3>
