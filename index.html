@@ -827,20 +827,24 @@
             gap: 1rem;
             padding: 1rem 0;
             scrollbar-width: thin;
+            margin-bottom: 1rem;
         }
         .hourly-card {
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             border-radius: 1rem;
             padding: 0.8rem;
-            min-width: 140px;
+            min-width: 150px;
             text-align: center;
             flex-shrink: 0;
-            backdrop-filter: blur(4px);
-            transition: 0.2s;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .hourly-card:hover {
-            background: rgba(99,102,241,0.4);
-            transform: scale(1.02);
+            background: rgba(99,102,241,0.5);
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         .product-emoji {
             font-size: 1.2rem;
@@ -1224,7 +1228,7 @@
             <div class="table-wrapper">
                 <table id="timeDiffTable">
                     <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
-                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</tr></tbody>
+                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tbody>
                 </table>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
@@ -1382,7 +1386,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (w pełni po polsku) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (w pełni po polsku – prognoza godzinowa + 7 dni) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
@@ -3819,96 +3823,53 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODY (w pełni po polsku, poprawione fazy księżyca i opisy) ========================
+    // ======================== MODUŁ POGODY (w pełni po polsku – prognoza godzinowa z polskimi opisami, fazy księżyca) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
 
     // Mapa poprawek dla zanglicyzowanych nazw polskich miast
     const cityNameCorrections = {
-        "Belostok": "Białystok",
-        "Warszawa": "Warszawa",
-        "Krakow": "Kraków",
-        "Lodz": "Łódź",
-        "Wroclaw": "Wrocław",
-        "Poznan": "Poznań",
-        "Gdansk": "Gdańsk",
-        "Szczecin": "Szczecin",
-        "Bydgoszcz": "Bydgoszcz",
-        "Lublin": "Lublin",
-        "Katowice": "Katowice",
-        "Gdynia": "Gdynia",
-        "Zakopane": "Zakopane",
-        "Czestochowa": "Częstochowa",
-        "Radom": "Radom",
-        "Kielce": "Kielce",
-        "Rzeszow": "Rzeszów",
-        "Opole": "Opole",
-        "Zielona Gora": "Zielona Góra",
-        "Gorzow Wielkopolski": "Gorzów Wielkopolski",
-        "Torun": "Toruń",
-        "Olsztyn": "Olsztyn"
+        "Belostok": "Białystok", "Warszawa": "Warszawa", "Krakow": "Kraków", "Lodz": "Łódź",
+        "Wroclaw": "Wrocław", "Poznan": "Poznań", "Gdansk": "Gdańsk", "Szczecin": "Szczecin",
+        "Bydgoszcz": "Bydgoszcz", "Lublin": "Lublin", "Katowice": "Katowice", "Gdynia": "Gdynia",
+        "Zakopane": "Zakopane", "Czestochowa": "Częstochowa", "Radom": "Radom", "Kielce": "Kielce",
+        "Rzeszow": "Rzeszów", "Opole": "Opole", "Zielona Gora": "Zielona Góra",
+        "Gorzow Wielkopolski": "Gorzów Wielkopolski", "Torun": "Toruń", "Olsztyn": "Olsztyn"
     };
 
-    // Kompletny słownik tłumaczeń opisów pogody
+    // Rozbudowany słownik tłumaczeń opisów pogody (wszystkie kody z wttr.in)
     function getWeatherDescription(desc) {
         if (!desc) return "Brak danych";
         const plDesc = {
-            // Podstawowe
-            "Sunny": "Słonecznie",
-            "Clear": "Bezchmurnie",
-            "Fair": "Ładnie",
-            "Partly cloudy": "Częściowe zachmurzenie",
-            "Cloudy": "Zachmurzenie",
-            "Overcast": "Pochmurno",
-            "Mist": "Mgła",
-            "Fog": "Gęsta mgła",
-            "Freezing fog": "Marznąca mgła",
-            "Patchy rain possible": "Możliwe przelotne opady",
-            "Patchy snow possible": "Możliwe przelotne opady śniegu",
-            "Patchy sleet possible": "Możliwy deszcz ze śniegiem",
-            "Patchy freezing drizzle possible": "Możliwa marznąca mżawka",
-            "Thundery outbreaks possible": "Możliwe burze",
-            "Blowing snow": "Zamiecie śnieżne",
-            "Blizzard": "Zamieć",
-            // Opady
-            "Patchy light drizzle": "Przelotna lekka mżawka",
-            "Light drizzle": "Lekka mżawka",
-            "Freezing drizzle": "Marznąca mżawka",
-            "Heavy freezing drizzle": "Intensywna marznąca mżawka",
-            "Patchy light rain": "Przelotne słabe opady deszczu",
-            "Light rain": "Słabe opady deszczu",
-            "Moderate rain at times": "Okresami umiarkowane opady deszczu",
-            "Moderate rain": "Umiarkowane opady deszczu",
-            "Heavy rain at times": "Okresami silne opady deszczu",
-            "Heavy rain": "Silne opady deszczu",
-            "Light freezing rain": "Słabe opady marznącego deszczu",
-            "Moderate or heavy freezing rain": "Umiarkowane lub silne opady marznącego deszczu",
-            "Light sleet": "Słaby deszcz ze śniegiem",
-            "Moderate or heavy sleet": "Umiarkowany lub silny deszcz ze śniegiem",
-            "Patchy light snow": "Przelotne słabe opady śniegu",
-            "Light snow": "Słabe opady śniegu",
-            "Patchy moderate snow": "Przelotne umiarkowane opady śniegu",
-            "Moderate snow": "Umiarkowane opady śniegu",
-            "Patchy heavy snow": "Przelotne silne opady śniegu",
-            "Heavy snow": "Silne opady śniegu",
-            "Ice pellets": "Opady gradu",
-            "Light rain shower": "Przelotne opady deszczu",
+            "Sunny": "Słonecznie", "Clear": "Bezchmurnie", "Fair": "Ładnie",
+            "Partly cloudy": "Częściowe zachmurzenie", "Cloudy": "Zachmurzenie",
+            "Overcast": "Pochmurno", "Mist": "Mgła", "Fog": "Gęsta mgła",
+            "Freezing fog": "Marznąca mgła", "Patchy rain possible": "Możliwe przelotne opady",
+            "Patchy snow possible": "Możliwe przelotne opady śniegu", "Patchy sleet possible": "Możliwy deszcz ze śniegiem",
+            "Patchy freezing drizzle possible": "Możliwa marznąca mżawka", "Thundery outbreaks possible": "Możliwe burze",
+            "Blowing snow": "Zamiecie śnieżne", "Blizzard": "Zamieć",
+            "Patchy light drizzle": "Przelotna lekka mżawka", "Light drizzle": "Lekka mżawka",
+            "Freezing drizzle": "Marznąca mżawka", "Heavy freezing drizzle": "Intensywna marznąca mżawka",
+            "Patchy light rain": "Przelotne słabe opady deszczu", "Light rain": "Słabe opady deszczu",
+            "Moderate rain at times": "Okresami umiarkowane opady deszczu", "Moderate rain": "Umiarkowane opady deszczu",
+            "Heavy rain at times": "Okresami silne opady deszczu", "Heavy rain": "Silne opady deszczu",
+            "Light freezing rain": "Słabe opady marznącego deszczu", "Moderate or heavy freezing rain": "Umiarkowane lub silne opady marznącego deszczu",
+            "Light sleet": "Słaby deszcz ze śniegiem", "Moderate or heavy sleet": "Umiarkowany lub silny deszcz ze śniegiem",
+            "Patchy light snow": "Przelotne słabe opady śniegu", "Light snow": "Słabe opady śniegu",
+            "Patchy moderate snow": "Przelotne umiarkowane opady śniegu", "Moderate snow": "Umiarkowane opady śniegu",
+            "Patchy heavy snow": "Przelotne silne opady śniegu", "Heavy snow": "Silne opady śniegu",
+            "Ice pellets": "Opady gradu", "Light rain shower": "Przelotne opady deszczu",
             "Moderate or heavy rain shower": "Umiarkowane lub silne przelotne opady deszczu",
-            "Torrential rain shower": "Ulewa",
-            "Light sleet showers": "Przelotne opady deszczu ze śniegiem",
+            "Torrential rain shower": "Ulewa", "Light sleet showers": "Przelotne opady deszczu ze śniegiem",
             "Moderate or heavy sleet showers": "Umiarkowane lub silne przelotne opady deszczu ze śniegiem",
-            "Light snow showers": "Przelotne opady śniegu",
-            "Moderate or heavy snow showers": "Umiarkowane lub silne przelotne opady śniegu",
-            "Light showers of ice pellets": "Przelotne opady drobnego gradu",
-            "Moderate or heavy showers of ice pellets": "Umiarkowane lub silne przelotne opady gradu",
-            // Burze
+            "Light snow showers": "Przelotne opady śniegu", "Moderate or heavy snow showers": "Umiarkowane lub silne przelotne opady śniegu",
+            "Light showers of ice pellets": "Przelotne opady drobnego gradu", "Moderate or heavy showers of ice pellets": "Umiarkowane lub silne przelotne opady gradu",
             "Patchy light rain in area with thunder": "Przelotne słabe opady deszczu z burzami",
             "Moderate or heavy rain in area with thunder": "Umiarkowane lub silne opady deszczu z burzami",
             "Patchy light snow in area with thunder": "Przelotne słabe opady śniegu z burzami",
             "Moderate or heavy snow in area with thunder": "Umiarkowane lub silne opady śniegu z burzami"
         };
-        // Jeśli opis nie jest znany, zwracamy oryginał (ale z małą poprawką)
         return plDesc[desc] || desc;
     }
 
@@ -3928,14 +3889,10 @@
 
     function translateMoonPhase(engPhase) {
         const moonMap = {
-            "New Moon": "Nów",
-            "Waxing Crescent": "Przybywający sierp",
-            "First Quarter": "Pierwsza kwadra",
-            "Waxing Gibbous": "Przybywający garbaty",
-            "Full Moon": "Pełnia",
-            "Waning Gibbous": "Ubywający garbaty",
-            "Last Quarter": "Ostatnia kwadra",
-            "Waning Crescent": "Ubywający sierp"
+            "New Moon": "Nów", "Waxing Crescent": "Przybywający sierp",
+            "First Quarter": "Pierwsza kwadra", "Waxing Gibbous": "Przybywający garbaty",
+            "Full Moon": "Pełnia", "Waning Gibbous": "Ubywający garbaty",
+            "Last Quarter": "Ostatnia kwadra", "Waning Crescent": "Ubywający sierp"
         };
         return moonMap[engPhase] || engPhase;
     }
@@ -4050,9 +4007,7 @@
 
     function formatHourFromWttr(timeVal) {
         if (timeVal === undefined || timeVal === null) return "--:--";
-        if (typeof timeVal === 'string' && timeVal.includes(':')) {
-            return timeVal;
-        }
+        if (typeof timeVal === 'string' && timeVal.includes(':')) return timeVal;
         let val = parseInt(timeVal, 10);
         if (isNaN(val)) return "--:--";
         let hours = Math.floor(val / 100);
@@ -4073,11 +4028,9 @@
         if (tempC > 25) tempClass = 'hot';
         else if (tempC < 10) tempClass = 'cold';
         
-        // Pobieramy fazę księżyca dla bieżącego dnia z astronomy i tłumaczymy
         const astronomyToday = daily[0]?.astronomy?.[0] || {};
         const moonPhaseEngToday = astronomyToday.moon_phase || '---';
         const moonPhasePlToday = translateMoonPhase(moonPhaseEngToday);
-        
         let sunrise = astronomyToday.sunrise || '--';
         let sunset = astronomyToday.sunset || '--';
         sunrise = convertTo24h(sunrise);
@@ -4107,7 +4060,6 @@
         const hourlyForecast = daily[0]?.hourly || [];
         hourlyForecast.sort((a,b) => parseInt(a.time) - parseInt(b.time));
         
-        // Kierunek wiatru w języku polskim
         const windDir = current.winddir16Point || '';
         let windDirPl = '';
         if (windDir) {
@@ -4144,8 +4096,9 @@
             <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś)</h3>
             <div class="hourly-forecast">
                 ${hourlyForecast.map(h => {
-                    let hourStr = formatHourFromWttr(h.time);
+                    const hourStr = formatHourFromWttr(h.time);
                     const temp = parseFloat(h.tempC);
+                    const feelsLike = parseFloat(h.FeelsLikeC);
                     const icon = getWeatherIconWttr(h.weatherCode);
                     const desc = getWeatherDescription(h.weatherDesc[0]?.value);
                     const wind = h.windspeedKmph;
@@ -4154,12 +4107,13 @@
                         <div><strong>${hourStr}</strong></div>
                         <div>${icon}</div>
                         <div>${Math.round(temp)}${tempUnit}</div>
+                        <div><small>Odczuwalna: ${Math.round(feelsLike)}${tempUnit}</small></div>
                         <div><small>${desc}</small></div>
-                        <div><i class="fas fa-tint"></i> ${humidity}% <i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
+                        <div><i class="fas fa-tint"></i> ${humidity}% &nbsp; <i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
                     </div>`;
                 }).join('')}
             </div>
-            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa (szczegółowa)</h3>
+            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa</h3>
             <div class="forecast-grid">
                 ${dailyWithRain.map(day => {
                     const date = new Date(day.date);
@@ -4213,56 +4167,16 @@
             data: {
                 labels: labels,
                 datasets: [
-                    { 
-                        label: 'Max temp.', 
-                        data: maxTemps, 
-                        borderColor: '#ef4444', 
-                        backgroundColor: gradientMax,
-                        tension: 0.3, 
-                        fill: true,
-                        pointBackgroundColor: '#ef4444', 
-                        pointBorderColor: '#fff', 
-                        pointRadius: 6,
-                        pointHoverRadius: 8,
-                        borderWidth: 2
-                    },
-                    { 
-                        label: 'Min temp.', 
-                        data: minTemps, 
-                        borderColor: '#3b82f6', 
-                        backgroundColor: gradientMin,
-                        tension: 0.3, 
-                        fill: true,
-                        pointBackgroundColor: '#3b82f6', 
-                        pointBorderColor: '#fff', 
-                        pointRadius: 6,
-                        pointHoverRadius: 8,
-                        borderWidth: 2
-                    }
+                    { label: 'Max temp.', data: maxTemps, borderColor: '#ef4444', backgroundColor: gradientMax, tension: 0.3, fill: true, pointBackgroundColor: '#ef4444', pointBorderColor: '#fff', pointRadius: 6, pointHoverRadius: 8, borderWidth: 2 },
+                    { label: 'Min temp.', data: minTemps, borderColor: '#3b82f6', backgroundColor: gradientMin, tension: 0.3, fill: true, pointBackgroundColor: '#3b82f6', pointBorderColor: '#fff', pointRadius: 6, pointHoverRadius: 8, borderWidth: 2 }
                 ]
             },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: true, 
-                plugins: { 
-                    legend: { labels: { color: 'white', font: { size: 12 } } },
-                    tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#cbd5e1' }
-                },
-                scales: {
-                    y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
-                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: 'white', font: { size: 12 } } }, tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#cbd5e1' } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }, x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } } } }
         });
     }
 
     function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
     function toggleWeatherUnits() {
@@ -4282,43 +4196,25 @@
 
     function initWeather() {
         const input = document.getElementById('weatherCityInput');
-        if (input) {
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') searchWeatherByCity();
-            });
-        }
+        if (input) input.addEventListener('keypress', e => { if (e.key === 'Enter') searchWeatherByCity(); });
         getWeatherByGeolocation();
     }
 
     // ======================== BANER ZGÓD COOKIE ========================
     function setCookieConsent(accepted) {
         if (accepted) {
-            gtag('consent', 'update', {
-                'ad_storage': 'granted',
-                'analytics_storage': 'granted',
-                'functionality_storage': 'granted',
-                'personalization_storage': 'granted'
-            });
+            gtag('consent', 'update', { 'ad_storage': 'granted', 'analytics_storage': 'granted', 'functionality_storage': 'granted', 'personalization_storage': 'granted' });
             localStorage.setItem('cookieConsent', 'full');
         } else {
-            gtag('consent', 'update', {
-                'ad_storage': 'denied',
-                'analytics_storage': 'denied',
-                'functionality_storage': 'denied',
-                'personalization_storage': 'denied'
-            });
+            gtag('consent', 'update', { 'ad_storage': 'denied', 'analytics_storage': 'denied', 'functionality_storage': 'denied', 'personalization_storage': 'denied' });
             localStorage.setItem('cookieConsent', 'necessary');
         }
         document.getElementById('cookieConsent').style.display = 'none';
     }
 
     const savedConsent = localStorage.getItem('cookieConsent');
-    if (!savedConsent) {
-        document.getElementById('cookieConsent').style.display = 'flex';
-    } else {
-        document.getElementById('cookieConsent').style.display = 'none';
-    }
-
+    if (!savedConsent) document.getElementById('cookieConsent').style.display = 'flex';
+    else document.getElementById('cookieConsent').style.display = 'none';
     document.getElementById('acceptCookies').onclick = () => setCookieConsent(true);
     document.getElementById('rejectCookies').onclick = () => setCookieConsent(false);
 
@@ -4327,28 +4223,22 @@
     currentCategory = 'length';
     currentDataMode = '1000';
     updateConverter();
-
     document.getElementById('amount').addEventListener('wheel', e => e.preventDefault());
-
     initTimezoneCards();
     renderTimeCards();
     populateTimezoneSelects();
     startTimeAutoRefresh();
     const diffBaseSelect = document.getElementById('differenceBaseTZ');
     if (diffBaseSelect) diffBaseSelect.addEventListener('change', updateTimeDifferences);
-    setTimeout(() => {
-        if (diffBaseSelect && diffBaseSelect.value) updateTimeDifferences();
-    }, 500);
+    setTimeout(() => { if (diffBaseSelect && diffBaseSelect.value) updateTimeDifferences(); }, 500);
     clearProgrammer();
     switchSubTab('credit', null);
-
     loadGame();
     updateStats();
     rebuildBuildings();
     rebuildUpgrades();
     gameLoop();
     scheduleGoldenCookie();
-
     window.nutritionInitialized = false;
     window.weatherInitialized = false;
     document.getElementById('bmrGender').addEventListener('change', calculateBMR);
@@ -4357,11 +4247,7 @@
     document.getElementById('bmrHeight').addEventListener('input', calculateBMR);
     document.getElementById('bmrActivity').addEventListener('change', calculateBMR);
     calculateBMR();
-    
-    if (!window.weatherInitialized) {
-        initWeather();
-        window.weatherInitialized = true;
-    }
+    if (!window.weatherInitialized) { initWeather(); window.weatherInitialized = true; }
 </script>
 </body>
 </html>
