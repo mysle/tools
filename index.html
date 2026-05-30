@@ -1228,7 +1228,7 @@
             <div class="table-wrapper">
                 <table id="timeDiffTable">
                     <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
-                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</table></tbody>
+                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tbody>
                 </table>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
@@ -3823,7 +3823,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODY (w pełni po polsku – wszystkie teksty przetłumaczone) ========================
+    // ======================== MODUŁ POGODY (w pełni po polsku – prognoza godzinowa z polskimi opisami, fazy księżyca) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -3838,31 +3838,56 @@
         "Gorzow Wielkopolski": "Gorzów Wielkopolski", "Torun": "Toruń", "Olsztyn": "Olsztyn"
     };
 
-    // Rozbudowany słownik tłumaczeń opisów pogody (wszystkie możliwe kody z wttr.in)
+    // Rozbudowany słownik tłumaczeń opisów pogody – obejmuje wszystkie możliwe stany
     function getWeatherDescription(desc) {
         if (!desc) return "Brak danych";
         const plDesc = {
             // Podstawowe
-            "Sunny": "Słonecznie", "Clear": "Bezchmurnie", "Fair": "Ładnie",
-            "Partly cloudy": "Częściowe zachmurzenie", "Cloudy": "Zachmurzenie",
-            "Overcast": "Pochmurno", "Mist": "Mgła", "Fog": "Gęsta mgła",
-            "Freezing fog": "Marznąca mgła", "Patchy rain possible": "Możliwe przelotne opady",
-            "Patchy snow possible": "Możliwe przelotne opady śniegu", "Patchy sleet possible": "Możliwy deszcz ze śniegiem",
-            "Patchy freezing drizzle possible": "Możliwa marznąca mżawka", "Thundery outbreaks possible": "Możliwe burze",
-            "Blowing snow": "Zamiecie śnieżne", "Blizzard": "Zamieć",
-            // Opady deszczu i śniegu
-            "Patchy light drizzle": "Przelotna lekka mżawka", "Light drizzle": "Lekka mżawka",
-            "Freezing drizzle": "Marznąca mżawka", "Heavy freezing drizzle": "Intensywna marznąca mżawka",
-            "Patchy light rain": "Przelotne słabe opady deszczu", "Light rain": "Słabe opady deszczu",
-            "Moderate rain at times": "Okresami umiarkowane opady deszczu", "Moderate rain": "Umiarkowane opady deszczu",
-            "Heavy rain at times": "Okresami silne opady deszczu", "Heavy rain": "Silne opady deszczu",
-            "Light freezing rain": "Słabe opady marznącego deszczu", "Moderate or heavy freezing rain": "Umiarkowane lub silne opady marznącego deszczu",
-            "Light sleet": "Słaby deszcz ze śniegiem", "Moderate or heavy sleet": "Umiarkowany lub silny deszcz ze śniegiem",
-            "Patchy light snow": "Przelotne słabe opady śniegu", "Light snow": "Słabe opady śniegu",
-            "Patchy moderate snow": "Przelotne umiarkowane opady śniegu", "Moderate snow": "Umiarkowane opady śniegu",
-            "Patchy heavy snow": "Przelotne silne opady śniegu", "Heavy snow": "Silne opady śniegu",
+            "Sunny": "Słonecznie",
+            "Clear": "Bezchmurnie",
+            "Fair": "Ładnie",
+            "Partly cloudy": "Częściowe zachmurzenie",
+            "Cloudy": "Zachmurzenie",
+            "Overcast": "Pochmurno",
+            "Mist": "Mgła",
+            "Fog": "Gęsta mgła",
+            "Freezing fog": "Marznąca mgła",
+            "Patchy rain possible": "Możliwe przelotne opady",
+            "Patchy snow possible": "Możliwe przelotne opady śniegu",
+            "Patchy sleet possible": "Możliwy deszcz ze śniegiem",
+            "Patchy freezing drizzle possible": "Możliwa marznąca mżawka",
+            "Thundery outbreaks possible": "Możliwe burze",
+            "Blowing snow": "Zamiecie śnieżne",
+            "Blizzard": "Zamieć",
+            // Dodatkowe, które mogą wystąpić
+            "Rain": "Deszcz",
+            "Snow": "Śnieg",
+            "Sleet": "Deszcz ze śniegiem",
+            "Hail": "Grad",
+            "Drizzle": "Mżawka",
+            "Thunderstorm": "Burza",
+            // Opady
+            "Patchy light drizzle": "Przelotna lekka mżawka",
+            "Light drizzle": "Lekka mżawka",
+            "Freezing drizzle": "Marznąca mżawka",
+            "Heavy freezing drizzle": "Intensywna marznąca mżawka",
+            "Patchy light rain": "Przelotne słabe opady deszczu",
+            "Light rain": "Słabe opady deszczu",
+            "Moderate rain at times": "Okresami umiarkowane opady deszczu",
+            "Moderate rain": "Umiarkowane opady deszczu",
+            "Heavy rain at times": "Okresami silne opady deszczu",
+            "Heavy rain": "Silne opady deszczu",
+            "Light freezing rain": "Słabe opady marznącego deszczu",
+            "Moderate or heavy freezing rain": "Umiarkowane lub silne opady marznącego deszczu",
+            "Light sleet": "Słaby deszcz ze śniegiem",
+            "Moderate or heavy sleet": "Umiarkowany lub silny deszcz ze śniegiem",
+            "Patchy light snow": "Przelotne słabe opady śniegu",
+            "Light snow": "Słabe opady śniegu",
+            "Patchy moderate snow": "Przelotne umiarkowane opady śniegu",
+            "Moderate snow": "Umiarkowane opady śniegu",
+            "Patchy heavy snow": "Przelotne silne opady śniegu",
+            "Heavy snow": "Silne opady śniegu",
             "Ice pellets": "Opady gradu",
-            // Przelotne opady
             "Light rain shower": "Przelotne opady deszczu",
             "Moderate or heavy rain shower": "Umiarkowane lub silne przelotne opady deszczu",
             "Torrential rain shower": "Ulewa",
