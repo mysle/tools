@@ -788,7 +788,7 @@
         }
         .forecast-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px,1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
             gap: 1.2rem;
             margin-top: 1rem;
         }
@@ -1382,7 +1382,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (poprawiona – puste pole, geolokalizacja, idealne wyszukiwanie) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (poprawiona – pełne tłumaczenia, polskie nazwy miejscowości) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
@@ -1401,7 +1401,7 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA COOKIE CLICKER (poprawiona animacja i komunikaty) ============ -->
+    <!-- ============ ZAKŁADKA COOKIE CLICKER ============ -->
     <div id="cookie-tab" class="tab-content">
         <div class="glass-card cookie-game">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cookie Clicker – Królestwo Słodkości</h2>
@@ -3821,10 +3821,25 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODY (ulepszona geolokalizacja i wyszukiwanie) ========================
+    // ======================== MODUŁ POGODY (ULEPSZONY – POPRAWIONE NAZWY MIEJSCOWOŚCI, PEŁNE TŁUMACZENIA) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
+
+    // Mapa poprawek dla zanglicyzowanych nazw polskich miast
+    const cityNameCorrections = {
+        "Belostok": "Białystok",
+        "Warszawa": "Warszawa",
+        "Krakow": "Kraków",
+        "Lodz": "Łódź",
+        "Wroclaw": "Wrocław",
+        "Poznan": "Poznań",
+        "Gdansk": "Gdańsk",
+        "Szczecin": "Szczecin",
+        "Bydgoszcz": "Bydgoszcz",
+        "Lublin": "Lublin",
+        "Katowice": "Katowice"
+    };
 
     function convertTo24h(timeStr) {
         if (!timeStr) return '--:--';
@@ -3868,12 +3883,20 @@
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
-            // Sprawdź, czy odpowiedź zawiera dane
             if (!data || !data.current_condition || data.current_condition.length === 0 || !data.nearest_area || data.nearest_area.length === 0) {
                 throw new Error('Lokalizacja nie rozpoznana przez serwer pogodowy.');
             }
             currentWeatherData = data;
-            displayWeatherWttr(data, city);
+            // Wyświetlamy nazwę wpisaną przez użytkownika (może być zanglicyzowana, ale poprawimy)
+            let displayName = city;
+            // Sprawdź czy jest w mapie poprawek
+            for (let [eng, pl] of Object.entries(cityNameCorrections)) {
+                if (displayName.toLowerCase() === eng.toLowerCase()) {
+                    displayName = pl;
+                    break;
+                }
+            }
+            displayWeatherWttr(data, displayName);
         } catch (err) {
             console.error('Pogoda błąd:', err);
             document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Nie udało się pobrać pogody dla „${city}”.<br>Sprawdź pisownię lub spróbuj innej nazwy (np. „Londyn, UK”).</div>`;
@@ -3900,10 +3923,17 @@
                 const data = await res.json();
                 if (!data || !data.current_condition || !data.nearest_area) throw new Error('Nieprawidłowa odpowiedź');
                 currentWeatherData = data;
-                // Pobierz przyjazną nazwę lokalizacji z nearest_area
                 let locationName = `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
                 if (data.nearest_area && data.nearest_area[0] && data.nearest_area[0].areaName && data.nearest_area[0].areaName[0]) {
-                    locationName = data.nearest_area[0].areaName[0].value;
+                    let rawName = data.nearest_area[0].areaName[0].value;
+                    // popraw zanglicyzowane nazwy
+                    for (let [eng, pl] of Object.entries(cityNameCorrections)) {
+                        if (rawName === eng) {
+                            rawName = pl;
+                            break;
+                        }
+                    }
+                    locationName = rawName;
                 }
                 displayWeatherWttr(data, locationName);
             } catch (err) {
@@ -4030,7 +4060,12 @@
             const moonDay = (day.astronomy && day.astronomy[0]) ? day.astronomy[0] : null;
             let moonPhaseDay = '---';
             if (moonDay && moonDay.moon_phase) moonPhaseDay = translateMoonPhase(moonDay.moon_phase);
-            return { ...day, totalRain, moonPhaseDay };
+            // Dodajemy opis warunków dla dnia (z pierwszego hour)
+            let dayDesc = '';
+            if (day.hourly && day.hourly[0] && day.hourly[0].weatherDesc && day.hourly[0].weatherDesc[0]) {
+                dayDesc = getWeatherDescription(day.hourly[0].weatherDesc[0].value);
+            }
+            return { ...day, totalRain, moonPhaseDay, dayDesc };
         });
 
         // Prognoza godzinowa (dziś) – sortowanie po czasie
@@ -4106,6 +4141,7 @@
                             <div><i class="fas fa-moon"></i> Faza: ${day.moonPhaseDay}</div>
                             <div><i class="fas fa-tachometer-alt"></i> Ciśn.: ${pressureDay} hPa</div>
                             <div><i class="fas fa-sun"></i> UV: ${uvIndex}</div>
+                            <div><small>${day.dayDesc}</small></div>
                         </div>
                     `;
                 }).join('')}
@@ -4186,7 +4222,6 @@
         const btn = document.getElementById('weatherUnitsBtn');
         btn.innerHTML = weatherUnitsSystem === 'metric' ? 'Jednostki: °C / km/h' : 'Jednostki: °F / mph';
         if (currentWeatherData) {
-            // odśwież aktualnie wyświetlaną lokalizację
             const cityInput = document.getElementById('weatherCityInput').value;
             if (cityInput) searchWeatherByCity();
             else getWeatherByGeolocation();
@@ -4204,7 +4239,6 @@
                 if (e.key === 'Enter') searchWeatherByCity();
             });
         }
-        // Nie ustawiamy domyślnego miasta – od razu próbujemy geolokalizacji
         getWeatherByGeolocation();
     }
 
@@ -4276,8 +4310,6 @@
     document.getElementById('bmrActivity').addEventListener('change', calculateBMR);
     calculateBMR();
     
-    // Inicjalizacja pogody – uruchamiana po załadowaniu strony (niezależnie od zakładki)
-    // ale zostawiamy flagę, żeby nie wykonać dwa razy
     if (!window.weatherInitialized) {
         initWeather();
         window.weatherInitialized = true;
