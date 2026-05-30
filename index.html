@@ -1224,7 +1224,7 @@
             <div class="table-wrapper">
                 <table id="timeDiffTable">
                     <thead><tr><th>Strefa czasowa</th><th>Aktualny czas</th><th>Różnica względem wybranej</th></tr></thead>
-                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</table></tbody>
+                    <tbody id="timeDiffTableBody"><tr><td colspan="3">Wybierz strefę bazową i kliknij przycisk.</td></tbody>
                 </table>
             </div>
             <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Różnice obliczane dla bieżącej daty z uwzględnieniem czasu letniego (DST).</p>
@@ -1382,14 +1382,14 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (poprawiona) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (poprawiona – puste pole, geolokalizacja, idealne wyszukiwanie) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
             <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda, 7-dniowa prognoza, wschód/zachód słońca, faza księżyca i wykres temperatury.</p>
 
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
-                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;">
+                <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;" value="">
                 <button class="btn" onclick="searchWeatherByCity()"><i class="fas fa-search"></i> Szukaj</button>
                 <button class="btn" onclick="getWeatherByGeolocation()"><i class="fas fa-location-dot"></i> Moja lokalizacja</button>
             </div>
@@ -3821,7 +3821,7 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODA (ulepszona prognoza godzinowa i 7-dniowa) ========================
+    // ======================== MODUŁ POGODY (ulepszona geolokalizacja i wyszukiwanie) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
@@ -3868,7 +3868,8 @@
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
-            if (!data || !data.current_condition || data.current_condition.length === 0) {
+            // Sprawdź, czy odpowiedź zawiera dane
+            if (!data || !data.current_condition || data.current_condition.length === 0 || !data.nearest_area || data.nearest_area.length === 0) {
                 throw new Error('Lokalizacja nie rozpoznana przez serwer pogodowy.');
             }
             currentWeatherData = data;
@@ -3883,30 +3884,39 @@
 
     async function getWeatherByGeolocation() {
         if (!navigator.geolocation) {
-            alert('Twoja przeglądarka nie wspiera geolokalizacji.');
+            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center;">🌍 Twoja przeglądarka nie wspiera geolokalizacji. Wpisz miasto ręcznie.</div>`;
             return;
         }
+        document.getElementById('weatherLoading').style.display = 'flex';
+        document.getElementById('weatherContent').innerHTML = '';
         navigator.geolocation.getCurrentPosition(async (pos) => {
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
-            document.getElementById('weatherLoading').style.display = 'flex';
-            document.getElementById('weatherContent').innerHTML = '';
             try {
                 const unitsParam = weatherUnitsSystem === 'metric' ? 'm' : 'u';
                 const url = `https://wttr.in/${lat},${lon}?format=j1&lang=pl&${unitsParam}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Błąd sieci');
                 const data = await res.json();
-                if (!data || !data.current_condition) throw new Error('Nieprawidłowa odpowiedź');
+                if (!data || !data.current_condition || !data.nearest_area) throw new Error('Nieprawidłowa odpowiedź');
                 currentWeatherData = data;
-                displayWeatherWttr(data, `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`);
+                // Pobierz przyjazną nazwę lokalizacji z nearest_area
+                let locationName = `Twoja lokalizacja (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
+                if (data.nearest_area && data.nearest_area[0] && data.nearest_area[0].areaName && data.nearest_area[0].areaName[0]) {
+                    locationName = data.nearest_area[0].areaName[0].value;
+                }
+                displayWeatherWttr(data, locationName);
             } catch (err) {
-                document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd: ${err.message}</div>`;
+                document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center; color:var(--danger);">❌ Błąd pobierania pogody dla Twojej lokalizacji: ${err.message}</div>`;
             } finally {
                 document.getElementById('weatherLoading').style.display = 'none';
             }
         }, (err) => {
-            alert('Nie udało się pobrać lokalizacji: ' + err.message);
+            document.getElementById('weatherLoading').style.display = 'none';
+            let msg = 'Nie udało się pobrać lokalizacji. Sprawdź uprawnienia w przeglądarce.';
+            if (err.code === 1) msg = 'Odmówiono dostępu do lokalizacji. Wpisz miasto ręcznie.';
+            else if (err.code === 2) msg = 'Lokalizacja niedostępna. Spróbuj wpisać miasto ręcznie.';
+            document.getElementById('weatherContent').innerHTML = `<div class="glass-card" style="text-align:center;">🌍 ${msg}</div>`;
         });
     }
 
@@ -4176,6 +4186,7 @@
         const btn = document.getElementById('weatherUnitsBtn');
         btn.innerHTML = weatherUnitsSystem === 'metric' ? 'Jednostki: °C / km/h' : 'Jednostki: °F / mph';
         if (currentWeatherData) {
+            // odśwież aktualnie wyświetlaną lokalizację
             const cityInput = document.getElementById('weatherCityInput').value;
             if (cityInput) searchWeatherByCity();
             else getWeatherByGeolocation();
@@ -4193,8 +4204,8 @@
                 if (e.key === 'Enter') searchWeatherByCity();
             });
         }
-        document.getElementById('weatherCityInput').value = 'Warszawa';
-        searchWeatherByCity();
+        // Nie ustawiamy domyślnego miasta – od razu próbujemy geolokalizacji
+        getWeatherByGeolocation();
     }
 
     // ======================== BANER ZGÓD COOKIE ========================
@@ -4264,6 +4275,13 @@
     document.getElementById('bmrHeight').addEventListener('input', calculateBMR);
     document.getElementById('bmrActivity').addEventListener('change', calculateBMR);
     calculateBMR();
+    
+    // Inicjalizacja pogody – uruchamiana po załadowaniu strony (niezależnie od zakładki)
+    // ale zostawiamy flagę, żeby nie wykonać dwa razy
+    if (!window.weatherInitialized) {
+        initWeather();
+        window.weatherInitialized = true;
+    }
 </script>
 </body>
 </html>
