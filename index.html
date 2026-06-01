@@ -3841,9 +3841,10 @@
     // Rozbudowany słownik tłumaczeń opisów pogody (wszystkie kody z wttr.in)
     function getWeatherDescription(desc) {
         if (!desc) return "Brak danych";
+        const d = desc.toLowerCase().trim();
         const plDesc = {
-            "sunny": "Słonecznie", "clear": "Bezchmurnie", "fair": "Ładnie",
-            "partly cloudy": "Częściowe zachmurzenie", "cloudy": "Zachmurzenie",
+            "sunny": "Słonecznie", "clear": "Bezchmurnie", "clear sky": "Bezchmurnie", "fair": "Ładnie",
+            "partly cloudy": "Częściowe zachmurzenie", "party cloudy": "Częściowe zachmurzenie", "cloudy": "Zachmurzenie",
             "overcast": "Pochmurno", "mist": "Mgła", "fog": "Gęsta mgła",
             "freezing fog": "Marznąca mgła", "patchy rain possible": "Możliwe przelotne opady",
             "patchy snow possible": "Możliwe przelotne opady śniegu", "patchy sleet possible": "Możliwy deszcz ze śniegiem",
@@ -3870,7 +3871,12 @@
             "patchy light snow in area with thunder": "Przelotne słabe opady śniegu z burzami",
             "moderate or heavy snow in area with thunder": "Umiarkowane lub silne opady śniegu z burzami"
         };
-        return plDesc[desc.toLowerCase()] || desc;
+        if (plDesc[d]) return plDesc[d];
+        if (d.includes("clear")) return "Bezchmurnie";
+        if (d.includes("partly cloudy") || d.includes("party cloudy")) return "Częściowe zachmurzenie";
+        if (d.includes("cloudy")) return "Zachmurzenie";
+        if (d.includes("overcast")) return "Pochmurno";
+        return desc;
     }
 
     function convertTo24h(timeStr) {
