@@ -3847,6 +3847,7 @@
             "partly cloudy": "Częściowe zachmurzenie", "party cloudy": "Częściowe zachmurzenie", "cloudy": "Zachmurzenie",
             "overcast": "Pochmurno", "mist": "Mgła", "fog": "Gęsta mgła",
             "freezing fog": "Marznąca mgła", "patchy rain possible": "Możliwe przelotne opady",
+            "patchy rain nearby": "Przelotne opady deszczu w okolicy", "patchy snow nearby": "Przelotne opady śniegu w okolicy",
             "patchy snow possible": "Możliwe przelotne opady śniegu", "patchy sleet possible": "Możliwy deszcz ze śniegiem",
             "patchy freezing drizzle possible": "Możliwa marznąca mżawka", "thundery outbreaks possible": "Możliwe burze",
             "blowing snow": "Zamiecie śnieżne", "blizzard": "Zamieć",
@@ -3876,6 +3877,9 @@
         if (d.includes("partly cloudy") || d.includes("party cloudy")) return "Częściowe zachmurzenie";
         if (d.includes("cloudy")) return "Zachmurzenie";
         if (d.includes("overcast")) return "Pochmurno";
+        if (d.includes("rain")) return "Opady deszczu";
+        if (d.includes("snow")) return "Opady śniegu";
+        if (d.includes("mist") || d.includes("fog")) return "Mgła";
         return desc;
     }
 
