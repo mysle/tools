@@ -730,72 +730,119 @@
             }
         }
 
-        /* ULEPSZENIA POGODY */
-        .weather-current {
+        /* ===== NOWE STYLE – ULEPSZONA POGODA ===== */
+        .weather-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .weather-main-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
             background: rgba(15,23,42,0.5);
             border-radius: 1.5rem;
             padding: 1.5rem;
-            transition: all 0.3s;
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.15);
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+            transition: 0.3s;
         }
-        .weather-current.hot {
+        .weather-main-panel.hot {
             background: linear-gradient(135deg, rgba(220, 38, 38, 0.5), rgba(249, 115, 22, 0.4));
             border-left: 4px solid #f97316;
         }
-        .weather-current.cold {
+        .weather-main-panel.cold {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(139, 92, 246, 0.4));
             border-left: 4px solid #3b82f6;
         }
-        .weather-current.mild {
+        .weather-main-panel.mild {
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(99, 102, 241, 0.4));
             border-left: 4px solid #22c55e;
         }
-        .weather-main {
-            flex: 2;
+        .weather-big-temp {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
+            gap: 0.25rem;
         }
-        .weather-main .temp {
-            font-size: 4rem;
+        .weather-big-temp .temp {
+            font-size: 4.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #fff, #a5b4fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(0,0,0,0.3);
+            line-height: 1;
         }
-        .weather-details {
-            flex: 3;
+        .weather-big-temp .feels-like {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+        .weather-big-temp .location {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+        .weather-big-temp .icon-big {
+            font-size: 4rem;
+            margin: 0.25rem 0;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+        .weather-summary {
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            margin-top: 0.25rem;
+        }
+        .weather-grid-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+            gap: 0.75rem;
+            align-content: start;
         }
-        .weather-detail-item {
+        .weather-detail-tile {
             background: rgba(0,0,0,0.5);
             border-radius: 1rem;
-            padding: 0.8rem;
+            padding: 0.7rem 0.5rem;
             text-align: center;
-            transition: transform 0.2s, background 0.2s;
             backdrop-filter: blur(4px);
+            transition: 0.2s;
         }
-        .weather-detail-item:hover {
+        .weather-detail-tile:hover {
             transform: translateY(-3px);
             background: rgba(0,0,0,0.7);
         }
+        .weather-detail-tile .tile-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        .weather-detail-tile .tile-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+        }
+        .weather-detail-tile .tile-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
         .forecast-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
-            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+            gap: 1rem;
             margin-top: 1rem;
         }
         .forecast-card {
             background: rgba(15,23,42,0.7);
             border: 1px solid var(--glass-border);
-            border-radius: 1rem;
+            border-radius: 1.2rem;
             padding: 1rem;
             text-align: center;
             transition: 0.2s;
@@ -808,37 +855,53 @@
         }
         .forecast-day {
             font-weight: 700;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        .forecast-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
         .forecast-icon {
-            font-size: 2rem;
-            margin: 0.5rem 0;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            font-size: 2.2rem;
+            margin: 0.3rem 0;
         }
         .forecast-temp {
             font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 0.4rem;
+        }
+        .forecast-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+        .forecast-extra {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+            flex-wrap: wrap;
         }
         .hourly-forecast {
             display: flex;
             overflow-x: auto;
-            gap: 1rem;
-            padding: 1rem 0;
+            gap: 0.8rem;
+            padding: 0.75rem 0;
             scrollbar-width: thin;
-            margin-bottom: 1rem;
+            margin: 0.5rem 0 0 0;
         }
         .hourly-card {
             background: rgba(0,0,0,0.6);
-            border-radius: 1rem;
-            padding: 0.8rem;
-            min-width: 150px;
+            border-radius: 1.2rem;
+            padding: 0.7rem 0.9rem;
+            min-width: 110px;
             text-align: center;
             flex-shrink: 0;
             backdrop-filter: blur(8px);
             transition: all 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .hourly-card:hover {
             background: rgba(99,102,241,0.5);
@@ -846,9 +909,222 @@
             border-color: var(--primary);
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-        .product-emoji {
+        .hourly-card .h-time {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .hourly-card .h-icon {
+            font-size: 1.6rem;
+            margin: 0.1rem 0;
+        }
+        .hourly-card .h-temp {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .hourly-card .h-desc {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        .hourly-card .h-extra {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
+        }
+
+        /* ===== NOWE STYLE – KALKULATOR PROGRAMISTY ===== */
+        .prog-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .prog-display-area {
+            background: rgba(0,0,0,0.5);
+            border-radius: 1.2rem;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid var(--glass-border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem 1.5rem;
+        }
+        .prog-display-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .prog-display-item label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+        .prog-display-item .prog-value {
+            font-family: 'Monaco', 'Menlo', monospace;
             font-size: 1.2rem;
-            margin-right: 0.3rem;
+            font-weight: 600;
+            color: #fff;
+            background: rgba(0,0,0,0.3);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            word-break: break-all;
+        }
+        .prog-display-item .prog-value input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: 600;
+            width: 100%;
+            outline: none;
+            padding: 0.1rem 0;
+        }
+        .prog-display-item .prog-value input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .prog-bitwise-area {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.2rem;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+        .prog-bitwise-area .bw-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .prog-bitwise-area .bw-row label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            min-width: 60px;
+        }
+        .prog-bitwise-area .bw-row .bw-input {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.6rem;
+            padding: 0.4rem 0.7rem;
+            color: #fff;
+            font-family: monospace;
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 100px;
+            outline: none;
+        }
+        .prog-bitwise-area .bw-row .bw-input:focus {
+            border-color: var(--primary);
+        }
+        .prog-bitwise-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0 0 0;
+        }
+        .prog-bitwise-buttons .bw-btn {
+            background: rgba(99,102,241,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .prog-bitwise-buttons .bw-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+        }
+        .prog-result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
+        }
+        .prog-result-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.3rem 0.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .prog-result-table td {
+            padding: 0.3rem 0.5rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .prog-result-table tr:last-child td {
+            border-bottom: none;
+        }
+        .prog-history {
+            margin-top: 0.5rem;
+            max-height: 120px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 0.6rem;
+            padding: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .prog-history .h-entry {
+            padding: 0.2rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted);
+        }
+        .prog-history .h-entry:last-child {
+            border-bottom: none;
+        }
+        .prog-history .h-entry strong {
+            color: #fff;
+        }
+        .prog-quick-constants {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .prog-quick-constants .qc-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .prog-quick-constants .qc-btn:hover {
+            background: var(--primary);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .weather-main-panel {
+                grid-template-columns: 1fr;
+            }
+            .weather-grid-details {
+                grid-template-columns: repeat(2,1fr);
+            }
+            .prog-display-area {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            .prog-bitwise-area .bw-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
     </style>
 </head>
@@ -1095,35 +1371,73 @@
                 </div>
             </div>
 
+            <!-- ===== NOWA ZAKŁADKA KALKULATOR PROGRAMISTY ===== -->
             <div id="sub-programmer" class="sub-content" style="display: none;">
-                <div class="prog-panel">
-                    <div class="prog-converter">
-                        <label>Wartość (dziesiętna):</label>
-                        <input type="number" id="progDecimal" class="modern-input" value="0" oninput="updateFromDecimal()">
-                        <label>Binarny:</label>
-                        <input type="text" id="progBinary" class="modern-input" placeholder="0b..." oninput="updateFromBinary()">
-                        <label>Szestnastkowy (HEX):</label>
-                        <input type="text" id="progHex" class="modern-input" placeholder="0x..." oninput="updateFromHex()">
-                        <label>Ósemkowy (OCT):</label>
-                        <input type="text" id="progOctal" class="modern-input" placeholder="0o..." oninput="updateFromOctal()">
+                <div class="prog-wrapper">
+                    <!-- Wyświetlacz główny -->
+                    <div class="prog-display-area">
+                        <div class="prog-display-item">
+                            <label>Dziesiętny (DEC)</label>
+                            <div class="prog-value"><input type="text" id="progDecimal" value="0" oninput="updateFromDecimal()"></div>
+                        </div>
+                        <div class="prog-display-item">
+                            <label>Binarny (BIN)</label>
+                            <div class="prog-value"><input type="text" id="progBinary" placeholder="0b..." oninput="updateFromBinary()"></div>
+                        </div>
+                        <div class="prog-display-item">
+                            <label>Szesnastkowy (HEX)</label>
+                            <div class="prog-value"><input type="text" id="progHex" placeholder="0x..." oninput="updateFromHex()"></div>
+                        </div>
+                        <div class="prog-display-item">
+                            <label>Ósemkowy (OCT)</label>
+                            <div class="prog-value"><input type="text" id="progOctal" placeholder="0o..." oninput="updateFromOctal()"></div>
+                        </div>
                     </div>
-                    <div class="prog-bitwise">
-                        <label>Operacje bitowe (32-bit signed)</label>
-                        <div class="bitwise-buttons">
-                            <button class="quick-btn" onclick="bitwiseOp('AND')">AND</button>
-                            <button class="quick-btn" onclick="bitwiseOp('OR')">OR</button>
-                            <button class="quick-btn" onclick="bitwiseOp('XOR')">XOR</button>
-                            <button class="quick-btn" onclick="bitwiseOp('NOT')">NOT</button>
-                            <button class="quick-btn" onclick="bitwiseOp('SHL')">SHL</button>
-                            <button class="quick-btn" onclick="bitwiseOp('SHR')">SHR</button>
+
+                    <!-- Stałe szybkiego wstawiania -->
+                    <div class="prog-quick-constants">
+                        <span style="font-size:0.75rem; color:var(--text-muted);">Szybkie stałe:</span>
+                        <button class="qc-btn" onclick="insertConstant(0)">0</button>
+                        <button class="qc-btn" onclick="insertConstant(255)">0xFF</button>
+                        <button class="qc-btn" onclick="insertConstant(65535)">0xFFFF</button>
+                        <button class="qc-btn" onclick="insertConstant(4294967295)">0xFFFFFFFF</button>
+                        <button class="qc-btn" onclick="insertConstant(2147483647)">0x7FFFFFFF</button>
+                    </div>
+
+                    <!-- Operacje bitowe -->
+                    <div class="prog-bitwise-area">
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                            <span style="font-weight:600; font-size:0.9rem;">Operacje bitowe</span>
+                            <div class="prog-bitwise-buttons">
+                                <button class="bw-btn" onclick="bitwiseOp('AND')">AND</button>
+                                <button class="bw-btn" onclick="bitwiseOp('OR')">OR</button>
+                                <button class="bw-btn" onclick="bitwiseOp('XOR')">XOR</button>
+                                <button class="bw-btn" onclick="bitwiseOp('NOT')">NOT</button>
+                                <button class="bw-btn" onclick="bitwiseOp('SHL')">SHL</button>
+                                <button class="bw-btn" onclick="bitwiseOp('SHR')">SHR</button>
+                            </div>
                         </div>
-                        <div style="margin-top: 0.5rem;">
-                            <label>Wartość 2 (dla AND/OR/XOR/SHL/SHR):</label>
-                            <input type="number" id="progSecond" class="modern-input" value="0">
+                        <div class="bw-row">
+                            <label>Wartość 2</label>
+                            <input type="text" class="bw-input" id="progSecond" value="0" oninput="updateBitwiseResult()">
+                            <label style="min-width:40px;">Wynik</label>
+                            <input type="text" class="bw-input" id="progBitwiseResult" readonly placeholder="wynik">
+                            <button class="btn btn-sm" onclick="copyBitwiseResult()" style="background:rgba(255,255,255,0.1);"><i class="fas fa-copy"></i></button>
                         </div>
-                        <div style="margin-top: 0.5rem;">
-                            <label>Wynik operacji:</label>
-                            <input type="text" id="progBitwiseResult" class="modern-input" readonly placeholder="wynik">
+                        <!-- Tabela wyników operacji bitowych w różnych systemach -->
+                        <table class="prog-result-table" id="bitwiseResultTable">
+                            <thead><tr><th>System</th><th>Wynik</th></tr></thead>
+                            <tbody id="bitwiseResultBody">
+                                <tr><td>DEC</td><td id="bwResDec">0</td></tr>
+                                <tr><td>BIN</td><td id="bwResBin">0</td></tr>
+                                <tr><td>HEX</td><td id="bwResHex">0</td></tr>
+                                <tr><td>OCT</td><td id="bwResOct">0</td></tr>
+                            </tbody>
+                        </table>
+                        <!-- Historia operacji -->
+                        <div style="margin-top:0.5rem;">
+                            <span style="font-size:0.75rem; color:var(--text-muted);">Historia operacji</span>
+                            <div class="prog-history" id="progHistory"></div>
                         </div>
                     </div>
                 </div>
@@ -1386,11 +1700,11 @@
         </div>
     </div>
 
-    <!-- ============ ZAKŁADKA POGODA (w pełni po polsku – prognoza godzinowa + 7 dni) ============ -->
+    <!-- ============ ZAKŁADKA POGODA (w pełni po polsku – NOWA WERSJA) ============ -->
     <div id="weather-tab" class="tab-content">
         <div class="glass-card">
-            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">Aktualna pogoda, 7-dniowa prognoza, wschód/zachód słońca, faza księżyca i wykres temperatury.</p>
+            <h2 style="text-align: center; font-size: 2rem; margin-bottom: 0.25rem; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌤️ Inteligentna Pogoda i Prognoza</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 1.5rem;">Aktualna pogoda, 7-dniowa prognoza, wschód/zachód słońca, faza księżyca i wykres temperatury.</p>
 
             <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
                 <input type="text" id="weatherCityInput" class="modern-input" placeholder="np. Warszawa, Londyn, Nowy Jork, 12-345, 51.1079,17.0385" style="flex:3;" value="">
@@ -2195,54 +2509,117 @@
         }
     });
 
-    let currentDec = 0;
+    // ===== NOWY KALKULATOR PROGRAMISTY =====
+    let currentDecProg = 0;
+    let progHistory = [];
+
     function updateFromDecimal() {
         let dec = parseInt(document.getElementById('progDecimal').value, 10);
-        if(isNaN(dec)) dec = 0;
-        currentDec = dec & 0xFFFFFFFF;
-        document.getElementById('progDecimal').value = currentDec;
-        document.getElementById('progBinary').value = '0b' + (currentDec >>> 0).toString(2);
-        document.getElementById('progHex').value = '0x' + (currentDec >>> 0).toString(16).toUpperCase();
-        document.getElementById('progOctal').value = '0o' + (currentDec >>> 0).toString(8);
+        if (isNaN(dec) || dec < 0) dec = 0;
+        if (dec > 0xFFFFFFFF) dec = 0xFFFFFFFF;
+        currentDecProg = dec & 0xFFFFFFFF;
+        document.getElementById('progDecimal').value = currentDecProg;
+        document.getElementById('progBinary').value = '0b' + (currentDecProg >>> 0).toString(2);
+        document.getElementById('progHex').value = '0x' + (currentDecProg >>> 0).toString(16).toUpperCase();
+        document.getElementById('progOctal').value = '0o' + (currentDecProg >>> 0).toString(8);
+        updateBitwiseResult();
     }
+
     function updateFromBinary() {
         let bin = document.getElementById('progBinary').value.replace(/^0b/, '');
         let dec = parseInt(bin, 2);
-        if(isNaN(dec)) dec = 0;
-        currentDec = dec & 0xFFFFFFFF;
+        if (isNaN(dec)) dec = 0;
+        currentDecProg = dec & 0xFFFFFFFF;
         updateFromDecimal();
     }
+
     function updateFromHex() {
         let hex = document.getElementById('progHex').value.replace(/^0x/, '');
         let dec = parseInt(hex, 16);
-        if(isNaN(dec)) dec = 0;
-        currentDec = dec & 0xFFFFFFFF;
+        if (isNaN(dec)) dec = 0;
+        currentDecProg = dec & 0xFFFFFFFF;
         updateFromDecimal();
     }
+
     function updateFromOctal() {
         let oct = document.getElementById('progOctal').value.replace(/^0o/, '');
         let dec = parseInt(oct, 8);
-        if(isNaN(dec)) dec = 0;
-        currentDec = dec & 0xFFFFFFFF;
+        if (isNaN(dec)) dec = 0;
+        currentDecProg = dec & 0xFFFFFFFF;
         updateFromDecimal();
     }
+
+    function insertConstant(val) {
+        document.getElementById('progDecimal').value = val;
+        updateFromDecimal();
+    }
+
+    function getProgSecond() {
+        let val = parseInt(document.getElementById('progSecond').value, 10);
+        if (isNaN(val) || val < 0) val = 0;
+        return val & 0xFFFFFFFF;
+    }
+
+    function updateBitwiseResult() {
+        // Recalculates bitwise result based on current second value
+        // The result is already computed in bitwiseOp, but this updates if second changes
+        // We'll just re-run the last operation if any, but we don't store last operation.
+        // For simplicity, we clear result.
+        document.getElementById('progBitwiseResult').value = '';
+        document.getElementById('bwResDec').textContent = '0';
+        document.getElementById('bwResBin').textContent = '0';
+        document.getElementById('bwResHex').textContent = '0';
+        document.getElementById('bwResOct').textContent = '0';
+    }
+
     function bitwiseOp(op) {
-        let val1 = currentDec;
-        let val2 = parseInt(document.getElementById('progSecond').value, 10);
-        if(isNaN(val2)) val2 = 0;
+        let val1 = currentDecProg;
+        let val2 = getProgSecond();
         let result;
+        let opSymbol = op;
         switch(op) {
-            case 'AND': result = val1 & val2; break;
-            case 'OR': result = val1 | val2; break;
-            case 'XOR': result = val1 ^ val2; break;
-            case 'NOT': result = ~val1; break;
-            case 'SHL': result = val1 << val2; break;
-            case 'SHR': result = val1 >> val2; break;
+            case 'AND': result = val1 & val2; opSymbol = 'AND'; break;
+            case 'OR': result = val1 | val2; opSymbol = 'OR'; break;
+            case 'XOR': result = val1 ^ val2; opSymbol = 'XOR'; break;
+            case 'NOT': result = ~val1; opSymbol = 'NOT'; val2 = '~'; break;
+            case 'SHL': result = val1 << val2; opSymbol = 'SHL'; break;
+            case 'SHR': result = val1 >> val2; opSymbol = 'SHR'; break;
             default: return;
         }
         result = result & 0xFFFFFFFF;
-        document.getElementById('progBitwiseResult').value = result + ' (dec = ' + result + ')';
+        document.getElementById('progBitwiseResult').value = result + ' (dec)';
+        document.getElementById('bwResDec').textContent = result;
+        document.getElementById('bwResBin').textContent = '0b' + (result >>> 0).toString(2);
+        document.getElementById('bwResHex').textContent = '0x' + (result >>> 0).toString(16).toUpperCase();
+        document.getElementById('bwResOct').textContent = '0o' + (result >>> 0).toString(8);
+
+        // Add to history
+        let histEntry = `${val1} ${opSymbol} ${val2} = ${result} (${(result>>>0).toString(16).toUpperCase()})`;
+        progHistory.push(histEntry);
+        if (progHistory.length > 20) progHistory.shift();
+        renderProgHistory();
     }
+
+    function renderProgHistory() {
+        const container = document.getElementById('progHistory');
+        if (!container) return;
+        container.innerHTML = progHistory.map(entry => `<div class="h-entry">${entry}</div>`).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function copyBitwiseResult() {
+        const val = document.getElementById('progBitwiseResult').value;
+        if (val) {
+            navigator.clipboard.writeText(val).then(() => {
+                const btn = document.querySelector('#sub-programmer .btn-sm .fa-copy')?.parentElement;
+                if (btn) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Skopiowano!';
+                    setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 1500);
+                }
+            });
+        }
+    }
+
     function clearProgrammer() {
         document.getElementById('progDecimal').value = 0;
         document.getElementById('progBinary').value = '0b0';
@@ -2250,7 +2627,13 @@
         document.getElementById('progOctal').value = '0o0';
         document.getElementById('progSecond').value = 0;
         document.getElementById('progBitwiseResult').value = '';
-        currentDec = 0;
+        document.getElementById('bwResDec').textContent = '0';
+        document.getElementById('bwResBin').textContent = '0';
+        document.getElementById('bwResHex').textContent = '0';
+        document.getElementById('bwResOct').textContent = '0';
+        progHistory = [];
+        renderProgHistory();
+        currentDecProg = 0;
         updateFromDecimal();
     }
 
@@ -3036,7 +3419,6 @@
             let message = `✨ +${baseReward.toLocaleString()} ciastek!`;
             let specialEffect = false;
             
-            // Mocne bonusy – każdy przypadek dodaje ciasteczka i komunikat
             if (rand < 0.10 && window.luckyCharm) {
                 if (bonusTimer) clearTimeout(bonusTimer);
                 activeBonuses.tsunami = true;
@@ -3371,7 +3753,6 @@
     let customFoods = [];
     let meals = [];
 
-    // ROZSZERZONA LISTA PRODUKTÓW (dodano jabłko + 9 nowych z emoji)
     const productMap = {
         apple: { name: "🍎 Jabłko", kcalPer100g: 52, proteinPer100g: 0.3, fatPer100g: 0.2, carbsPer100g: 14 },
         pear: { name: "🍐 Gruszka", kcalPer100g: 57, proteinPer100g: 0.4, fatPer100g: 0.1, carbsPer100g: 15 },
@@ -3823,12 +4204,11 @@
         renderMeals();
     }
 
-    // ======================== MODUŁ POGODY (w pełni po polsku – prognoza godzinowa z polskimi opisami, fazy księżyca) ========================
+    // ======================== NOWY MODUŁ POGODY (poprawiony) ========================
     let weatherUnitsSystem = 'metric';
     let weatherChart = null;
     let currentWeatherData = null;
 
-    // Mapa poprawek dla zanglicyzowanych nazw polskich miast
     const cityNameCorrections = {
         "Belostok": "Białystok", "Warszawa": "Warszawa", "Krakow": "Kraków", "Lodz": "Łódź",
         "Wroclaw": "Wrocław", "Poznan": "Poznań", "Gdansk": "Gdańsk", "Szczecin": "Szczecin",
@@ -3838,7 +4218,6 @@
         "Gorzow Wielkopolski": "Gorzów Wielkopolski", "Torun": "Toruń", "Olsztyn": "Olsztyn"
     };
 
-    // Rozbudowany słownik tłumaczeń opisów pogody (wszystkie kody z wttr.in)
     function getWeatherDescription(desc) {
         if (!desc) return "Brak danych";
         const d = desc.toLowerCase().trim();
@@ -4081,82 +4460,107 @@
             };
             windDirPl = windMap[windDir] || windDir;
         }
-        
+
+        // Generowanie podsumowania dnia
+        let daySummary = '';
+        const rain = parseFloat(current.precipMM) || 0;
+        const cloud = parseFloat(current.cloudcover) || 0;
+        if (tempC > 25 && rain < 1 && cloud < 30) daySummary = '☀️ Idealna pogoda na spacer i lody!';
+        else if (tempC > 20 && rain < 1) daySummary = '🌤️ Przyjemny dzień – wybierz się na rower.';
+        else if (tempC > 15 && rain < 1) daySummary = '🌿 Ładna pogoda – świetny czas na aktywność na świeżym powietrzu.';
+        else if (tempC > 10 && rain < 1) daySummary = '🍂 Chłodno, ale sucho – dobry dzień na jesienny spacer.';
+        else if (rain > 5) daySummary = '🌧️ Ulewa! Zabierz ze sobą parasol i zostań w domu.';
+        else if (rain > 1) daySummary = '☔ Lekki deszcz – przyda się parasol.';
+        else if (tempC < 0) daySummary = '❄️ Mroźno! Pamiętaj o ciepłym ubraniu.';
+        else if (tempC < 5) daySummary = '🧊 Zimno, ale słonecznie – ubierz się ciepło.';
+        else if (cloud > 70) daySummary = '☁️ Pochmurno, ale bez opadów – spokojny dzień.';
+        else daySummary = '🌤️ Warunki umiarkowane – miłego dnia!';
+
         const html = `
-            <div class="weather-current ${tempClass} weather-fade">
-                <div class="weather-main">
-                    <div><i class="fas fa-map-marker-alt"></i> ${escapeHtml(locationName)}</div>
-                    <div class="temp">${Math.round(current.temp_C)}${tempUnit}</div>
-                    <div>${getWeatherIconWttr(current.weatherCode)}</div>
-                    <div>Odczuwalna: ${Math.round(current.FeelsLikeC)}${tempUnit}</div>
+            <div class="weather-container">
+                <div class="weather-main-panel ${tempClass}">
+                    <div class="weather-big-temp">
+                        <div class="location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(locationName)}</div>
+                        <div class="icon-big">${getWeatherIconWttr(current.weatherCode)}</div>
+                        <div class="temp">${Math.round(current.temp_C)}${tempUnit}</div>
+                        <div class="feels-like">Odczuwalna: ${Math.round(current.FeelsLikeC)}${tempUnit}</div>
+                        <div class="weather-summary">${daySummary}</div>
+                    </div>
+                    <div class="weather-grid-details">
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-tint"></i></div><div class="tile-label">Wilgotność</div><div class="tile-value">${current.humidity}%</div></div>
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-wind"></i></div><div class="tile-label">Wiatr</div><div class="tile-value">${current.windspeedKmph} ${windUnit} ${windDirPl ? '('+windDirPl+')' : ''}</div></div>
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-tachometer-alt"></i></div><div class="tile-label">Ciśnienie</div><div class="tile-value">${current.pressure} ${pressureUnit}</div></div>
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-cloud"></i></div><div class="tile-label">Zachmurzenie</div><div class="tile-value">${current.cloudcover}%</div></div>
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-eye"></i></div><div class="tile-label">Widzialność</div><div class="tile-value">${current.visibility} km</div></div>
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-umbrella"></i></div><div class="tile-label">Opady</div><div class="tile-value">${current.precipMM} mm</div></div>
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-sun"></i></div><div class="tile-label">Wschód / Zachód</div><div class="tile-value">${sunrise} / ${sunset}</div></div>
+                        <div class="weather-detail-tile"><div class="tile-icon"><i class="fas fa-moon"></i></div><div class="tile-label">Faza księżyca</div><div class="tile-value">${moonPhasePlToday}</div></div>
+                    </div>
                 </div>
-                <div class="weather-details">
-                    <div class="weather-detail-item"><i class="fas fa-tint"></i> Wilgotność: ${current.humidity}%</div>
-                    <div class="weather-detail-item"><i class="fas fa-wind"></i> Wiatr: ${current.windspeedKmph} ${windUnit} ${windDirPl ? '('+windDirPl+')' : ''}</div>
-                    <div class="weather-detail-item"><i class="fas fa-tachometer-alt"></i> Ciśnienie: ${current.pressure} ${pressureUnit}</div>
-                    <div class="weather-detail-item"><i class="fas fa-cloud"></i> Zachmurzenie: ${current.cloudcover}%</div>
-                    <div class="weather-detail-item"><i class="fas fa-eye"></i> Widzialność: ${current.visibility} km</div>
-                    <div class="weather-detail-item"><i class="fas fa-umbrella"></i> Opady: ${current.precipMM} mm</div>
-                    <div class="weather-detail-item"><i class="fas fa-sun"></i> Wschód: ${sunrise} / Zachód: ${sunset}</div>
-                    <div class="weather-detail-item"><i class="fas fa-moon"></i> Faza księżyca: ${moonPhasePlToday}</div>
+
+                <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury (7 dni)</h3>
+                <div class="chart-container" style="height: 320px;"><canvas id="tempChart"></canvas></div>
+
+                <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś)</h3>
+                <div class="hourly-forecast">
+                    ${hourlyForecast.map(h => {
+                        const hourStr = formatHourFromWttr(h.time);
+                        const temp = parseFloat(h.tempC);
+                        const feelsLike = h.FeelsLikeC !== undefined ? parseFloat(h.FeelsLikeC) : NaN;
+                        const icon = getWeatherIconWttr(h.weatherCode);
+                        const desc = getWeatherDescription(h.weatherDesc[0]?.value);
+                        const wind = h.windspeedKmph;
+                        const humidity = h.humidity;
+                        return `<div class="hourly-card">
+                            <div class="h-time"><strong>${hourStr}</strong></div>
+                            <div class="h-icon">${icon}</div>
+                            <div class="h-temp">${Math.round(temp)}${tempUnit}</div>
+                            <div class="h-desc">${desc}</div>
+                            <div class="h-extra"><span><i class="fas fa-tint"></i> ${humidity}%</span> <span><i class="fas fa-wind"></i> ${wind}</span></div>
+                        </div>`;
+                    }).join('')}
                 </div>
-            </div>
-            <h3 class="section-title"><i class="fas fa-chart-line"></i> Wykres temperatury</h3>
-            <div class="chart-container" style="height: 350px;"><canvas id="tempChart"></canvas></div>
-            <h3 class="section-title"><i class="fas fa-clock"></i> Prognoza godzinowa (dziś)</h3>
-            <div class="hourly-forecast">
-                ${hourlyForecast.map(h => {
-                    const hourStr = formatHourFromWttr(h.time);
-                    const temp = parseFloat(h.tempC);
-                    const feelsLike = h.FeelsLikeC !== undefined ? parseFloat(h.FeelsLikeC) : NaN;
-                    const icon = getWeatherIconWttr(h.weatherCode);
-                    const desc = getWeatherDescription(h.weatherDesc[0]?.value);
-                    const wind = h.windspeedKmph;
-                    const humidity = h.humidity;
-                    return `<div class="hourly-card">
-                        <div><strong>${hourStr}</strong></div>
-                        <div>${icon}</div>
-                        <div>${Math.round(temp)}${tempUnit}</div>
-                        <div><small>Odczuwalna: ${!isNaN(feelsLike) ? Math.round(feelsLike)+tempUnit : '--'}</small></div>
-                        <div><small>${desc}</small></div>
-                        <div><i class="fas fa-tint"></i> ${humidity}% &nbsp; <i class="fas fa-wind"></i> ${wind} ${windUnit}</div>
-                    </div>`;
-                }).join('')}
-            </div>
-            <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa</h3>
-            <div class="forecast-grid">
-                ${dailyWithRain.map(day => {
-                    const date = new Date(day.date);
-                    const dayName = date.toLocaleDateString('pl-PL', { weekday: 'short' });
-                    const maxTemp = Math.round(day.maxtempC);
-                    const minTemp = Math.round(day.mintempC);
-                    const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
-                    const rain = day.totalRain;
-                    const icon = getWeatherIconWttr(day.hourly[0]?.weatherCode || '113');
-                    let sunriseDay = '--', sunsetDay = '--';
-                    if (day.astronomy && day.astronomy[0]) {
-                        sunriseDay = convertTo24h(day.astronomy[0].sunrise);
-                        sunsetDay = convertTo24h(day.astronomy[0].sunset);
-                    }
-                    const humidityDay = day.hourly[0]?.humidity || '--';
-                    const pressureDay = day.hourly[0]?.pressure || '--';
-                    const uvIndex = day.hourly[0]?.uvIndex || '--';
-                    return `
-                        <div class="forecast-card">
-                            <div class="forecast-day">${dayName}<br>${date.toLocaleDateString('pl-PL', {day:'numeric',month:'short'})}</div>
-                            <div class="forecast-icon">${icon}</div>
-                            <div class="forecast-temp">${maxTemp}${tempUnit} / ${minTemp}${tempUnit}</div>
-                            <div><i class="fas fa-wind"></i> Wiatr: ${wind} ${windUnit}</div>
-                            <div><i class="fas fa-tint"></i> Wilg.: ${humidityDay}%</div>
-                            <div><i class="fas fa-cloud-rain"></i> Opady: ${rain.toFixed(1)} mm</div>
-                            <div><i class="fas fa-sun"></i> Wsch./Zach.: ${sunriseDay}/${sunsetDay}</div>
-                            <div><i class="fas fa-moon"></i> Faza: ${day.moonPhaseDay}</div>
-                            <div><i class="fas fa-tachometer-alt"></i> Ciśn.: ${pressureDay} hPa</div>
-                            <div><i class="fas fa-sun"></i> UV: ${uvIndex}</div>
-                            <div><small>${day.dayDesc}</small></div>
-                        </div>
-                    `;
-                }).join('')}
+
+                <h3 class="section-title"><i class="fas fa-calendar-week"></i> Prognoza 7-dniowa</h3>
+                <div class="forecast-grid">
+                    ${dailyWithRain.map(day => {
+                        const date = new Date(day.date);
+                        const dayName = date.toLocaleDateString('pl-PL', { weekday: 'short' });
+                        const dateStr = date.toLocaleDateString('pl-PL', {day:'numeric', month:'short'});
+                        const maxTemp = Math.round(day.maxtempC);
+                        const minTemp = Math.round(day.mintempC);
+                        const wind = Math.round(day.hourly[0]?.windspeedKmph || 0);
+                        const rain = day.totalRain;
+                        const icon = getWeatherIconWttr(day.hourly[0]?.weatherCode || '113');
+                        let sunriseDay = '--', sunsetDay = '--';
+                        if (day.astronomy && day.astronomy[0]) {
+                            sunriseDay = convertTo24h(day.astronomy[0].sunrise);
+                            sunsetDay = convertTo24h(day.astronomy[0].sunset);
+                        }
+                        const humidityDay = day.hourly[0]?.humidity || '--';
+                        const pressureDay = day.hourly[0]?.pressure || '--';
+                        const uvIndex = day.hourly[0]?.uvIndex || '--';
+                        return `
+                            <div class="forecast-card">
+                                <div class="forecast-day">${dayName}</div>
+                                <div class="forecast-date">${dateStr}</div>
+                                <div class="forecast-icon">${icon}</div>
+                                <div class="forecast-temp">${maxTemp}${tempUnit} / ${minTemp}${tempUnit}</div>
+                                <div class="forecast-desc">${day.dayDesc}</div>
+                                <div class="forecast-extra">
+                                    <span><i class="fas fa-wind"></i> ${wind} ${windUnit}</span>
+                                    <span><i class="fas fa-tint"></i> ${humidityDay}%</span>
+                                    <span><i class="fas fa-cloud-rain"></i> ${rain.toFixed(1)} mm</span>
+                                </div>
+                                <div class="forecast-extra">
+                                    <span><i class="fas fa-sun"></i> ${sunriseDay}/${sunsetDay}</span>
+                                    <span><i class="fas fa-moon"></i> ${day.moonPhaseDay}</span>
+                                    <span><i class="fas fa-tachometer-alt"></i> ${pressureDay} hPa</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
             </div>
         `;
         document.getElementById('weatherContent').innerHTML = html;
